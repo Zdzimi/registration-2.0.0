@@ -7,11 +7,12 @@ import com.zdzimi.registration.data.repository.InstitutionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController("registration")
+@RestController
+@RequestMapping("/registration")
 public class InstitutionController {
-
 
     private InstitutionRepository institutionRepository;
     private InstitutionMapper institutionMapper;
@@ -22,7 +23,7 @@ public class InstitutionController {
         this.institutionMapper = institutionMapper;
     }
 
-    @GetMapping("institution/{institutionName}")
+    @GetMapping("/institution/{institutionName}")
     public Institution getInstitution(@PathVariable String institutionName) {
         InstitutionEntity institutionEntity = institutionRepository.findByInstitutionName(institutionName)
                 .orElseThrow(RuntimeException::new);
