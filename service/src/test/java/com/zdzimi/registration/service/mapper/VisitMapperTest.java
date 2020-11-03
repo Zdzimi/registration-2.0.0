@@ -1,4 +1,4 @@
-package com.zdzimi.registration.controller.mapper;
+package com.zdzimi.registration.service.mapper;
 
 import com.zdzimi.registration.core.model.Place;
 import com.zdzimi.registration.core.model.User;
@@ -15,10 +15,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-import static com.zdzimi.registration.controller.mapper.PlaceMapperTest.*;
-import static com.zdzimi.registration.controller.mapper.PlaceMapperTest.getPlace;
-import static com.zdzimi.registration.controller.mapper.UserMapperTest.*;
-import static com.zdzimi.registration.controller.mapper.UserMapperTest.getUser;
+import static com.zdzimi.registration.service.mapper.PlaceMapperTest.*;
+import static com.zdzimi.registration.service.mapper.PlaceMapperTest.getPlace;
+import static com.zdzimi.registration.service.mapper.UserMapperTest.*;
+import static com.zdzimi.registration.service.mapper.UserMapperTest.getUser;
 import static org.junit.jupiter.api.Assertions.*;
 
 class VisitMapperTest {

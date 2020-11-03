@@ -1,4 +1,4 @@
-package com.zdzimi.registration.controller.mapper;
+package com.zdzimi.registration.service.mapper;
 
 import com.zdzimi.registration.core.model.Institution;
 import com.zdzimi.registration.core.model.Place;
@@ -10,8 +10,8 @@ import org.modelmapper.ModelMapper;
 
 import java.util.Arrays;
 
-import static com.zdzimi.registration.controller.mapper.InstitutionMapperTest.*;
-import static com.zdzimi.registration.controller.mapper.InstitutionMapperTest.getInstitution;
+import static com.zdzimi.registration.service.mapper.InstitutionMapperTest.*;
+import static com.zdzimi.registration.service.mapper.InstitutionMapperTest.getInstitution;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PlaceMapperTest {

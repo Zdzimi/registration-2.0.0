@@ -1,6 +1,6 @@
 package com.zdzimi.registration.controller.restController;
 
-import com.zdzimi.registration.controller.mapper.InstitutionMapper;
+import com.zdzimi.registration.service.mapper.InstitutionMapper;
 import com.zdzimi.registration.core.model.Institution;
 import com.zdzimi.registration.data.entity.InstitutionEntity;
 import com.zdzimi.registration.data.repository.InstitutionRepository;

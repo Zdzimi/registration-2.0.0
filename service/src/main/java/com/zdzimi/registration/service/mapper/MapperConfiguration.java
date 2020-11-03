@@ -1,4 +1,4 @@
-package com.zdzimi.registration.controller.mapper;
+package com.zdzimi.registration.service.mapper;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;

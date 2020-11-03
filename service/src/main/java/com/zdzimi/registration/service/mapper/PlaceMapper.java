@@ -1,4 +1,4 @@
-package com.zdzimi.registration.controller.mapper;
+package com.zdzimi.registration.service.mapper;
 
 import com.zdzimi.registration.core.model.Place;
 import com.zdzimi.registration.data.entity.InstitutionEntity;
