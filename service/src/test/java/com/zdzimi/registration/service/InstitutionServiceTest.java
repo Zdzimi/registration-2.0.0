@@ -32,14 +32,14 @@ class InstitutionServiceTest {
     }
 
     @Test
-    void shouldGetInstitutionByName() {
+    void shouldGetByInstitutionName() {
         //      given
         InstitutionEntity institutionEntity = new InstitutionEntity();
         institutionEntity.setInstitutionId(INSTITUTION_ID);
         institutionEntity.setInstitutionName(INSTITUTION_NAME);
         when(institutionRepository.findByInstitutionName(INSTITUTION_NAME)).thenReturn(Optional.of(institutionEntity));
         //      when
-        Institution institution = institutionService.getInstitutionByName(INSTITUTION_NAME);
+        Institution institution = institutionService.getByInstitutionName(INSTITUTION_NAME);
         //      then
         assertEquals(INSTITUTION_ID, institution.getInstitutionId());
         assertEquals(INSTITUTION_NAME, institution.getInstitutionName());
@@ -53,7 +53,7 @@ class InstitutionServiceTest {
         when(institutionRepository.findByInstitutionName(INSTITUTION_NAME)).thenReturn(Optional.empty());
         //      when
         InstitutionNotFoundException exception = assertThrows(
-                InstitutionNotFoundException.class, () -> institutionService.getInstitutionByName(INSTITUTION_NAME)
+                InstitutionNotFoundException.class, () -> institutionService.getByInstitutionName(INSTITUTION_NAME)
         );
         //      then
         assertEquals("Could not find institution: " + INSTITUTION_NAME, exception.getMessage());

@@ -28,12 +28,12 @@ class InstitutionControllerTest {
         //      given
         Institution institution = new Institution();
         institution.setInstitutionName(INSTITUTION_NAME);
-        when(institutionService.getInstitutionByName(INSTITUTION_NAME)).thenReturn(institution);
+        when(institutionService.getByInstitutionName(INSTITUTION_NAME)).thenReturn(institution);
         //      when
         Institution result = institutionController.getInstitution(INSTITUTION_NAME);
         //      then
         assertEquals(INSTITUTION_NAME, result.getInstitutionName());
-        verify(institutionService, times(1)).getInstitutionByName(INSTITUTION_NAME);
+        verify(institutionService, times(1)).getByInstitutionName(INSTITUTION_NAME);
         verifyNoMoreInteractions(institutionService);
     }
 }

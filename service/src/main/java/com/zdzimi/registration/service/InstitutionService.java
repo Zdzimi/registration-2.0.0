@@ -20,7 +20,7 @@ public class InstitutionService {
         this.institutionMapper = institutionMapper;
     }
 
-    public Institution getInstitutionByName(String institutionName) {
+    public Institution getByInstitutionName(String institutionName) {
         InstitutionEntity institutionEntity = institutionRepository.findByInstitutionName(institutionName)
                 .orElseThrow(() -> new InstitutionNotFoundException(institutionName));
         return institutionMapper.convertToInstitution(institutionEntity);

@@ -21,6 +21,6 @@ public class InstitutionController {
 
     @GetMapping("/institution/{institutionName}")
     public Institution getInstitution(@PathVariable String institutionName) {
-        return institutionService.getInstitutionByName(institutionName);
+        return institutionService.getByInstitutionName(institutionName);
     }
 }
