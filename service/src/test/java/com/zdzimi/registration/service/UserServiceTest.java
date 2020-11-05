@@ -6,6 +6,7 @@ import com.zdzimi.registration.data.repository.UserRepository;
 import com.zdzimi.registration.service.mapper.UserMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 import org.modelmapper.ModelMapper;
 
 import java.util.Optional;
@@ -43,6 +44,24 @@ class UserServiceTest {
         assertEquals(USER_ID, result.getUserId());
         assertEquals(USERNAME, result.getUsername());
         verify(userRepository, times(1)).findByUsername(USERNAME);
+        verifyNoMoreInteractions(userRepository);
+    }
+
+    @Test
+    void shouldSave() {
+        //      given
+        User userBeforeSave = new User();
+
+        UserEntity userEntityAfterSave = new UserEntity();
+        userEntityAfterSave.setUserId(USER_ID);
+        userEntityAfterSave.setUsername(USERNAME);
+
+        when(userRepository.save(ArgumentMatchers.any(UserEntity.class))).thenReturn(userEntityAfterSave);
+        //      when
+        User result = userService.save(userBeforeSave);
+        //      then
+        assertEquals(USERNAME, result.getUsername());
+        verify(userRepository, times(1)).save(ArgumentMatchers.any(UserEntity.class));
         verifyNoMoreInteractions(userRepository);
     }
 }

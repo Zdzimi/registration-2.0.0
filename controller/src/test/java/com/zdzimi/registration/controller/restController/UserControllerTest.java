@@ -39,4 +39,21 @@ class UserControllerTest {
         verify(userService, times(1)).getByUsername(USERNAME);
         verifyNoMoreInteractions(userService);
     }
+
+    @Test
+    void shouldSaveUser() {
+        //      given
+        User userBeforeSave = new User();
+        userBeforeSave.setUsername(USERNAME);
+        User userAfterSave = new User();
+        userAfterSave.setUserId(USER_ID);
+        userAfterSave.setUsername(USERNAME);
+        when(userService.save(userBeforeSave)).thenReturn(userAfterSave);
+        //      when
+        User result = userController.createUser(userBeforeSave);
+        //      then
+        assertEquals(userAfterSave, result);
+        verify(userService, times(1)).save(userBeforeSave);
+        verifyNoMoreInteractions(userService);
+    }
 }

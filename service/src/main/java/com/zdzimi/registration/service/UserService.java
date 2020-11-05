@@ -25,4 +25,10 @@ public class UserService {
                 .orElseThrow(() -> new UserNotFoundException(username));
         return userMapper.convertToUser(userEntity);
     }
+
+    public User save(User user) {
+        UserEntity userEntity = userMapper.convertToUserEntity(user);
+        UserEntity savedUserEntity = userRepository.save(userEntity);
+        return userMapper.convertToUser(savedUserEntity);
+    }
 }
