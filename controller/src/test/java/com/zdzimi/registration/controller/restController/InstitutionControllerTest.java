@@ -1,9 +1,13 @@
 package com.zdzimi.registration.controller.restController;
 
 import com.zdzimi.registration.core.model.Institution;
+import com.zdzimi.registration.data.entity.InstitutionEntity;
 import com.zdzimi.registration.service.InstitutionService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -21,6 +25,19 @@ class InstitutionControllerTest {
         institutionService = mock(InstitutionService.class);
         initMocks(this);
         institutionController = new InstitutionController(institutionService);
+    }
+
+    @Test
+    void shouldGetInstitutions() {
+        //      given
+        Institution institution = new Institution();
+        when(institutionService.getAll()).thenReturn(Arrays.asList(institution));
+        //      when
+        List<Institution> result = institutionController.getInstitutions();
+        //      then
+        assertEquals(1, result.size());
+        verify(institutionService, times(1)).getAll();
+        verifyNoMoreInteractions(institutionService);
     }
 
     @Test

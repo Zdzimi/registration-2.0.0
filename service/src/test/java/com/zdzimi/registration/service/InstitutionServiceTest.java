@@ -9,6 +9,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,6 +31,19 @@ class InstitutionServiceTest {
         institutionRepository = mock(InstitutionRepository.class);
         initMocks(this);
         institutionService = new InstitutionService(institutionRepository, institutionMapper);
+    }
+
+    @Test
+    void shouldGetAll() {
+        //      given
+        InstitutionEntity institutionEntity = new InstitutionEntity();
+        when(institutionRepository.findAll()).thenReturn(Arrays.asList(institutionEntity));
+        //      when
+        List<Institution> result = institutionService.getAll();
+        //      then
+        assertEquals(1, result.size());
+        verify(institutionRepository, times(1)).findAll();
+        verifyNoMoreInteractions(institutionRepository);
     }
 
     @Test
