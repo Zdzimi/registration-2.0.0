@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/registration")
+@RequestMapping("/registration/{username}")
 public class InstitutionController {
 
     private InstitutionService institutionService;
@@ -21,9 +21,14 @@ public class InstitutionController {
         this.institutionService = institutionService;
     }
 
-    @GetMapping("/institution")
+    @GetMapping("/institution/all")
     public List<Institution> getInstitutions() {
         return institutionService.getAll();
+    }
+
+    @GetMapping("institution/recognized")
+    public List<Institution> getRecognizedInstitutions(@PathVariable String username) {
+        return institutionService.getRecognized(username);
     }
 
     @GetMapping("/institution/{institutionName}")

@@ -2,6 +2,7 @@ package com.zdzimi.registration.service;
 
 import com.zdzimi.registration.core.model.User;
 import com.zdzimi.registration.data.entity.UserEntity;
+import com.zdzimi.registration.data.exception.UserNotFoundException;
 import com.zdzimi.registration.data.repository.UserRepository;
 import com.zdzimi.registration.service.mapper.UserMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,6 +44,34 @@ class UserServiceTest {
         //      then
         assertEquals(USER_ID, result.getUserId());
         assertEquals(USERNAME, result.getUsername());
+        verify(userRepository, times(1)).findByUsername(USERNAME);
+        verifyNoMoreInteractions(userRepository);
+    }
+
+    @Test
+    void shouldGetUserEntityByUsername() {
+        //      given
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUsername(USERNAME);
+        when(userRepository.findByUsername(USERNAME)).thenReturn(Optional.of(userEntity));
+        //      when
+        UserEntity result = userService.getUserEntityByUsername(USERNAME);
+        //      then
+        assertEquals(USERNAME, result.getUsername());
+        verify(userRepository, times(1)).findByUsername(USERNAME);
+        verifyNoMoreInteractions(userRepository);
+    }
+
+    @Test
+    void shouldThrowUserNotFoundException() {
+        //      given
+        when(userRepository.findByUsername(USERNAME)).thenReturn(Optional.empty());
+        //      when
+        UserNotFoundException exception = assertThrows(
+                UserNotFoundException.class, () -> userService.getUserEntityByUsername(USERNAME)
+            );
+        //      then
+        assertEquals("Could not find user: " + USERNAME, exception.getMessage());
         verify(userRepository, times(1)).findByUsername(USERNAME);
         verifyNoMoreInteractions(userRepository);
     }

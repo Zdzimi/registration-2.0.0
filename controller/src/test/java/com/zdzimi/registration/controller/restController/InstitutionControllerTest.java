@@ -16,6 +16,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 class InstitutionControllerTest {
 
     private static final String INSTITUTION_NAME = "KIFF.COM";
+    private static final String USERNAME = "Janusz";
 
     private InstitutionController institutionController;
     private InstitutionService institutionService;
@@ -37,6 +38,19 @@ class InstitutionControllerTest {
         //      then
         assertEquals(1, result.size());
         verify(institutionService, times(1)).getAll();
+        verifyNoMoreInteractions(institutionService);
+    }
+
+    @Test
+    void shouldGetRecognizedInstitutions() {
+        //      given
+        Institution institution = new Institution();
+        when(institutionService.getRecognized(USERNAME)).thenReturn(Arrays.asList(institution));
+        //      when
+        List<Institution> result = institutionController.getRecognizedInstitutions(USERNAME);
+        //      then
+        assertEquals(1, result.size());
+        verify(institutionService, times(1)).getRecognized(USERNAME);
         verifyNoMoreInteractions(institutionService);
     }
 

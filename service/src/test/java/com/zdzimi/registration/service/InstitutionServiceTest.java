@@ -2,6 +2,7 @@ package com.zdzimi.registration.service;
 
 import com.zdzimi.registration.core.model.Institution;
 import com.zdzimi.registration.data.entity.InstitutionEntity;
+import com.zdzimi.registration.data.entity.UserEntity;
 import com.zdzimi.registration.data.exception.InstitutionNotFoundException;
 import com.zdzimi.registration.data.repository.InstitutionRepository;
 import com.zdzimi.registration.service.mapper.InstitutionMapper;
@@ -21,16 +22,19 @@ class InstitutionServiceTest {
 
     private static final long INSTITUTION_ID = 1;
     private static final String INSTITUTION_NAME = "SIFT.UI";
+    private static final String USERNAME = "Jan";
 
     private InstitutionService institutionService;
+    private UserService userService;
     private InstitutionRepository institutionRepository;
     private InstitutionMapper institutionMapper = new InstitutionMapper(new ModelMapper());
 
     @BeforeEach
     void setUp() {
         institutionRepository = mock(InstitutionRepository.class);
+        userService = mock(UserService.class);
         initMocks(this);
-        institutionService = new InstitutionService(institutionRepository, institutionMapper);
+        institutionService = new InstitutionService(institutionRepository, userService, institutionMapper);
     }
 
     @Test
@@ -47,6 +51,36 @@ class InstitutionServiceTest {
     }
 
     @Test
+    void shouldThrowInstitutionNotFoundException() {
+        //      given
+        when(institutionRepository.findByInstitutionName(INSTITUTION_NAME)).thenReturn(Optional.empty());
+        //      when
+        InstitutionNotFoundException exception = assertThrows(
+                InstitutionNotFoundException.class, () -> institutionService.getByInstitutionName(INSTITUTION_NAME)
+        );
+        //      then
+        assertEquals("Could not find institution: " + INSTITUTION_NAME, exception.getMessage());
+        verify(institutionRepository, times(1)).findByInstitutionName(INSTITUTION_NAME);
+        verifyNoMoreInteractions(institutionRepository);
+    }
+
+    @Test
+    void shouldGetRecognized() {
+        //      given
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUsername(USERNAME);
+        InstitutionEntity institutionEntity = new InstitutionEntity();
+        when(userService.getUserEntityByUsername(USERNAME)).thenReturn(userEntity);
+        when(institutionRepository.findByUsers(userEntity)).thenReturn(Arrays.asList(institutionEntity));
+        //      when
+        List<Institution> result = institutionService.getRecognized(USERNAME);
+        //      then
+        assertEquals(1, result.size());
+        verify(institutionRepository, times(1)).findByUsers(userEntity);
+        verifyNoMoreInteractions(institutionRepository);
+    }
+
+    @Test
     void shouldGetByInstitutionName() {
         //      given
         InstitutionEntity institutionEntity = new InstitutionEntity();
@@ -58,20 +92,6 @@ class InstitutionServiceTest {
         //      then
         assertEquals(INSTITUTION_ID, institution.getInstitutionId());
         assertEquals(INSTITUTION_NAME, institution.getInstitutionName());
-        verify(institutionRepository, times(1)).findByInstitutionName(INSTITUTION_NAME);
-        verifyNoMoreInteractions(institutionRepository);
-    }
-
-    @Test
-    void shouldThrowInstitutionNotFoundException() {
-        //      given
-        when(institutionRepository.findByInstitutionName(INSTITUTION_NAME)).thenReturn(Optional.empty());
-        //      when
-        InstitutionNotFoundException exception = assertThrows(
-                InstitutionNotFoundException.class, () -> institutionService.getByInstitutionName(INSTITUTION_NAME)
-        );
-        //      then
-        assertEquals("Could not find institution: " + INSTITUTION_NAME, exception.getMessage());
         verify(institutionRepository, times(1)).findByInstitutionName(INSTITUTION_NAME);
         verifyNoMoreInteractions(institutionRepository);
     }

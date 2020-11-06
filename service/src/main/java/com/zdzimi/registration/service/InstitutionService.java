@@ -2,6 +2,7 @@ package com.zdzimi.registration.service;
 
 import com.zdzimi.registration.core.model.Institution;
 import com.zdzimi.registration.data.entity.InstitutionEntity;
+import com.zdzimi.registration.data.entity.UserEntity;
 import com.zdzimi.registration.data.exception.InstitutionNotFoundException;
 import com.zdzimi.registration.data.repository.InstitutionRepository;
 import com.zdzimi.registration.service.mapper.InstitutionMapper;
@@ -15,17 +16,26 @@ import java.util.stream.Collectors;
 public class InstitutionService {
 
     private InstitutionRepository institutionRepository;
+    private UserService userService;
     private InstitutionMapper institutionMapper;
 
     @Autowired
-    public InstitutionService(InstitutionRepository institutionRepository, InstitutionMapper institutionMapper) {
+    public InstitutionService(InstitutionRepository institutionRepository, UserService userService, InstitutionMapper institutionMapper) {
         this.institutionRepository = institutionRepository;
+        this.userService = userService;
         this.institutionMapper = institutionMapper;
     }
 
     public List<Institution> getAll() {
         List<InstitutionEntity> all = institutionRepository.findAll();
         return all.stream()
+                .map(institutionMapper::convertToInstitution)
+                .collect(Collectors.toList());
+    }
+
+    public List<Institution> getRecognized(String username) {
+        UserEntity userEntity = userService.getUserEntityByUsername(username);
+        return institutionRepository.findByUsers(userEntity).stream()
                 .map(institutionMapper::convertToInstitution)
                 .collect(Collectors.toList());
     }

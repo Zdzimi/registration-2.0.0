@@ -21,9 +21,13 @@ public class UserService {
     }
 
     public User getByUsername(String username) {
-        UserEntity userEntity = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException(username));
+        UserEntity userEntity = getUserEntityByUsername(username);
         return userMapper.convertToUser(userEntity);
+    }
+
+    public UserEntity getUserEntityByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException(username));
     }
 
     public User save(User user) {
