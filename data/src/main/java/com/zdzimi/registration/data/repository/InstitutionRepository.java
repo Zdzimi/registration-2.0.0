@@ -14,4 +14,8 @@ public interface InstitutionRepository extends JpaRepository<InstitutionEntity, 
     Optional<InstitutionEntity> findByInstitutionName(String institutionName);
 
     List<InstitutionEntity> findByUsers(UserEntity userEntity);
+
+    List<InstitutionEntity> findByRepresentatives(UserEntity userEntity);
+
+    Optional<InstitutionEntity> findByInstitutionNameAndRepresentatives(String institutionName, UserEntity userEntity);
 }

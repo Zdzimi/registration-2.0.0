@@ -49,4 +49,18 @@ public class InstitutionService {
         return institutionRepository.findByInstitutionName(institutionName)
                     .orElseThrow(() -> new InstitutionNotFoundException(institutionName));
     }
+
+    public List<Institution> getWorkPlaces(String username) {
+        UserEntity userEntity = userService.getUserEntityByUsername(username);
+        return institutionRepository.findByRepresentatives(userEntity).stream()
+                .map(institutionMapper::convertToInstitution)
+                .collect(Collectors.toList());
+    }
+
+    public Institution getWorkPlace(String username, String institutionName) {
+        UserEntity userEntity = userService.getUserEntityByUsername(username);
+        InstitutionEntity institutionEntity = institutionRepository.findByInstitutionNameAndRepresentatives(institutionName, userEntity)
+                .orElseThrow(() -> new InstitutionNotFoundException(username, institutionName));
+        return institutionMapper.convertToInstitution(institutionEntity);
+    }
 }
