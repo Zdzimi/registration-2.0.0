@@ -1,6 +1,7 @@
 package com.zdzimi.registration.service;
 
 import com.zdzimi.registration.core.model.User;
+import com.zdzimi.registration.data.entity.InstitutionEntity;
 import com.zdzimi.registration.data.entity.UserEntity;
 import com.zdzimi.registration.data.exception.UserNotFoundException;
 import com.zdzimi.registration.data.repository.UserRepository;
@@ -10,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.modelmapper.ModelMapper;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,16 +23,19 @@ class UserServiceTest {
 
     private static final long USER_ID = 101;
     private static final String USERNAME = "MICHAILTALL";
+    private static final String INSTITUTION_NAME = "chocolate factory";
 
     private UserService userService;
     private UserRepository userRepository;
+    private InstitutionService institutionService;
     private UserMapper userMapper = new UserMapper(new ModelMapper());
 
     @BeforeEach
     void setUp() {
         userRepository = mock(UserRepository.class);
+        institutionService = mock(InstitutionService.class);
         initMocks(this);
-        userService = new UserService(userRepository, userMapper);
+        userService = new UserService(userRepository, institutionService, userMapper);
     }
 
     @Test
@@ -91,6 +97,62 @@ class UserServiceTest {
         //      then
         assertEquals(USERNAME, result.getUsername());
         verify(userRepository, times(1)).save(ArgumentMatchers.any(UserEntity.class));
+        verifyNoMoreInteractions(userRepository);
+    }
+
+    @Test
+    void shouldGetByWorkPlaces() {
+        //      given
+        InstitutionEntity institutionEntity = new InstitutionEntity();
+        institutionEntity.setInstitutionName(INSTITUTION_NAME);
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUsername(USERNAME);
+        when(institutionService.getInstitutionEntityByInstitutionName(INSTITUTION_NAME)).thenReturn(institutionEntity);
+        when(userRepository.findByWorkPlaces(institutionEntity)).thenReturn(Arrays.asList(userEntity));
+        //      when
+        List<User> result = userService.getByWorkPlaces(INSTITUTION_NAME);
+        //      then
+        assertEquals(1, result.size());
+        assertEquals(USERNAME, result.get(0).getUsername());
+        verify(institutionService, times(1)).getInstitutionEntityByInstitutionName(INSTITUTION_NAME);
+        verifyNoMoreInteractions(institutionService);
+        verify(userRepository, times(1)).findByWorkPlaces(institutionEntity);
+        verifyNoMoreInteractions(userRepository);
+
+    }
+
+    @Test
+    void shouldGetByUsernameAndWorkPlaces() {
+        //      given
+        InstitutionEntity institutionEntity = new InstitutionEntity();
+        institutionEntity.setInstitutionName(INSTITUTION_NAME);
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUsername(USERNAME);
+        when(institutionService.getInstitutionEntityByInstitutionName(INSTITUTION_NAME)).thenReturn(institutionEntity);
+        when(userRepository.findByUsernameAndWorkPlaces(USERNAME, institutionEntity)).thenReturn(Optional.of(userEntity));
+        //      when
+        User result = userService.getByUsernameAndWorkPlaces(USERNAME, INSTITUTION_NAME);
+        //      then
+        assertEquals(USERNAME, result.getUsername());
+        verify(institutionService, times(1)).getInstitutionEntityByInstitutionName(INSTITUTION_NAME);
+        verifyNoMoreInteractions(institutionService);
+        verify(userRepository, times(1)).findByUsernameAndWorkPlaces(USERNAME, institutionEntity);
+        verifyNoMoreInteractions(userRepository);
+    }
+
+    @Test
+    void shouldThrowUserNotFoundException_NotFoundByUsernameAndWorkPlaces() {
+        //      given
+        InstitutionEntity institutionEntity = new InstitutionEntity();
+        when(institutionService.getInstitutionEntityByInstitutionName(INSTITUTION_NAME)).thenReturn(institutionEntity);
+        when(userRepository.findByUsernameAndWorkPlaces(USERNAME, institutionEntity)).thenReturn(Optional.empty());
+        //      when
+        UserNotFoundException exception = assertThrows(
+                UserNotFoundException.class, () -> userService.getByUsernameAndWorkPlaces(USERNAME, INSTITUTION_NAME)
+        );
+        //      then
+        assertEquals("Could not find representative: " + USERNAME + " in " + INSTITUTION_NAME, exception.getMessage());
+        verify(userRepository, times(1)).findByUsernameAndWorkPlaces(USERNAME, institutionEntity);
         verifyNoMoreInteractions(userRepository);
     }
 }

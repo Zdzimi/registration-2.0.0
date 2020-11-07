@@ -41,8 +41,12 @@ public class InstitutionService {
     }
 
     public Institution getByInstitutionName(String institutionName) {
-        InstitutionEntity institutionEntity = institutionRepository.findByInstitutionName(institutionName)
-                .orElseThrow(() -> new InstitutionNotFoundException(institutionName));
+        InstitutionEntity institutionEntity = getInstitutionEntityByInstitutionName(institutionName);
         return institutionMapper.convertToInstitution(institutionEntity);
+    }
+
+    public InstitutionEntity getInstitutionEntityByInstitutionName(String institutionName) {
+        return institutionRepository.findByInstitutionName(institutionName)
+                    .orElseThrow(() -> new InstitutionNotFoundException(institutionName));
     }
 }
