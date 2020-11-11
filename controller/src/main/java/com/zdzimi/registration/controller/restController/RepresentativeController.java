@@ -1,6 +1,8 @@
 package com.zdzimi.registration.controller.restController;
 
 import com.zdzimi.registration.core.model.User;
+import com.zdzimi.registration.data.entity.InstitutionEntity;
+import com.zdzimi.registration.service.InstitutionService;
 import com.zdzimi.registration.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,21 +17,25 @@ import java.util.List;
 public class RepresentativeController {
 
     private UserService userService;
+    private InstitutionService institutionService;
 
     @Autowired
-    public RepresentativeController(UserService userService) {
+    public RepresentativeController(UserService userService, InstitutionService institutionService) {
         this.userService = userService;
+        this.institutionService = institutionService;
     }
 
     @GetMapping
     public List<User> getRepresentatives (@PathVariable String username, @PathVariable String institutionName) {
-        return userService.getByWorkPlaces(institutionName);
+        InstitutionEntity institutionEntity = institutionService.getInstitutionEntityByInstitutionName(institutionName);
+        return userService.getByWorkPlaces(institutionEntity);
     }
 
     @GetMapping("/{representativeName}")
     public User getRepresentative(@PathVariable String username,
                                   @PathVariable String institutionName,
                                   @PathVariable String representativeName) {
-        return userService.getByUsernameAndWorkPlaces(representativeName, institutionName);
+        InstitutionEntity institutionEntity = institutionService.getInstitutionEntityByInstitutionName(institutionName);
+        return userService.getByUsernameAndWorkPlaces(representativeName, institutionEntity);
     }
 }

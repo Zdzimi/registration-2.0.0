@@ -16,13 +16,11 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private UserRepository userRepository;
-    private InstitutionService institutionService;
     private UserMapper userMapper;
 
     @Autowired
-    public UserService(UserRepository userRepository, InstitutionService institutionService, UserMapper userMapper) {
+    public UserService(UserRepository userRepository, UserMapper userMapper) {
         this.userRepository = userRepository;
-        this.institutionService = institutionService;
         this.userMapper = userMapper;
     }
 
@@ -42,17 +40,15 @@ public class UserService {
         return userMapper.convertToUser(savedUserEntity);
     }
 
-    public List<User> getByWorkPlaces(String institutionName) {
-        InstitutionEntity institutionEntity = institutionService.getInstitutionEntityByInstitutionName(institutionName);
+    public List<User> getByWorkPlaces(InstitutionEntity institutionEntity) {
         return userRepository.findByWorkPlaces(institutionEntity).stream()
                 .map(userMapper::convertToUser)
                 .collect(Collectors.toList());
     }
 
-    public User getByUsernameAndWorkPlaces(String representativeName, String institutionName) {
-        InstitutionEntity institutionEntity = institutionService.getInstitutionEntityByInstitutionName(institutionName);
+    public User getByUsernameAndWorkPlaces(String representativeName, InstitutionEntity institutionEntity) {
         UserEntity userEntity = userRepository.findByUsernameAndWorkPlaces(representativeName, institutionEntity)
-                .orElseThrow(() -> new UserNotFoundException(representativeName, institutionName));
+                .orElseThrow(() -> new UserNotFoundException(representativeName, institutionEntity.getInstitutionName()));
         return userMapper.convertToUser(userEntity);
     }
 }

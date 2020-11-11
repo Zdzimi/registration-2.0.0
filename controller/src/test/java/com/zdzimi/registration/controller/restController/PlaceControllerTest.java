@@ -1,6 +1,8 @@
 package com.zdzimi.registration.controller.restController;
 
 import com.zdzimi.registration.core.model.Place;
+import com.zdzimi.registration.data.entity.InstitutionEntity;
+import com.zdzimi.registration.service.InstitutionService;
 import com.zdzimi.registration.service.PlaceService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,50 +22,64 @@ class PlaceControllerTest {
 
     private PlaceController placeController;
     private PlaceService placeService;
+    private InstitutionService institutionService;
 
     @BeforeEach
     void setUp() {
         placeService = mock(PlaceService.class);
+        institutionService = mock(InstitutionService.class);
         initMocks(this);
-        placeController = new PlaceController(placeService);
+        placeController = new PlaceController(placeService, institutionService);
     }
 
     @Test
     void shouldGetPlaces() {
         //      given
+        InstitutionEntity institutionEntity = new InstitutionEntity();
         Place place = new Place();
-        when(placeService.getPlaces(INSTITUTION_NAME)).thenReturn(Arrays.asList(place));
+        when(institutionService.getInstitutionEntityByInstitutionName(INSTITUTION_NAME)).thenReturn(institutionEntity);
+        when(placeService.getPlaces(institutionEntity)).thenReturn(Arrays.asList(place));
         //      when
         List<Place> result = placeController.getPlaces(USERNAME, INSTITUTION_NAME);
         //      then
         assertEquals(1, result.size());
-        verify(placeService, times(1)).getPlaces(INSTITUTION_NAME);
+        verify(institutionService, times(1)).getInstitutionEntityByInstitutionName(INSTITUTION_NAME);
+        verify(placeService, times(1)).getPlaces(institutionEntity);
+        verifyNoMoreInteractions(institutionService);
         verifyNoMoreInteractions(placeService);
     }
 
     @Test
     void shouldAddNewPlace() {
         //      given
+        InstitutionEntity institutionEntity = new InstitutionEntity();
         Place place = new Place();
-        when(placeService.addNewPlace(INSTITUTION_NAME, place)).thenReturn(place);
+        when(institutionService.getInstitutionEntityByInstitutionName(INSTITUTION_NAME)).thenReturn(institutionEntity);
+        when(placeService.addNewPlace(institutionEntity, place)).thenReturn(place);
         //      when
-        Place result = placeController.addNewPlace(USERNAME, INSTITUTION_NAME, place);
+        Place result = placeController.addNewPlace(place, USERNAME, INSTITUTION_NAME);
         //      then
         assertEquals(place, result);
-        verify(placeService, times(1)).addNewPlace(INSTITUTION_NAME, place);
+        verify(institutionService, times(1)).getInstitutionEntityByInstitutionName(INSTITUTION_NAME);
+        verify(placeService, times(1)).addNewPlace(institutionEntity, place);
+        verifyNoMoreInteractions(institutionService);
         verifyNoMoreInteractions(placeService);
     }
 
     @Test
     void shouldGetPlace() {
         //      given
+        InstitutionEntity institutionEntity = new InstitutionEntity();
         Place place = new Place();
-        when(placeService.getPlace(INSTITUTION_NAME, PLACE_NAME)).thenReturn(place);
+        when(institutionService.getInstitutionEntityByInstitutionName(INSTITUTION_NAME)).thenReturn(institutionEntity);
+        when(placeService.getPlace(institutionEntity, PLACE_NAME)).thenReturn(place);
         //      when
         Place result = placeController.getPlace(USERNAME, INSTITUTION_NAME, PLACE_NAME);
         //      then
         assertEquals(place, result);
-        verify(placeService, times(1)).getPlace(INSTITUTION_NAME, PLACE_NAME);
+        verify(institutionService, times(1)).getInstitutionEntityByInstitutionName(INSTITUTION_NAME);
+        verify(placeService, times(1)).getPlace(institutionEntity, PLACE_NAME);
+        verifyNoMoreInteractions(institutionService);
         verifyNoMoreInteractions(placeService);
     }
 }

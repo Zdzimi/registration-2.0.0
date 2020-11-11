@@ -1,8 +1,9 @@
 package com.zdzimi.registration.controller.restController;
 
 import com.zdzimi.registration.core.model.Institution;
-import com.zdzimi.registration.data.entity.InstitutionEntity;
+import com.zdzimi.registration.data.entity.UserEntity;
 import com.zdzimi.registration.service.InstitutionService;
+import com.zdzimi.registration.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -20,12 +21,14 @@ class InstitutionControllerTest {
 
     private InstitutionController institutionController;
     private InstitutionService institutionService;
+    private UserService userService;
 
     @BeforeEach
     void setUp() {
         institutionService = mock(InstitutionService.class);
+        userService = mock(UserService.class);
         initMocks(this);
-        institutionController = new InstitutionController(institutionService);
+        institutionController = new InstitutionController(institutionService, userService);
     }
 
     @Test
@@ -44,13 +47,17 @@ class InstitutionControllerTest {
     @Test
     void shouldGetRecognizedInstitutions() {
         //      given
+        UserEntity userEntity = new UserEntity();
         Institution institution = new Institution();
-        when(institutionService.getRecognized(USERNAME)).thenReturn(Arrays.asList(institution));
+        when(userService.getUserEntityByUsername(USERNAME)).thenReturn(userEntity);
+        when(institutionService.getRecognized(userEntity)).thenReturn(Arrays.asList(institution));
         //      when
         List<Institution> result = institutionController.getRecognizedInstitutions(USERNAME);
         //      then
         assertEquals(1, result.size());
-        verify(institutionService, times(1)).getRecognized(USERNAME);
+        verify(userService, times(1)).getUserEntityByUsername(USERNAME);
+        verify(institutionService, times(1)).getRecognized(userEntity);
+        verifyNoMoreInteractions(userService);
         verifyNoMoreInteractions(institutionService);
     }
 

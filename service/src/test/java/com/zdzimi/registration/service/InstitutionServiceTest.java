@@ -25,16 +25,14 @@ class InstitutionServiceTest {
     private static final String USERNAME = "Jan";
 
     private InstitutionService institutionService;
-    private UserService userService;
     private InstitutionRepository institutionRepository;
     private InstitutionMapper institutionMapper = new InstitutionMapper(new ModelMapper());
 
     @BeforeEach
     void setUp() {
         institutionRepository = mock(InstitutionRepository.class);
-        userService = mock(UserService.class);
         initMocks(this);
-        institutionService = new InstitutionService(institutionRepository, userService, institutionMapper);
+        institutionService = new InstitutionService(institutionRepository, institutionMapper);
     }
 
     @Test
@@ -51,29 +49,13 @@ class InstitutionServiceTest {
     }
 
     @Test
-    void shouldThrowInstitutionNotFoundException() {
-        //      given
-        when(institutionRepository.findByInstitutionName(INSTITUTION_NAME)).thenReturn(Optional.empty());
-        //      when
-        InstitutionNotFoundException exception = assertThrows(
-                InstitutionNotFoundException.class, () -> institutionService.getByInstitutionName(INSTITUTION_NAME)
-        );
-        //      then
-        assertEquals("Could not find institution: " + INSTITUTION_NAME, exception.getMessage());
-        verify(institutionRepository, times(1)).findByInstitutionName(INSTITUTION_NAME);
-        verifyNoMoreInteractions(institutionRepository);
-    }
-
-    @Test
     void shouldGetRecognized() {
         //      given
         UserEntity userEntity = new UserEntity();
-        userEntity.setUsername(USERNAME);
         InstitutionEntity institutionEntity = new InstitutionEntity();
-        when(userService.getUserEntityByUsername(USERNAME)).thenReturn(userEntity);
         when(institutionRepository.findByUsers(userEntity)).thenReturn(Arrays.asList(institutionEntity));
         //      when
-        List<Institution> result = institutionService.getRecognized(USERNAME);
+        List<Institution> result = institutionService.getRecognized(userEntity);
         //      then
         assertEquals(1, result.size());
         verify(institutionRepository, times(1)).findByUsers(userEntity);
@@ -97,22 +79,27 @@ class InstitutionServiceTest {
     }
 
     @Test
-    void shouldGetWorkPlaces() {
+    void shouldGetInstitutionEntityByInstitutionName() {
         //      given
-        UserEntity userEntity = new UserEntity();
-        userEntity.setUsername(USERNAME);
         InstitutionEntity institutionEntity = new InstitutionEntity();
-        institutionEntity.setInstitutionName(INSTITUTION_NAME);
-        when(userService.getUserEntityByUsername(USERNAME)).thenReturn(userEntity);
-        when(institutionRepository.findByRepresentatives(userEntity)).thenReturn(Arrays.asList(institutionEntity));
+        when(institutionRepository.findByInstitutionName(INSTITUTION_NAME)).thenReturn(Optional.of(institutionEntity));
         //      when
-        List<Institution> result = institutionService.getWorkPlaces(USERNAME);
+        InstitutionEntity result = institutionService.getInstitutionEntityByInstitutionName(INSTITUTION_NAME);
         //      then
-        assertEquals(1, result.size());
-        assertEquals(INSTITUTION_NAME, result.get(0).getInstitutionName());
-        verify(userService, times(1)).getUserEntityByUsername(USERNAME);
-        verify(institutionRepository, times(1)).findByRepresentatives(userEntity);
-        verifyNoMoreInteractions(userService);
+        assertEquals(institutionEntity, result);
+    }
+
+    @Test
+    void shouldThrowInstitutionNotFoundException() {
+        //      given
+        when(institutionRepository.findByInstitutionName(INSTITUTION_NAME)).thenReturn(Optional.empty());
+        //      when
+        InstitutionNotFoundException exception = assertThrows(
+                InstitutionNotFoundException.class, () -> institutionService.getByInstitutionName(INSTITUTION_NAME)
+        );
+        //      then
+        assertEquals("Could not find institution: " + INSTITUTION_NAME, exception.getMessage());
+        verify(institutionRepository, times(1)).findByInstitutionName(INSTITUTION_NAME);
         verifyNoMoreInteractions(institutionRepository);
     }
 
@@ -122,15 +109,12 @@ class InstitutionServiceTest {
         UserEntity userEntity = new UserEntity();
         InstitutionEntity institutionEntity = new InstitutionEntity();
         institutionEntity.setInstitutionName(INSTITUTION_NAME);
-        when(userService.getUserEntityByUsername(USERNAME)).thenReturn(userEntity);
         when(institutionRepository.findByInstitutionNameAndRepresentatives(INSTITUTION_NAME, userEntity)).thenReturn(Optional.of(institutionEntity));
         //      when
-        Institution result = institutionService.getWorkPlace(USERNAME, INSTITUTION_NAME);
+        Institution result = institutionService.getWorkPlace(userEntity, INSTITUTION_NAME);
         //      then
         assertEquals(INSTITUTION_NAME, result.getInstitutionName());
-        verify(userService, times(1)).getUserEntityByUsername(USERNAME);
         verify(institutionRepository, times(1)).findByInstitutionNameAndRepresentatives(INSTITUTION_NAME, userEntity);
-        verifyNoMoreInteractions(userService);
         verifyNoMoreInteractions(institutionRepository);
     }
 
@@ -138,17 +122,32 @@ class InstitutionServiceTest {
     void shouldThrowInstitutionNotFoundException_whenFindByInstitutionNameAndRepresentatives() {
         //      given
         UserEntity userEntity = new UserEntity();
-        when(userService.getUserEntityByUsername(USERNAME)).thenReturn(userEntity);
+        userEntity.setUsername(USERNAME);
         when(institutionRepository.findByInstitutionNameAndRepresentatives(INSTITUTION_NAME, userEntity)).thenReturn(Optional.empty());
         //      when
         InstitutionNotFoundException exception = assertThrows(
-                InstitutionNotFoundException.class, () -> institutionService.getWorkPlace(USERNAME, INSTITUTION_NAME)
+                InstitutionNotFoundException.class, () -> institutionService.getWorkPlace(userEntity, INSTITUTION_NAME)
         );
         //      then
         assertEquals("Could not find institution: " + INSTITUTION_NAME + " where " + USERNAME + " is representative", exception.getMessage());
-        verify(userService, times(1)).getUserEntityByUsername(USERNAME);
         verify(institutionRepository, times(1)).findByInstitutionNameAndRepresentatives(INSTITUTION_NAME, userEntity);
-        verifyNoMoreInteractions(userService);
+        verifyNoMoreInteractions(institutionRepository);
+    }
+
+    @Test
+    void shouldGetWorkPlaces() {
+        //      given
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUsername(USERNAME);
+        InstitutionEntity institutionEntity = new InstitutionEntity();
+        institutionEntity.setInstitutionName(INSTITUTION_NAME);
+        when(institutionRepository.findByRepresentatives(userEntity)).thenReturn(Arrays.asList(institutionEntity));
+        //      when
+        List<Institution> result = institutionService.getWorkPlaces(userEntity);
+        //      then
+        assertEquals(1, result.size());
+        assertEquals(INSTITUTION_NAME, result.get(0).getInstitutionName());
+        verify(institutionRepository, times(1)).findByRepresentatives(userEntity);
         verifyNoMoreInteractions(institutionRepository);
     }
 }

@@ -16,13 +16,11 @@ import java.util.stream.Collectors;
 public class InstitutionService {
 
     private InstitutionRepository institutionRepository;
-    private UserService userService;
     private InstitutionMapper institutionMapper;
 
     @Autowired
-    public InstitutionService(InstitutionRepository institutionRepository, UserService userService, InstitutionMapper institutionMapper) {
+    public InstitutionService(InstitutionRepository institutionRepository, InstitutionMapper institutionMapper) {
         this.institutionRepository = institutionRepository;
-        this.userService = userService;
         this.institutionMapper = institutionMapper;
     }
 
@@ -33,8 +31,7 @@ public class InstitutionService {
                 .collect(Collectors.toList());
     }
 
-    public List<Institution> getRecognized(String username) {
-        UserEntity userEntity = userService.getUserEntityByUsername(username);
+    public List<Institution> getRecognized(UserEntity userEntity) {
         return institutionRepository.findByUsers(userEntity).stream()
                 .map(institutionMapper::convertToInstitution)
                 .collect(Collectors.toList());
@@ -47,20 +44,18 @@ public class InstitutionService {
 
     public InstitutionEntity getInstitutionEntityByInstitutionName(String institutionName) {
         return institutionRepository.findByInstitutionName(institutionName)
-                    .orElseThrow(() -> new InstitutionNotFoundException(institutionName));
+                .orElseThrow(() -> new InstitutionNotFoundException(institutionName));
     }
 
-    public List<Institution> getWorkPlaces(String username) {
-        UserEntity userEntity = userService.getUserEntityByUsername(username);
+    public Institution getWorkPlace(UserEntity userEntity, String institutionName) {
+        InstitutionEntity institutionEntity = institutionRepository.findByInstitutionNameAndRepresentatives(institutionName, userEntity)
+                .orElseThrow(() -> new InstitutionNotFoundException(userEntity.getUsername(), institutionName));
+        return institutionMapper.convertToInstitution(institutionEntity);
+    }
+
+    public List<Institution> getWorkPlaces(UserEntity userEntity) {
         return institutionRepository.findByRepresentatives(userEntity).stream()
                 .map(institutionMapper::convertToInstitution)
                 .collect(Collectors.toList());
-    }
-
-    public Institution getWorkPlace(String username, String institutionName) {
-        UserEntity userEntity = userService.getUserEntityByUsername(username);
-        InstitutionEntity institutionEntity = institutionRepository.findByInstitutionNameAndRepresentatives(institutionName, userEntity)
-                .orElseThrow(() -> new InstitutionNotFoundException(username, institutionName));
-        return institutionMapper.convertToInstitution(institutionEntity);
     }
 }

@@ -1,6 +1,5 @@
 package com.zdzimi.registration.service;
 
-import com.zdzimi.registration.core.model.Institution;
 import com.zdzimi.registration.core.model.Place;
 import com.zdzimi.registration.data.entity.InstitutionEntity;
 import com.zdzimi.registration.data.entity.PlaceEntity;
@@ -27,15 +26,13 @@ class PlaceServiceTest {
 
     private PlaceService placeService;
     private PlaceRepository placeRepository;
-    private InstitutionService institutionService;
     private PlaceMapper placeMapper = new PlaceMapper(new ModelMapper());
 
     @BeforeEach
     void setUp() {
         placeRepository = mock(PlaceRepository.class);
-        institutionService = mock(InstitutionService.class);
         initMocks(this);
-        placeService = new PlaceService(placeRepository, institutionService, placeMapper);
+        placeService = new PlaceService(placeRepository, placeMapper);
     }
 
     @Test
@@ -43,35 +40,29 @@ class PlaceServiceTest {
         //      given
         InstitutionEntity institutionEntity = new InstitutionEntity();
         PlaceEntity placeEntity = new PlaceEntity();
-        when(institutionService.getInstitutionEntityByInstitutionName(INSTITUTION_NAME)).thenReturn(institutionEntity);
         when(placeRepository.findByInstitution(institutionEntity)).thenReturn(Arrays.asList(placeEntity));
         //      when
-        List<Place> result = placeService.getPlaces(INSTITUTION_NAME);
+        List<Place> result = placeService.getPlaces(institutionEntity);
         //      then
-        verify(institutionService, times(1)).getInstitutionEntityByInstitutionName(INSTITUTION_NAME);
         verify(placeRepository, times(1)).findByInstitution(institutionEntity);
-        verifyNoMoreInteractions(institutionService);
         verifyNoMoreInteractions(placeRepository);
     }
 
     @Test
     void shouldAddNewPlace() {
         //      given
-        Institution institution = new Institution();
-        institution.setInstitutionName(INSTITUTION_NAME);
+        InstitutionEntity institutionEntity = new InstitutionEntity();
+        institutionEntity.setInstitutionName(INSTITUTION_NAME);
 
         Place placeBeforeSave = new Place();
         placeBeforeSave.setPlaceName(PLACE_NAME);
 
         PlaceEntity placeEntityAfterSave = new PlaceEntity();
-        when(institutionService.getByInstitutionName(INSTITUTION_NAME)).thenReturn(institution);
         when(placeRepository.save(ArgumentMatchers.any(PlaceEntity.class))).thenReturn(placeEntityAfterSave);
         //      when
-        Place result = placeService.addNewPlace(INSTITUTION_NAME, placeBeforeSave);
+        Place result = placeService.addNewPlace(institutionEntity, placeBeforeSave);
         //      then
-        verify(institutionService, times(1)).getByInstitutionName(INSTITUTION_NAME);
         verify(placeRepository, times(1)).save(ArgumentMatchers.any(PlaceEntity.class));
-        verifyNoMoreInteractions(institutionService);
         verifyNoMoreInteractions(placeRepository);
     }
 
@@ -80,14 +71,11 @@ class PlaceServiceTest {
         //      given
         InstitutionEntity institutionEntity = new InstitutionEntity();
         PlaceEntity placeEntity = new PlaceEntity();
-        when(institutionService.getInstitutionEntityByInstitutionName(INSTITUTION_NAME)).thenReturn(institutionEntity);
         when(placeRepository.findByInstitutionAndPlaceName(institutionEntity, PLACE_NAME)).thenReturn(Optional.of(placeEntity));
         //      when
-        Place result = placeService.getPlace(INSTITUTION_NAME, PLACE_NAME);
+        Place result = placeService.getPlace(institutionEntity, PLACE_NAME);
         //      then
-        verify(institutionService, times(1)).getInstitutionEntityByInstitutionName(INSTITUTION_NAME);
         verify(placeRepository, times(1)).findByInstitutionAndPlaceName(institutionEntity, PLACE_NAME);
-        verifyNoMoreInteractions(institutionService);
         verifyNoMoreInteractions(placeRepository);
     }
 
@@ -95,17 +83,15 @@ class PlaceServiceTest {
     void shouldThrowPlaceNotFoundException() {
         //      given
         InstitutionEntity institutionEntity = new InstitutionEntity();
-        when(institutionService.getInstitutionEntityByInstitutionName(INSTITUTION_NAME)).thenReturn(institutionEntity);
+        institutionEntity.setInstitutionName(INSTITUTION_NAME);
         when(placeRepository.findByInstitutionAndPlaceName(institutionEntity, PLACE_NAME)).thenReturn(Optional.empty());
         //      when
         PlaceNotFoundException exception = assertThrows(
-                PlaceNotFoundException.class, () -> placeService.getPlace(INSTITUTION_NAME, PLACE_NAME)
+                PlaceNotFoundException.class, () -> placeService.getPlace(institutionEntity, PLACE_NAME)
         );
         //      then
         assertEquals("Could not find result for institution: " + INSTITUTION_NAME + ", and place: " + PLACE_NAME, exception.getMessage());
-        verify(institutionService, times(1)).getInstitutionEntityByInstitutionName(INSTITUTION_NAME);
         verify(placeRepository, times(1)).findByInstitutionAndPlaceName(institutionEntity, PLACE_NAME);
-        verifyNoMoreInteractions(institutionService);
         verifyNoMoreInteractions(placeRepository);
     }
 }

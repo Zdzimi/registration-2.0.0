@@ -1,7 +1,9 @@
 package com.zdzimi.registration.controller.restController;
 
+import com.zdzimi.registration.data.entity.UserEntity;
 import com.zdzimi.registration.service.InstitutionService;
 import com.zdzimi.registration.core.model.Institution;
+import com.zdzimi.registration.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,10 +17,12 @@ import java.util.List;
 public class InstitutionController {
 
     private InstitutionService institutionService;
+    private UserService userService;
 
     @Autowired
-    public InstitutionController(InstitutionService institutionService) {
+    public InstitutionController(InstitutionService institutionService, UserService userService) {
         this.institutionService = institutionService;
+        this.userService = userService;
     }
 
     @GetMapping("/all")
@@ -28,7 +32,8 @@ public class InstitutionController {
 
     @GetMapping("/recognized")
     public List<Institution> getRecognizedInstitutions(@PathVariable String username) {
-        return institutionService.getRecognized(username);
+        UserEntity userEntity = userService.getUserEntityByUsername(username);
+        return institutionService.getRecognized(userEntity);
     }
 
     @GetMapping("/{institutionName}")

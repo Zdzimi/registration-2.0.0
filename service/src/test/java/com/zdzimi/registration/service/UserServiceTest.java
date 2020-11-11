@@ -27,15 +27,13 @@ class UserServiceTest {
 
     private UserService userService;
     private UserRepository userRepository;
-    private InstitutionService institutionService;
     private UserMapper userMapper = new UserMapper(new ModelMapper());
 
     @BeforeEach
     void setUp() {
         userRepository = mock(UserRepository.class);
-        institutionService = mock(InstitutionService.class);
         initMocks(this);
-        userService = new UserService(userRepository, institutionService, userMapper);
+        userService = new UserService(userRepository, userMapper);
     }
 
     @Test
@@ -107,15 +105,12 @@ class UserServiceTest {
         institutionEntity.setInstitutionName(INSTITUTION_NAME);
         UserEntity userEntity = new UserEntity();
         userEntity.setUsername(USERNAME);
-        when(institutionService.getInstitutionEntityByInstitutionName(INSTITUTION_NAME)).thenReturn(institutionEntity);
         when(userRepository.findByWorkPlaces(institutionEntity)).thenReturn(Arrays.asList(userEntity));
         //      when
-        List<User> result = userService.getByWorkPlaces(INSTITUTION_NAME);
+        List<User> result = userService.getByWorkPlaces(institutionEntity);
         //      then
         assertEquals(1, result.size());
         assertEquals(USERNAME, result.get(0).getUsername());
-        verify(institutionService, times(1)).getInstitutionEntityByInstitutionName(INSTITUTION_NAME);
-        verifyNoMoreInteractions(institutionService);
         verify(userRepository, times(1)).findByWorkPlaces(institutionEntity);
         verifyNoMoreInteractions(userRepository);
 
@@ -128,14 +123,11 @@ class UserServiceTest {
         institutionEntity.setInstitutionName(INSTITUTION_NAME);
         UserEntity userEntity = new UserEntity();
         userEntity.setUsername(USERNAME);
-        when(institutionService.getInstitutionEntityByInstitutionName(INSTITUTION_NAME)).thenReturn(institutionEntity);
         when(userRepository.findByUsernameAndWorkPlaces(USERNAME, institutionEntity)).thenReturn(Optional.of(userEntity));
         //      when
-        User result = userService.getByUsernameAndWorkPlaces(USERNAME, INSTITUTION_NAME);
+        User result = userService.getByUsernameAndWorkPlaces(USERNAME, institutionEntity);
         //      then
         assertEquals(USERNAME, result.getUsername());
-        verify(institutionService, times(1)).getInstitutionEntityByInstitutionName(INSTITUTION_NAME);
-        verifyNoMoreInteractions(institutionService);
         verify(userRepository, times(1)).findByUsernameAndWorkPlaces(USERNAME, institutionEntity);
         verifyNoMoreInteractions(userRepository);
     }
@@ -144,11 +136,11 @@ class UserServiceTest {
     void shouldThrowUserNotFoundException_NotFoundByUsernameAndWorkPlaces() {
         //      given
         InstitutionEntity institutionEntity = new InstitutionEntity();
-        when(institutionService.getInstitutionEntityByInstitutionName(INSTITUTION_NAME)).thenReturn(institutionEntity);
+        institutionEntity.setInstitutionName(INSTITUTION_NAME);
         when(userRepository.findByUsernameAndWorkPlaces(USERNAME, institutionEntity)).thenReturn(Optional.empty());
         //      when
         UserNotFoundException exception = assertThrows(
-                UserNotFoundException.class, () -> userService.getByUsernameAndWorkPlaces(USERNAME, INSTITUTION_NAME)
+                UserNotFoundException.class, () -> userService.getByUsernameAndWorkPlaces(USERNAME, institutionEntity)
         );
         //      then
         assertEquals("Could not find representative: " + USERNAME + " in " + INSTITUTION_NAME, exception.getMessage());

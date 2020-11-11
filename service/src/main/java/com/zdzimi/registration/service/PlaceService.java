@@ -1,6 +1,5 @@
 package com.zdzimi.registration.service;
 
-import com.zdzimi.registration.core.model.Institution;
 import com.zdzimi.registration.core.model.Place;
 import com.zdzimi.registration.data.entity.InstitutionEntity;
 import com.zdzimi.registration.data.entity.PlaceEntity;
@@ -17,35 +16,30 @@ import java.util.stream.Collectors;
 public class PlaceService {
 
     private PlaceRepository placeRepository;
-    private InstitutionService institutionService;
     private PlaceMapper placeMapper;
 
     @Autowired
-    public PlaceService(PlaceRepository placeRepository, InstitutionService institutionService, PlaceMapper placeMapper) {
+    public PlaceService(PlaceRepository placeRepository, PlaceMapper placeMapper) {
         this.placeRepository = placeRepository;
-        this.institutionService = institutionService;
         this.placeMapper = placeMapper;
     }
 
-    public List<Place> getPlaces(String institutionName) {
-        InstitutionEntity institutionEntity = institutionService.getInstitutionEntityByInstitutionName(institutionName);
+    public List<Place> getPlaces(InstitutionEntity institutionEntity) {
         return placeRepository.findByInstitution(institutionEntity).stream()
                 .map(placeMapper::convertToPlace)
                 .collect(Collectors.toList());
     }
 
-    public Place addNewPlace(String institutionName, Place place) {
-        Institution institution = institutionService.getByInstitutionName(institutionName);
-        place.setInstitution(institution);
+    public Place addNewPlace(InstitutionEntity institutionEntity, Place place) {
         PlaceEntity placeEntity = placeMapper.convertToPlaceEntity(place);
+        placeEntity.setInstitution(institutionEntity);
         PlaceEntity savedPlaceEntity = placeRepository.save(placeEntity);
         return placeMapper.convertToPlace(savedPlaceEntity);
     }
 
-    public Place getPlace(String institutionName, String placeName) {
-        InstitutionEntity institutionEntity = institutionService.getInstitutionEntityByInstitutionName(institutionName);
+    public Place getPlace(InstitutionEntity institutionEntity, String placeName) {
         PlaceEntity placeEntity = placeRepository.findByInstitutionAndPlaceName(institutionEntity, placeName)
-                .orElseThrow(() -> new PlaceNotFoundException(institutionName, placeName));
+                .orElseThrow(() -> new PlaceNotFoundException(institutionEntity.getInstitutionName(), placeName));
         return placeMapper.convertToPlace(placeEntity);
     }
 }
