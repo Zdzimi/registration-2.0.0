@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.Collection;
 
 @Entity
@@ -17,16 +16,11 @@ public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long userId;
-    @NotNull
     @Column(unique = true)
     private String username;
-    @NotNull
     private String name;
-    @NotNull
     private String surname;
-    @NotNull
     private String email;
-    @NotNull
     private String password;
     private String role;    //  todo
     @JsonIgnore

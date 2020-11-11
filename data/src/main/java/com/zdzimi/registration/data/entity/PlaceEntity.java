@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.Collection;
 
 @Entity
@@ -17,7 +16,6 @@ public class PlaceEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long placeId;
-    @NotNull
     private String placeName;
     @ManyToOne
     private InstitutionEntity institution;
