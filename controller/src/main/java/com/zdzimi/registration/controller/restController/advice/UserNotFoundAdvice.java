@@ -1,4 +1,4 @@
-package com.zdzimi.registration.controller.restController;
+package com.zdzimi.registration.controller.restController.advice;
 
 import com.zdzimi.registration.data.exception.UserNotFoundException;
 import org.springframework.http.HttpStatus;
