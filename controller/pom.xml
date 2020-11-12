@@ -25,6 +25,11 @@
             <artifactId>service</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.zdzimi</groupId>
+            <artifactId>security</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

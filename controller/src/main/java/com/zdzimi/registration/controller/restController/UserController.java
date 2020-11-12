@@ -26,7 +26,7 @@ public class UserController {
         return userService.getByUsername(username);
     }
 
-    @PostMapping("new-user")
+    @PostMapping("/new-user")
     @Validated(OnCreate.class)
     public User createUser(@Valid @RequestBody User user) {
         /* fixme: encode password, and set role!!! */

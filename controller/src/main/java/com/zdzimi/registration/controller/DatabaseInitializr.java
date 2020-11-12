@@ -1,4 +1,4 @@
-package com.zdzimi.registration.data;
+package com.zdzimi.registration.controller;
 
 import com.zdzimi.registration.data.entity.InstitutionEntity;
 import com.zdzimi.registration.data.entity.PlaceEntity;
@@ -7,28 +7,34 @@ import com.zdzimi.registration.data.repository.InstitutionRepository;
 import com.zdzimi.registration.data.repository.PlaceRepository;
 import com.zdzimi.registration.data.repository.UserRepository;
 import com.zdzimi.registration.data.repository.VisitRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 
 import java.util.Collections;
 
 @Controller
-public class Start {
+public class DatabaseInitializr {
 
     private InstitutionRepository institutionRepository;
     private PlaceRepository placeRepository;
     private UserRepository userRepository;
     private VisitRepository visitRepository;
+    private PasswordEncoder passwordEncoder;
 
-    public Start(InstitutionRepository institutionRepository,
-                 PlaceRepository placeRepository,
-                 UserRepository userRepository,
-                 VisitRepository visitRepository) {
+    @Autowired
+    public DatabaseInitializr(InstitutionRepository institutionRepository,
+                              PlaceRepository placeRepository,
+                              UserRepository userRepository,
+                              VisitRepository visitRepository,
+                              PasswordEncoder passwordEncoder) {
         this.institutionRepository = institutionRepository;
         this.placeRepository = placeRepository;
         this.userRepository = userRepository;
         this.visitRepository = visitRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @EventListener(ApplicationReadyEvent.class)
@@ -80,7 +86,7 @@ public class Start {
         adam.setName("Adam");
         adam.setSurname("Kaban");
         adam.setEmail("kaban@mail.com");
-        adam.setPassword("pass123");
+        adam.setPassword(passwordEncoder.encode("Pass123"));
         adam.setRole("ROLE_USER");
         adam.setRecognizedInstitutions(Collections.singletonList(barber));
         adam.setWorkPlaces(Collections.singletonList(tattoo));
@@ -91,7 +97,7 @@ public class Start {
         ela.setName("Ela");
         ela.setSurname("Kulak");
         ela.setEmail("kulak@mail.com");
-        ela.setPassword("pass123");
+        ela.setPassword(passwordEncoder.encode("Pass123"));
         ela.setRole("ROLE_USER");
         ela.setWorkPlaces(Collections.singletonList(barber));
         userRepository.save(ela);
@@ -101,7 +107,7 @@ public class Start {
         janusz.setName("Janusz");
         janusz.setSurname("Nowaczek");
         janusz.setEmail("nowaczekjanusz@mail.com");
-        janusz.setPassword("pass123");
+        janusz.setPassword(passwordEncoder.encode("Pass123"));
         janusz.setRole("ROLE_USER");
         userRepository.save(janusz);
 
@@ -110,7 +116,7 @@ public class Start {
         ola.setName("Ola");
         ola.setSurname("Rak");
         ola.setEmail("rakola@mail.com");
-        ola.setPassword("pass123");
+        ola.setPassword(passwordEncoder.encode("Pass123"));
         ola.setRole("ROLE_USER");
         ola.setRecognizedInstitutions(Collections.singletonList(tattoo));
         userRepository.save(ola);
