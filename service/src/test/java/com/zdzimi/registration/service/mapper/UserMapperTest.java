@@ -1,5 +1,6 @@
 package com.zdzimi.registration.service.mapper;
 
+import com.zdzimi.registration.core.model.Role;
 import com.zdzimi.registration.core.model.User;
 import com.zdzimi.registration.data.entity.InstitutionEntity;
 import com.zdzimi.registration.data.entity.UserEntity;
@@ -19,7 +20,8 @@ class UserMapperTest {
     static final String SURNAME = "Adamska";
     static final String EMAIL = "kundzia@mail.com";
     static final String PASSWORD = "@94gmne&&";
-    static final String ROLE = "USER";
+    static final String ROLE = "ROLE_USER";
+    static final Role ROLE_ROLE = Role.ROLE_USER;
 
     private UserMapper userMapper = new UserMapper(new ModelMapper());
 
@@ -34,8 +36,8 @@ class UserMapperTest {
         assertEquals(NAME, user.getName());
         assertEquals(SURNAME, user.getSurname());
         assertEquals(EMAIL, user.getEmail());
-        assertEquals(PASSWORD, user.getPassword());
-        assertEquals(ROLE, user.getRole());
+        assertNull(user.getPassword());
+        assertEquals(ROLE_ROLE, user.getRole());
     }
 
     @Test
@@ -81,7 +83,7 @@ class UserMapperTest {
         user.setSurname(SURNAME);
         user.setEmail(EMAIL);
         user.setPassword(PASSWORD);
-        user.setRole(ROLE);
+        user.setRole(ROLE_ROLE);
         return user;
     }
 }

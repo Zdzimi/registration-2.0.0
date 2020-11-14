@@ -47,7 +47,7 @@ class VisitMapperTest {
         assertEquals(SURNAME, visit.getUser().getSurname());
         assertEquals(EMAIL, visit.getUser().getEmail());
         assertEquals(PASSWORD, visit.getUser().getPassword());
-        assertEquals(ROLE, visit.getUser().getRole());
+        assertEquals(ROLE_ROLE, visit.getUser().getRole());
 
         assertEquals(USER_ID, visit.getRepresentative().getUserId());
         assertEquals(USERNAME, visit.getRepresentative().getUsername());
@@ -55,7 +55,7 @@ class VisitMapperTest {
         assertEquals(SURNAME, visit.getRepresentative().getSurname());
         assertEquals(EMAIL, visit.getRepresentative().getEmail());
         assertEquals(PASSWORD, visit.getRepresentative().getPassword());
-        assertEquals(ROLE, visit.getRepresentative().getRole());
+        assertEquals(ROLE_ROLE, visit.getRepresentative().getRole());
 
         assertEquals(PLACE_ID, visit.getPlace().getPlaceId());
         assertEquals(PLACE_NAME, visit.getPlace().getPlaceName());

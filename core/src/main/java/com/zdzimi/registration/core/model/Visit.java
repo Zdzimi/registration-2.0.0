@@ -17,7 +17,7 @@ public class Visit {
 
     @Null(groups = OnCreate.class)
     @NotNull(groups = OnUpdate.class)
-    private long visitId;
+    private Long visitId;
     @NotNull
     @PastOrPresent
     private LocalDateTime visitDateTime;

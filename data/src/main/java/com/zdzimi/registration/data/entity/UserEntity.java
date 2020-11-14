@@ -22,7 +22,7 @@ public class UserEntity {
     private String surname;
     private String email;
     private String password;
-    private String role;    //  todo
+    private String role;
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     private Collection<VisitEntity> visits;

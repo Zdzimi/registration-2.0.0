@@ -18,6 +18,8 @@ import java.util.Collections;
 @Controller
 public class DatabaseInitializr {
 
+    private static final String ROLE = "ROLE_USER";
+
     private InstitutionRepository institutionRepository;
     private PlaceRepository placeRepository;
     private UserRepository userRepository;
@@ -87,7 +89,7 @@ public class DatabaseInitializr {
         adam.setSurname("Kaban");
         adam.setEmail("kaban@mail.com");
         adam.setPassword(passwordEncoder.encode("Pass123"));
-        adam.setRole("ROLE_USER");
+        adam.setRole(ROLE);
         adam.setRecognizedInstitutions(Collections.singletonList(barber));
         adam.setWorkPlaces(Collections.singletonList(tattoo));
         userRepository.save(adam);
@@ -98,7 +100,7 @@ public class DatabaseInitializr {
         ela.setSurname("Kulak");
         ela.setEmail("kulak@mail.com");
         ela.setPassword(passwordEncoder.encode("Pass123"));
-        ela.setRole("ROLE_USER");
+        ela.setRole(ROLE);
         ela.setWorkPlaces(Collections.singletonList(barber));
         userRepository.save(ela);
 
@@ -108,7 +110,7 @@ public class DatabaseInitializr {
         janusz.setSurname("Nowaczek");
         janusz.setEmail("nowaczekjanusz@mail.com");
         janusz.setPassword(passwordEncoder.encode("Pass123"));
-        janusz.setRole("ROLE_USER");
+        janusz.setRole(ROLE);
         userRepository.save(janusz);
 
         UserEntity ola = new UserEntity();
@@ -117,7 +119,7 @@ public class DatabaseInitializr {
         ola.setSurname("Rak");
         ola.setEmail("rakola@mail.com");
         ola.setPassword(passwordEncoder.encode("Pass123"));
-        ola.setRole("ROLE_USER");
+        ola.setRole(ROLE);
         ola.setRecognizedInstitutions(Collections.singletonList(tattoo));
         userRepository.save(ola);
     }

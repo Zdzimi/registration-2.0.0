@@ -51,4 +51,10 @@ public class UserService {
                 .orElseThrow(() -> new UserNotFoundException(representativeName, institutionEntity.getInstitutionName()));
         return userMapper.convertToUser(userEntity);
     }
+
+    public void addWorkPlace(String username, InstitutionEntity institutionEntity) {
+        UserEntity userEntity = getUserEntityByUsername(username);
+        userEntity.getWorkPlaces().add(institutionEntity);
+        userRepository.save(userEntity);
+    }
 }

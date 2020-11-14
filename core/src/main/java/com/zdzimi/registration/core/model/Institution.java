@@ -15,7 +15,7 @@ public class Institution {
 
     @Null(groups = OnCreate.class)
     @NotNull(groups = OnUpdate.class)
-    private long institutionId;
+    private Long institutionId;
     @NotNull
     @OnlyLettersAndDigits
     private String institutionName;

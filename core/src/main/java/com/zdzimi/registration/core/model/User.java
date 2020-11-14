@@ -17,7 +17,7 @@ public class User {
 
     @Null(groups = OnCreate.class)
     @NotNull(groups = OnUpdate.class)
-    private long userId;
+    private Long userId;
     @NotNull
     @OnlyLettersAndDigits
     private String username;
@@ -33,5 +33,5 @@ public class User {
     private String password;
     @Null(groups = OnCreate.class)
     @NotNull(groups = OnUpdate.class)
-    private String role;
+    private Role role;
 }

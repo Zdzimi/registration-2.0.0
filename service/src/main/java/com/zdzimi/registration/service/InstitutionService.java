@@ -9,6 +9,7 @@ import com.zdzimi.registration.service.mapper.InstitutionMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,5 +58,10 @@ public class InstitutionService {
         return institutionRepository.findByRepresentatives(userEntity).stream()
                 .map(institutionMapper::convertToInstitution)
                 .collect(Collectors.toList());
+    }
+
+    public InstitutionEntity createNewInstitution(Institution institution) {
+        InstitutionEntity institutionEntity = institutionMapper.convertToInstitutionEntity(institution);
+        return institutionRepository.save(institutionEntity);
     }
 }

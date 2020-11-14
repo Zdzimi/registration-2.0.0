@@ -15,7 +15,7 @@ public class Place {
 
     @Null(groups = OnCreate.class)
     @NotNull(groups = OnUpdate.class)
-    private long placeId;
+    private Long placeId;
     @NotNull
     @OnlyLettersAndDigits
     private String placeName;

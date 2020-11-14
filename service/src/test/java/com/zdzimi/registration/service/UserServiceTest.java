@@ -24,6 +24,7 @@ class UserServiceTest {
     private static final long USER_ID = 101;
     private static final String USERNAME = "MICHAILTALL";
     private static final String INSTITUTION_NAME = "chocolate factory";
+    private static final String ROLE = "ROLE_USER";
 
     private UserService userService;
     private UserRepository userRepository;
@@ -42,6 +43,7 @@ class UserServiceTest {
         UserEntity userEntity = new UserEntity();
         userEntity.setUserId(USER_ID);
         userEntity.setUsername(USERNAME);
+        userEntity.setRole(ROLE);
         when(userRepository.findByUsername(USERNAME)).thenReturn(Optional.of(userEntity));
         //      when
         User result = userService.getByUsername(USERNAME);
@@ -88,6 +90,7 @@ class UserServiceTest {
         UserEntity userEntityAfterSave = new UserEntity();
         userEntityAfterSave.setUserId(USER_ID);
         userEntityAfterSave.setUsername(USERNAME);
+        userEntityAfterSave.setRole(ROLE);
 
         when(userRepository.save(ArgumentMatchers.any(UserEntity.class))).thenReturn(userEntityAfterSave);
         //      when
@@ -105,6 +108,7 @@ class UserServiceTest {
         institutionEntity.setInstitutionName(INSTITUTION_NAME);
         UserEntity userEntity = new UserEntity();
         userEntity.setUsername(USERNAME);
+        userEntity.setRole(ROLE);
         when(userRepository.findByWorkPlaces(institutionEntity)).thenReturn(Arrays.asList(userEntity));
         //      when
         List<User> result = userService.getByWorkPlaces(institutionEntity);
@@ -123,6 +127,7 @@ class UserServiceTest {
         institutionEntity.setInstitutionName(INSTITUTION_NAME);
         UserEntity userEntity = new UserEntity();
         userEntity.setUsername(USERNAME);
+        userEntity.setRole(ROLE);
         when(userRepository.findByUsernameAndWorkPlaces(USERNAME, institutionEntity)).thenReturn(Optional.of(userEntity));
         //      when
         User result = userService.getByUsernameAndWorkPlaces(USERNAME, institutionEntity);

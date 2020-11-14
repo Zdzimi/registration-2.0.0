@@ -4,6 +4,7 @@ import com.zdzimi.registration.core.model.User;
 import com.zdzimi.registration.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -16,12 +17,14 @@ class UserControllerTest {
 
     private UserController userController;
     private UserService userService;
+    private PasswordEncoder passwordEncoder;
 
     @BeforeEach
     void setUp() {
         userService = mock(UserService.class);
+        passwordEncoder = mock(PasswordEncoder.class);
         initMocks(this);
-        userController = new UserController(userService);
+        userController = new UserController(userService, passwordEncoder);
     }
 
     @Test
@@ -48,6 +51,7 @@ class UserControllerTest {
         User userAfterSave = new User();
         userAfterSave.setUserId(USER_ID);
         userAfterSave.setUsername(USERNAME);
+        when(passwordEncoder.encode(userBeforeSave.getPassword())).thenReturn("Pass");
         when(userService.save(userBeforeSave)).thenReturn(userAfterSave);
         //      when
         User result = userController.createUser(userBeforeSave);

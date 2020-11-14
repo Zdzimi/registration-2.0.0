@@ -8,6 +8,7 @@ import com.zdzimi.registration.data.repository.InstitutionRepository;
 import com.zdzimi.registration.service.mapper.InstitutionMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 import org.modelmapper.ModelMapper;
 
 import java.util.Arrays;
@@ -148,6 +149,19 @@ class InstitutionServiceTest {
         assertEquals(1, result.size());
         assertEquals(INSTITUTION_NAME, result.get(0).getInstitutionName());
         verify(institutionRepository, times(1)).findByRepresentatives(userEntity);
+        verifyNoMoreInteractions(institutionRepository);
+    }
+
+    @Test
+    void shouldCreateNewInstitution() {
+        //      given
+        Institution institution = new Institution();
+        InstitutionEntity institutionEntityAfterSave = new InstitutionEntity();
+        when(institutionRepository.save(ArgumentMatchers.any(InstitutionEntity.class))).thenReturn(institutionEntityAfterSave);
+        //      when
+        institutionService.createNewInstitution(institution);
+        //      then
+        verify(institutionRepository, times(1)).save(ArgumentMatchers.any(InstitutionEntity.class));
         verifyNoMoreInteractions(institutionRepository);
     }
 }
