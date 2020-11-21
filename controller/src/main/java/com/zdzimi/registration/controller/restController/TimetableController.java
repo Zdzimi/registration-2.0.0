@@ -1,6 +1,5 @@
 package com.zdzimi.registration.controller.restController;
 
-import com.zdzimi.registration.core.model.Institution;
 import com.zdzimi.registration.core.model.Visit;
 import com.zdzimi.registration.data.entity.InstitutionEntity;
 import com.zdzimi.registration.data.entity.UserEntity;
