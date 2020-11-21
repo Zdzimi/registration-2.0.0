@@ -9,11 +9,8 @@ import com.zdzimi.registration.data.entity.VisitEntity;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 
-import java.sql.Date;
-import java.sql.Time;
-import java.time.LocalDate;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 import static com.zdzimi.registration.service.mapper.PlaceMapperTest.*;
 import static com.zdzimi.registration.service.mapper.PlaceMapperTest.getPlace;
@@ -24,9 +21,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class VisitMapperTest {
 
     private static final long VISIT_ID = 34;
-    private static final Date VISIT_DATE = Date.valueOf(LocalDate.of(2020, 2, 15));
-    private static final Time VISIT_TIME = Time.valueOf(LocalTime.of(8, 30));
     private static final LocalDateTime VISIT_DATE_TIME = LocalDateTime.of(2020, 2, 15, 8, 30);
+    private static final Timestamp VISIT_TIMESTAMP = Timestamp.valueOf(VISIT_DATE_TIME);
     private static final long VISIT_LENGTH = 30;
 
     private VisitMapper visitMapper = new VisitMapper(new ModelMapper());
@@ -35,68 +31,66 @@ class VisitMapperTest {
     void shouldConvertToVisit() {
         VisitEntity visitEntity = getVisitEntity();
 
-        Visit visit = visitMapper.convertToVisit(visitEntity);
+        Visit result = visitMapper.convertToVisit(visitEntity);
 
-        assertEquals(VISIT_ID, visit.getVisitId());
-        assertEquals(VISIT_DATE_TIME, visit.getVisitDateTime());
-        assertEquals(VISIT_LENGTH, visit.getVisitLength());
+        assertEquals(VISIT_ID, result.getVisitId());
+        assertEquals(VISIT_DATE_TIME, result.getVisitDateTime());
+        assertEquals(VISIT_LENGTH, result.getVisitLength());
 
-        assertEquals(USER_ID, visit.getUser().getUserId());
-        assertEquals(USERNAME, visit.getUser().getUsername());
-        assertEquals(NAME, visit.getUser().getName());
-        assertEquals(SURNAME, visit.getUser().getSurname());
-        assertEquals(EMAIL, visit.getUser().getEmail());
-        assertEquals(PASSWORD, visit.getUser().getPassword());
-        assertEquals(ROLE_ROLE, visit.getUser().getRole());
+        assertEquals(USER_ID, result.getUser().getUserId());
+        assertEquals(USERNAME, result.getUser().getUsername());
+        assertEquals(NAME, result.getUser().getName());
+        assertEquals(SURNAME, result.getUser().getSurname());
+        assertEquals(EMAIL, result.getUser().getEmail());
+        assertEquals(PASSWORD, result.getUser().getPassword());
+        assertEquals(ROLE_ROLE, result.getUser().getRole());
 
-        assertEquals(USER_ID, visit.getRepresentative().getUserId());
-        assertEquals(USERNAME, visit.getRepresentative().getUsername());
-        assertEquals(NAME, visit.getRepresentative().getName());
-        assertEquals(SURNAME, visit.getRepresentative().getSurname());
-        assertEquals(EMAIL, visit.getRepresentative().getEmail());
-        assertEquals(PASSWORD, visit.getRepresentative().getPassword());
-        assertEquals(ROLE_ROLE, visit.getRepresentative().getRole());
+        assertEquals(USER_ID, result.getRepresentative().getUserId());
+        assertEquals(USERNAME, result.getRepresentative().getUsername());
+        assertEquals(NAME, result.getRepresentative().getName());
+        assertEquals(SURNAME, result.getRepresentative().getSurname());
+        assertEquals(EMAIL, result.getRepresentative().getEmail());
+        assertEquals(PASSWORD, result.getRepresentative().getPassword());
+        assertEquals(ROLE_ROLE, result.getRepresentative().getRole());
 
-        assertEquals(PLACE_ID, visit.getPlace().getPlaceId());
-        assertEquals(PLACE_NAME, visit.getPlace().getPlaceName());
+        assertEquals(PLACE_ID, result.getPlace().getPlaceId());
+        assertEquals(PLACE_NAME, result.getPlace().getPlaceName());
     }
 
     @Test
     void shouldConvertToVisitEntity() {
         Visit visit = getVisit();
 
-        VisitEntity visitEntity = visitMapper.convertToVisitEntity(visit);
+        VisitEntity result = visitMapper.convertToVisitEntity(visit);
 
-        assertEquals(VISIT_ID, visitEntity.getVisitId());
-        assertEquals(VISIT_DATE, visitEntity.getVisitDate());
-        assertEquals(VISIT_TIME, visitEntity.getVisitTime());
-        assertEquals(VISIT_LENGTH, visitEntity.getVisitLength());
+        assertEquals(VISIT_ID, result.getVisitId());
+        assertEquals(VISIT_TIMESTAMP, result.getVisitDateTime());
+        assertEquals(VISIT_LENGTH, result.getVisitLength());
 
-        assertEquals(USER_ID, visitEntity.getUser().getUserId());
-        assertEquals(USERNAME, visitEntity.getUser().getUsername());
-        assertEquals(NAME, visitEntity.getUser().getName());
-        assertEquals(SURNAME, visitEntity.getUser().getSurname());
-        assertEquals(EMAIL, visitEntity.getUser().getEmail());
-        assertEquals(PASSWORD, visitEntity.getUser().getPassword());
-        assertEquals(ROLE, visitEntity.getUser().getRole());
+        assertEquals(USER_ID, result.getUser().getUserId());
+        assertEquals(USERNAME, result.getUser().getUsername());
+        assertEquals(NAME, result.getUser().getName());
+        assertEquals(SURNAME, result.getUser().getSurname());
+        assertEquals(EMAIL, result.getUser().getEmail());
+        assertEquals(PASSWORD, result.getUser().getPassword());
+        assertEquals(ROLE, result.getUser().getRole());
 
-        assertEquals(USER_ID, visitEntity.getRepresentative().getUserId());
-        assertEquals(USERNAME, visitEntity.getRepresentative().getUsername());
-        assertEquals(NAME, visitEntity.getRepresentative().getName());
-        assertEquals(SURNAME, visitEntity.getRepresentative().getSurname());
-        assertEquals(EMAIL, visitEntity.getRepresentative().getEmail());
-        assertEquals(PASSWORD, visitEntity.getRepresentative().getPassword());
-        assertEquals(ROLE, visitEntity.getRepresentative().getRole());
+        assertEquals(USER_ID, result.getRepresentative().getUserId());
+        assertEquals(USERNAME, result.getRepresentative().getUsername());
+        assertEquals(NAME, result.getRepresentative().getName());
+        assertEquals(SURNAME, result.getRepresentative().getSurname());
+        assertEquals(EMAIL, result.getRepresentative().getEmail());
+        assertEquals(PASSWORD, result.getRepresentative().getPassword());
+        assertEquals(ROLE, result.getRepresentative().getRole());
 
-        assertEquals(PLACE_ID, visitEntity.getPlace().getPlaceId());
-        assertEquals(PLACE_NAME, visitEntity.getPlace().getPlaceName());
+        assertEquals(PLACE_ID, result.getPlace().getPlaceId());
+        assertEquals(PLACE_NAME, result.getPlace().getPlaceName());
     }
 
     static VisitEntity getVisitEntity() {
         VisitEntity visitEntity = new VisitEntity();
         visitEntity.setVisitId(VISIT_ID);
-        visitEntity.setVisitDate(VISIT_DATE);
-        visitEntity.setVisitTime(VISIT_TIME);
+        visitEntity.setVisitDateTime(VISIT_TIMESTAMP);
         visitEntity.setVisitLength(VISIT_LENGTH);
 
         UserEntity userEntity = getUserEntity();

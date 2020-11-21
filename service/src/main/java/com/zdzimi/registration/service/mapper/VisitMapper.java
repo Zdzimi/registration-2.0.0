@@ -8,8 +8,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.sql.Date;
-import java.sql.Time;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Component
@@ -24,12 +23,8 @@ public class VisitMapper {
 
     public Visit convertToVisit(VisitEntity visitEntity) {
         Visit visit = modelMapper.map(visitEntity, Visit.class);
-
-        Date visitDate = visitEntity.getVisitDate();
-        Time visitTime = visitEntity.getVisitTime();
-        LocalDateTime dateTime = LocalDateTime.of(visitDate.toLocalDate(), visitTime.toLocalTime());
-
-        visit.setVisitDateTime(dateTime);
+        Timestamp visitDateTime = visitEntity.getVisitDateTime();
+        visit.setVisitDateTime(visitDateTime.toLocalDateTime());
         return visit;
     }
 
@@ -38,13 +33,7 @@ public class VisitMapper {
         visitEntity.setVisitId(visit.getVisitId());
 
         LocalDateTime visitDateTime = visit.getVisitDateTime();
-
-        Date visitDate = Date.valueOf(visitDateTime.toLocalDate());
-        visitEntity.setVisitDate(visitDate);
-
-        Time visitTime = Time.valueOf(visitDateTime.toLocalTime());
-        visitEntity.setVisitTime(visitTime);
-
+        visitEntity.setVisitDateTime(Timestamp.valueOf(visitDateTime));
         visitEntity.setVisitLength(visit.getVisitLength());
 
         UserMapper userMapper = new UserMapper(modelMapper);

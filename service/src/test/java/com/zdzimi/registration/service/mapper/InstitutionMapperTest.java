@@ -29,37 +29,37 @@ class InstitutionMapperTest {
     void shouldConvertToInstitution() {
         InstitutionEntity institutionEntity = getInstitutionEntity();
 
-        Institution institution = institutionMapper.convertToInstitution(institutionEntity);
+        Institution result = institutionMapper.convertToInstitution(institutionEntity);
 
-        assertEquals(INSTITUTION_ID, institution.getInstitutionId());
-        assertEquals(INSTITUTION_NAME, institution.getInstitutionName());
-        assertEquals(PROVINCE, institution.getProvince());
-        assertEquals(CITY, institution.getCity());
-        assertEquals(STREET, institution.getStreet());
-        assertEquals(GATE_NUMBER, institution.getGateNumber());
-        assertEquals(PREMISES_NUMBER, institution.getPremisesNumber());
-        assertEquals(TYPE_OF_SERVICE, institution.getTypeOfService());
-        assertEquals(DESCRIPTION, institution.getDescription());
+        assertEquals(INSTITUTION_ID, result.getInstitutionId());
+        assertEquals(INSTITUTION_NAME, result.getInstitutionName());
+        assertEquals(PROVINCE, result.getProvince());
+        assertEquals(CITY, result.getCity());
+        assertEquals(STREET, result.getStreet());
+        assertEquals(GATE_NUMBER, result.getGateNumber());
+        assertEquals(PREMISES_NUMBER, result.getPremisesNumber());
+        assertEquals(TYPE_OF_SERVICE, result.getTypeOfService());
+        assertEquals(DESCRIPTION, result.getDescription());
     }
 
     @Test
     void shouldConvertToInstitutionEntity() {
         Institution institution = getInstitution();
 
-        InstitutionEntity institutionEntity = institutionMapper.convertToInstitutionEntity(institution);
+        InstitutionEntity result = institutionMapper.convertToInstitutionEntity(institution);
 
-        assertEquals(INSTITUTION_ID, institutionEntity.getInstitutionId());
-        assertEquals(INSTITUTION_NAME, institutionEntity.getInstitutionName());
-        assertEquals(PROVINCE, institutionEntity.getProvince());
-        assertEquals(CITY, institutionEntity.getCity());
-        assertEquals(STREET, institutionEntity.getStreet());
-        assertEquals(GATE_NUMBER, institutionEntity.getGateNumber());
-        assertEquals(PREMISES_NUMBER, institutionEntity.getPremisesNumber());
-        assertEquals(TYPE_OF_SERVICE, institutionEntity.getTypeOfService());
-        assertEquals(DESCRIPTION, institutionEntity.getDescription());
-        assertTrue(institutionEntity.getUsers().isEmpty());
-        assertTrue(institutionEntity.getRepresentatives().isEmpty());
-        assertTrue(institutionEntity.getPlaces().isEmpty());
+        assertEquals(INSTITUTION_ID, result.getInstitutionId());
+        assertEquals(INSTITUTION_NAME, result.getInstitutionName());
+        assertEquals(PROVINCE, result.getProvince());
+        assertEquals(CITY, result.getCity());
+        assertEquals(STREET, result.getStreet());
+        assertEquals(GATE_NUMBER, result.getGateNumber());
+        assertEquals(PREMISES_NUMBER, result.getPremisesNumber());
+        assertEquals(TYPE_OF_SERVICE, result.getTypeOfService());
+        assertEquals(DESCRIPTION, result.getDescription());
+        assertTrue(result.getUsers().isEmpty());
+        assertTrue(result.getRepresentatives().isEmpty());
+        assertTrue(result.getPlaces().isEmpty());
     }
 
     static InstitutionEntity getInstitutionEntity() {

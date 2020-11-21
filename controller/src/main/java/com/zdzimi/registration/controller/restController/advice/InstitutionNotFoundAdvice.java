@@ -2,12 +2,9 @@ package com.zdzimi.registration.controller.restController.advice;
 
 import com.zdzimi.registration.data.exception.InstitutionNotFoundException;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class InstitutionNotFoundAdvice {
 
     @ResponseBody

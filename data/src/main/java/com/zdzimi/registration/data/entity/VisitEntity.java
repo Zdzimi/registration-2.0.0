@@ -4,8 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.sql.Date;
-import java.sql.Time;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "VISIT")
@@ -16,8 +15,7 @@ public class VisitEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long visitId;
-    private Date visitDate;
-    private Time visitTime;
+    private Timestamp visitDateTime;
     private long visitLength;
     @ManyToOne
     private UserEntity user;

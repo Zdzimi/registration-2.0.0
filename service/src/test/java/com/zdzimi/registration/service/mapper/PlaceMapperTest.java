@@ -25,43 +25,43 @@ class PlaceMapperTest {
     void shouldConvertToPlace() {
         PlaceEntity placeEntity = getPlaceEntity();
 
-        Place place = placeMapper.convertToPlace(placeEntity);
+        Place result = placeMapper.convertToPlace(placeEntity);
 
-        assertEquals(PLACE_ID, place.getPlaceId());
-        assertEquals(PLACE_NAME, place.getPlaceName());
+        assertEquals(PLACE_ID, result.getPlaceId());
+        assertEquals(PLACE_NAME, result.getPlaceName());
 
-        assertEquals(INSTITUTION_ID, place.getInstitution().getInstitutionId());
-        assertEquals(INSTITUTION_NAME, place.getInstitution().getInstitutionName());
-        assertEquals(PROVINCE, place.getInstitution().getProvince());
-        assertEquals(CITY, place.getInstitution().getCity());
-        assertEquals(STREET, place.getInstitution().getStreet());
-        assertEquals(GATE_NUMBER, place.getInstitution().getGateNumber());
-        assertEquals(PREMISES_NUMBER, place.getInstitution().getPremisesNumber());
-        assertEquals(TYPE_OF_SERVICE, place.getInstitution().getTypeOfService());
-        assertEquals(DESCRIPTION, place.getInstitution().getDescription());
+        assertEquals(INSTITUTION_ID, result.getInstitution().getInstitutionId());
+        assertEquals(INSTITUTION_NAME, result.getInstitution().getInstitutionName());
+        assertEquals(PROVINCE, result.getInstitution().getProvince());
+        assertEquals(CITY, result.getInstitution().getCity());
+        assertEquals(STREET, result.getInstitution().getStreet());
+        assertEquals(GATE_NUMBER, result.getInstitution().getGateNumber());
+        assertEquals(PREMISES_NUMBER, result.getInstitution().getPremisesNumber());
+        assertEquals(TYPE_OF_SERVICE, result.getInstitution().getTypeOfService());
+        assertEquals(DESCRIPTION, result.getInstitution().getDescription());
     }
 
     @Test
     void shouldConvertToPlaceEntity() {
         Place place = getPlace();
 
-        PlaceEntity placeEntity = placeMapper.convertToPlaceEntity(place);
+        PlaceEntity result = placeMapper.convertToPlaceEntity(place);
 
-        assertEquals(PLACE_ID, placeEntity.getPlaceId());
-        assertEquals(PLACE_NAME, placeEntity.getPlaceName());
-        assertEquals(INSTITUTION_ID, placeEntity.getInstitution().getInstitutionId());
-        assertEquals(INSTITUTION_NAME, placeEntity.getInstitution().getInstitutionName());
-        assertEquals(PROVINCE, placeEntity.getInstitution().getProvince());
-        assertEquals(CITY, placeEntity.getInstitution().getCity());
-        assertEquals(STREET, placeEntity.getInstitution().getStreet());
-        assertEquals(GATE_NUMBER, placeEntity.getInstitution().getGateNumber());
-        assertEquals(PREMISES_NUMBER, placeEntity.getInstitution().getPremisesNumber());
-        assertEquals(TYPE_OF_SERVICE, placeEntity.getInstitution().getTypeOfService());
-        assertEquals(DESCRIPTION, placeEntity.getInstitution().getDescription());
-        assertTrue(placeEntity.getInstitution().getUsers().isEmpty());
-        assertTrue(placeEntity.getInstitution().getRepresentatives().isEmpty());
-        assertTrue(placeEntity.getInstitution().getPlaces().isEmpty());
-        assertTrue(placeEntity.getVisits().isEmpty());
+        assertEquals(PLACE_ID, result.getPlaceId());
+        assertEquals(PLACE_NAME, result.getPlaceName());
+        assertEquals(INSTITUTION_ID, result.getInstitution().getInstitutionId());
+        assertEquals(INSTITUTION_NAME, result.getInstitution().getInstitutionName());
+        assertEquals(PROVINCE, result.getInstitution().getProvince());
+        assertEquals(CITY, result.getInstitution().getCity());
+        assertEquals(STREET, result.getInstitution().getStreet());
+        assertEquals(GATE_NUMBER, result.getInstitution().getGateNumber());
+        assertEquals(PREMISES_NUMBER, result.getInstitution().getPremisesNumber());
+        assertEquals(TYPE_OF_SERVICE, result.getInstitution().getTypeOfService());
+        assertEquals(DESCRIPTION, result.getInstitution().getDescription());
+        assertTrue(result.getInstitution().getUsers().isEmpty());
+        assertTrue(result.getInstitution().getRepresentatives().isEmpty());
+        assertTrue(result.getInstitution().getPlaces().isEmpty());
+        assertTrue(result.getVisits().isEmpty());
     }
 
     static PlaceEntity getPlaceEntity() {

@@ -29,34 +29,34 @@ class UserMapperTest {
     void shouldConvertToUser() {
         UserEntity userEntity = getUserEntity();
 
-        User user = userMapper.convertToUser(userEntity);
+        User result = userMapper.convertToUser(userEntity);
 
-        assertEquals(USER_ID, user.getUserId());
-        assertEquals(USERNAME, user.getUsername());
-        assertEquals(NAME, user.getName());
-        assertEquals(SURNAME, user.getSurname());
-        assertEquals(EMAIL, user.getEmail());
-        assertNull(user.getPassword());
-        assertEquals(ROLE_ROLE, user.getRole());
+        assertEquals(USER_ID, result.getUserId());
+        assertEquals(USERNAME, result.getUsername());
+        assertEquals(NAME, result.getName());
+        assertEquals(SURNAME, result.getSurname());
+        assertEquals(EMAIL, result.getEmail());
+        assertNull(result.getPassword());
+        assertEquals(ROLE_ROLE, result.getRole());
     }
 
     @Test
     void shouldConvertToUserEntity() {
         User user = getUser();
 
-        UserEntity userEntity = userMapper.convertToUserEntity(user);
+        UserEntity result = userMapper.convertToUserEntity(user);
 
-        assertEquals(USER_ID, userEntity.getUserId());
-        assertEquals(USERNAME, userEntity.getUsername());
-        assertEquals(NAME, userEntity.getName());
-        assertEquals(SURNAME, userEntity.getSurname());
-        assertEquals(EMAIL, userEntity.getEmail());
-        assertEquals(PASSWORD, userEntity.getPassword());
-        assertEquals(ROLE, userEntity.getRole());
-        assertTrue(userEntity.getVisits().isEmpty());
-        assertTrue(userEntity.getRecognizedInstitutions().isEmpty());
-        assertTrue(userEntity.getWorkPlaces().isEmpty());
-        assertTrue(userEntity.getProvidedVisits().isEmpty());
+        assertEquals(USER_ID, result.getUserId());
+        assertEquals(USERNAME, result.getUsername());
+        assertEquals(NAME, result.getName());
+        assertEquals(SURNAME, result.getSurname());
+        assertEquals(EMAIL, result.getEmail());
+        assertEquals(PASSWORD, result.getPassword());
+        assertEquals(ROLE, result.getRole());
+        assertTrue(result.getVisits().isEmpty());
+        assertTrue(result.getRecognizedInstitutions().isEmpty());
+        assertTrue(result.getWorkPlaces().isEmpty());
+        assertTrue(result.getProvidedVisits().isEmpty());
     }
 
     static UserEntity getUserEntity() {

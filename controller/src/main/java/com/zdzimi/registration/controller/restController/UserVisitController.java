@@ -32,7 +32,7 @@ public class UserVisitController {
     }
 
     @GetMapping("/{visitId}")
-    public Visit getVisit(@PathVariable String username, @PathVariable long visitId) {
+    public Visit getUsersVisit(@PathVariable String username, @PathVariable long visitId) {
         UserEntity userEntity = userService.getUserEntityByUsername(username);
         return visitService.getByUserAndVisitId(userEntity, visitId);
     }
