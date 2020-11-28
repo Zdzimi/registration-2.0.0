@@ -2,6 +2,7 @@ package com.zdzimi.registration.controller.restController;
 
 import com.zdzimi.registration.core.model.Visit;
 import com.zdzimi.registration.data.entity.UserEntity;
+import com.zdzimi.registration.data.entity.VisitEntity;
 import com.zdzimi.registration.service.UserService;
 import com.zdzimi.registration.service.VisitService;
 import org.junit.jupiter.api.BeforeEach;
@@ -61,6 +62,23 @@ class UserVisitControllerTest {
         assertEquals(visit, result);
         verify(userService, times(1)).getUserEntityByUsername(USERNAME);
         verify(visitService, times(1)).getByUserAndVisitId(userEntity, VISIT_ID);
+        verifyNoMoreInteractions(userService);
+        verifyNoMoreInteractions(visitService);
+    }
+
+    @Test
+    void shouldCancelVisit() {
+        //      given
+        UserEntity userEntity = new UserEntity();
+        when(userService.getUserEntityByUsername(USERNAME)).thenReturn(userEntity);
+        VisitEntity visitEntity = new VisitEntity();
+        when(visitService.getVisitEntityByUserAndVisitId(userEntity, VISIT_ID)).thenReturn(visitEntity);
+        //      when
+        userVisitController.cancelVisit(USERNAME, VISIT_ID);
+        //      then
+        verify(userService, times(1)).getUserEntityByUsername(USERNAME);
+        verify(visitService, times(1)).getVisitEntityByUserAndVisitId(userEntity, VISIT_ID);
+        verify(visitService, times(1)).cancelVisit(visitEntity);
         verifyNoMoreInteractions(userService);
         verifyNoMoreInteractions(visitService);
     }

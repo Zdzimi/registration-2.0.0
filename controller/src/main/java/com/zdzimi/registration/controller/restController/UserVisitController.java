@@ -2,6 +2,7 @@ package com.zdzimi.registration.controller.restController;
 
 import com.zdzimi.registration.core.model.Visit;
 import com.zdzimi.registration.data.entity.UserEntity;
+import com.zdzimi.registration.data.entity.VisitEntity;
 import com.zdzimi.registration.service.UserService;
 import com.zdzimi.registration.service.VisitService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,5 +35,10 @@ public class UserVisitController {
         return visitService.getByUserAndVisitId(userEntity, visitId);
     }
 
-    //  todo cancelVisit()
+    @PatchMapping("/{visitId}")
+    public void cancelVisit(@PathVariable String username, @PathVariable long visitId) {
+        UserEntity userEntity = userService.getUserEntityByUsername(username);
+        VisitEntity visitEntity = visitService.getVisitEntityByUserAndVisitId(userEntity, visitId);
+        visitService.cancelVisit(visitEntity);
+    }
 }

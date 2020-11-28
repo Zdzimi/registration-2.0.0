@@ -8,6 +8,7 @@ import com.zdzimi.registration.data.entity.VisitEntity;
 import com.zdzimi.registration.data.exception.VisitNotFoundException;
 import com.zdzimi.registration.data.repository.VisitRepository;
 import com.zdzimi.registration.data.validator.OnBook;
+import com.zdzimi.registration.data.validator.OnCancel;
 import com.zdzimi.registration.data.validator.OnDelete;
 import com.zdzimi.registration.service.mapper.VisitMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,9 +42,13 @@ public class VisitService {
     }
 
     public Visit getByUserAndVisitId(UserEntity userEntity, long visitId) {
-        VisitEntity visitEntity = visitRepository.findByUserAndVisitId(userEntity, visitId)
-                .orElseThrow(() -> new VisitNotFoundException(visitId));
+        VisitEntity visitEntity = getVisitEntityByUserAndVisitId(userEntity, visitId);
         return visitMapper.convertToVisit(visitEntity);
+    }
+
+    public VisitEntity getVisitEntityByUserAndVisitId(UserEntity userEntity, long visitId) {
+        return visitRepository.findByUserAndVisitId(userEntity, visitId)
+                    .orElseThrow(() -> new VisitNotFoundException(visitId));
     }
 
     public List<Visit> getCurrentVisits(UserEntity representativeEntity, InstitutionEntity institutionEntity) {
@@ -141,6 +146,12 @@ public class VisitService {
     public List<Visit> saveAll(List<VisitEntity> visitEntities) {
         List<VisitEntity> savedEntities = visitRepository.saveAll(visitEntities);
         return savedEntities.stream().map(visitMapper::convertToVisit).collect(Collectors.toList());
+    }
+
+    @Validated(OnCancel.class)
+    public void cancelVisit(@Valid VisitEntity visitEntity) {
+        visitEntity.setUser(null);
+        visitRepository.save(visitEntity);
     }
 
     private List<VisitEntity> getCurrentByRepresentativeAndInstitution(UserEntity representativeEntity,

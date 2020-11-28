@@ -314,4 +314,16 @@ class VisitServiceTest {
         verifyNoMoreInteractions(visitRepository);
     }
 
+    @Test
+    void shouldCancelVisit() {
+        //      given
+        VisitEntity visitEntity = new VisitEntity();
+        visitEntity.setVisitStart(Timestamp.valueOf(LocalDateTime.now().plusMinutes(10)));
+        visitEntity.setVisitEnd((Timestamp.valueOf(LocalDateTime.now().plusMinutes(40))));
+        //      when
+        visitService.cancelVisit(visitEntity);
+        //      then
+        verify(visitRepository, times(1)).save(visitEntity);
+        verifyNoMoreInteractions(visitRepository);
+    }
 }
