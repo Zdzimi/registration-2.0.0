@@ -1,8 +1,10 @@
 package com.zdzimi.registration.service.mapper;
 
+import com.zdzimi.registration.core.model.Institution;
 import com.zdzimi.registration.core.model.Place;
 import com.zdzimi.registration.core.model.User;
 import com.zdzimi.registration.core.model.Visit;
+import com.zdzimi.registration.data.entity.InstitutionEntity;
 import com.zdzimi.registration.data.entity.PlaceEntity;
 import com.zdzimi.registration.data.entity.UserEntity;
 import com.zdzimi.registration.data.entity.VisitEntity;
@@ -12,6 +14,7 @@ import org.modelmapper.ModelMapper;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
+import static com.zdzimi.registration.service.mapper.InstitutionMapperTest.*;
 import static com.zdzimi.registration.service.mapper.PlaceMapperTest.*;
 import static com.zdzimi.registration.service.mapper.PlaceMapperTest.getPlace;
 import static com.zdzimi.registration.service.mapper.UserMapperTest.*;
@@ -21,9 +24,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class VisitMapperTest {
 
     private static final long VISIT_ID = 34;
-    private static final LocalDateTime VISIT_DATE_TIME = LocalDateTime.of(2020, 2, 15, 8, 30);
-    private static final Timestamp VISIT_TIMESTAMP = Timestamp.valueOf(VISIT_DATE_TIME);
-    private static final long VISIT_LENGTH = 30;
+    private static final LocalDateTime LOCAL_DATE_TIME_START = LocalDateTime.of(2020, 2, 15, 8, 30);
+    private static final LocalDateTime LOCAL_DATE_TIME_END = LocalDateTime.of(2020, 2, 15, 9, 30);
+    private static final Timestamp TIMESTAMP_START = Timestamp.valueOf(LOCAL_DATE_TIME_START);
+    private static final Timestamp TIMESTAMP_END = Timestamp.valueOf(LOCAL_DATE_TIME_END);
 
     private VisitMapper visitMapper = new VisitMapper(new ModelMapper());
 
@@ -34,8 +38,8 @@ class VisitMapperTest {
         Visit result = visitMapper.convertToVisit(visitEntity);
 
         assertEquals(VISIT_ID, result.getVisitId());
-        assertEquals(VISIT_DATE_TIME, result.getVisitDateTime());
-        assertEquals(VISIT_LENGTH, result.getVisitLength());
+        assertEquals(LOCAL_DATE_TIME_START, result.getVisitStart());
+        assertEquals(LOCAL_DATE_TIME_END, result.getVisitEnd());
 
         assertEquals(USER_ID, result.getUser().getUserId());
         assertEquals(USERNAME, result.getUser().getUsername());
@@ -55,6 +59,8 @@ class VisitMapperTest {
 
         assertEquals(PLACE_ID, result.getPlace().getPlaceId());
         assertEquals(PLACE_NAME, result.getPlace().getPlaceName());
+
+        assertEquals(INSTITUTION_ID, result.getInstitution().getInstitutionId());
     }
 
     @Test
@@ -64,8 +70,8 @@ class VisitMapperTest {
         VisitEntity result = visitMapper.convertToVisitEntity(visit);
 
         assertEquals(VISIT_ID, result.getVisitId());
-        assertEquals(VISIT_TIMESTAMP, result.getVisitDateTime());
-        assertEquals(VISIT_LENGTH, result.getVisitLength());
+        assertEquals(TIMESTAMP_START, result.getVisitStart());
+        assertEquals(TIMESTAMP_END, result.getVisitEnd());
 
         assertEquals(USER_ID, result.getUser().getUserId());
         assertEquals(USERNAME, result.getUser().getUsername());
@@ -85,13 +91,15 @@ class VisitMapperTest {
 
         assertEquals(PLACE_ID, result.getPlace().getPlaceId());
         assertEquals(PLACE_NAME, result.getPlace().getPlaceName());
+
+        assertEquals(INSTITUTION_ID, result.getInstitution().getInstitutionId());
     }
 
     static VisitEntity getVisitEntity() {
         VisitEntity visitEntity = new VisitEntity();
         visitEntity.setVisitId(VISIT_ID);
-        visitEntity.setVisitDateTime(VISIT_TIMESTAMP);
-        visitEntity.setVisitLength(VISIT_LENGTH);
+        visitEntity.setVisitStart(TIMESTAMP_START);
+        visitEntity.setVisitEnd(TIMESTAMP_END);
 
         UserEntity userEntity = getUserEntity();
         visitEntity.setUser(userEntity);
@@ -102,14 +110,17 @@ class VisitMapperTest {
         PlaceEntity placeEntity = getPlaceEntity();
         visitEntity.setPlace(placeEntity);
 
+        InstitutionEntity institutionEntity = getInstitutionEntity();
+        visitEntity.setInstitution(institutionEntity);
+
         return visitEntity;
     }
 
     static Visit getVisit() {
         Visit visit = new Visit();
         visit.setVisitId(VISIT_ID);
-        visit.setVisitDateTime(VISIT_DATE_TIME);
-        visit.setVisitLength(VISIT_LENGTH);
+        visit.setVisitStart(LOCAL_DATE_TIME_START);
+        visit.setVisitEnd(LOCAL_DATE_TIME_END);
 
         User user = getUser();
         visit.setUser(user);
@@ -119,6 +130,9 @@ class VisitMapperTest {
 
         Place place = getPlace();
         visit.setPlace(place);
+
+        Institution institution = getInstitution();
+        visit.setInstitution(institution);
 
         return visit;
     }

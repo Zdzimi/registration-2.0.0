@@ -9,6 +9,7 @@ import com.zdzimi.registration.service.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,5 +57,12 @@ public class UserService {
         UserEntity userEntity = getUserEntityByUsername(username);
         userEntity.getWorkPlaces().add(institutionEntity);
         userRepository.save(userEntity);
+    }
+
+    public void addRecognizedInstitution(UserEntity userEntity, InstitutionEntity institutionEntity) {
+        if (!userEntity.getRecognizedInstitutions().contains(institutionEntity)) {
+            userEntity.getRecognizedInstitutions().add(institutionEntity);
+            userRepository.save(userEntity);
+        }
     }
 }

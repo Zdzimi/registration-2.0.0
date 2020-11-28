@@ -38,4 +38,6 @@ public class UserController {
         user.setRole(Role.ROLE_USER);
         return userService.save(user);
     }
+
+    //  todo - updateUser() {...}
 }

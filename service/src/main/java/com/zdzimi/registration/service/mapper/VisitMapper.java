@@ -1,6 +1,7 @@
 package com.zdzimi.registration.service.mapper;
 
 import com.zdzimi.registration.core.model.Visit;
+import com.zdzimi.registration.data.entity.InstitutionEntity;
 import com.zdzimi.registration.data.entity.PlaceEntity;
 import com.zdzimi.registration.data.entity.UserEntity;
 import com.zdzimi.registration.data.entity.VisitEntity;
@@ -23,8 +24,10 @@ public class VisitMapper {
 
     public Visit convertToVisit(VisitEntity visitEntity) {
         Visit visit = modelMapper.map(visitEntity, Visit.class);
-        Timestamp visitDateTime = visitEntity.getVisitDateTime();
-        visit.setVisitDateTime(visitDateTime.toLocalDateTime());
+        Timestamp visitStart = visitEntity.getVisitStart();
+        visit.setVisitStart(visitStart.toLocalDateTime());
+        Timestamp visitEnd = visitEntity.getVisitEnd();
+        visit.setVisitEnd(visitEnd.toLocalDateTime());
         return visit;
     }
 
@@ -32,9 +35,11 @@ public class VisitMapper {
         VisitEntity visitEntity = new VisitEntity();
         visitEntity.setVisitId(visit.getVisitId());
 
-        LocalDateTime visitDateTime = visit.getVisitDateTime();
-        visitEntity.setVisitDateTime(Timestamp.valueOf(visitDateTime));
-        visitEntity.setVisitLength(visit.getVisitLength());
+        LocalDateTime visitStart = visit.getVisitStart();
+        visitEntity.setVisitStart(Timestamp.valueOf(visitStart));
+
+        LocalDateTime visitEnd = visit.getVisitEnd();
+        visitEntity.setVisitEnd(Timestamp.valueOf(visitEnd));
 
         UserMapper userMapper = new UserMapper(modelMapper);
         UserEntity userEntity = userMapper.convertToUserEntity(visit.getUser());
@@ -45,6 +50,10 @@ public class VisitMapper {
         PlaceMapper placeMapper = new PlaceMapper(modelMapper);
         PlaceEntity placeEntity = placeMapper.convertToPlaceEntity(visit.getPlace());
         visitEntity.setPlace(placeEntity);
+
+        InstitutionMapper institutionMapper = new InstitutionMapper(modelMapper);
+        InstitutionEntity institutionEntity = institutionMapper.convertToInstitutionEntity(visit.getInstitution());
+        visitEntity.setInstitution(institutionEntity);
 
         return visitEntity;
     }

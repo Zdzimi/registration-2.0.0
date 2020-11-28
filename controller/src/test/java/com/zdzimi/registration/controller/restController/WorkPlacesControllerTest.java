@@ -1,11 +1,14 @@
 package com.zdzimi.registration.controller.restController;
 
 import com.zdzimi.registration.core.model.Institution;
+import com.zdzimi.registration.data.entity.InstitutionEntity;
 import com.zdzimi.registration.data.entity.UserEntity;
 import com.zdzimi.registration.service.InstitutionService;
 import com.zdzimi.registration.service.UserService;
+import com.zdzimi.registration.service.mapper.InstitutionMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.modelmapper.ModelMapper;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,13 +25,14 @@ class WorkPlacesControllerTest {
     private WorkPlacesController workPlacesController;
     private InstitutionService institutionService;
     private UserService userService;
+    private InstitutionMapper institutionMapper = new InstitutionMapper(new ModelMapper());
 
     @BeforeEach
     void setUp() {
         institutionService = mock(InstitutionService.class);
         userService = mock(UserService.class);
         initMocks(this);
-        workPlacesController = new WorkPlacesController(institutionService, userService);
+        workPlacesController = new WorkPlacesController(institutionService, userService, institutionMapper);
     }
 
     @Test
@@ -62,6 +66,21 @@ class WorkPlacesControllerTest {
         assertEquals(INSTITUTION_NAME, result.getInstitutionName());
         verify(userService, times(1)).getUserEntityByUsername(USERNAME);
         verify(institutionService, times(1)).getWorkPlace(userEntity, INSTITUTION_NAME);
+        verifyNoMoreInteractions(userService);
+        verifyNoMoreInteractions(institutionService);
+    }
+
+    @Test
+    void shouldCreateNewInstitution() {
+        //      given
+        Institution institutionBeforeCreate = new Institution();
+        InstitutionEntity institutionEntityAfterCreate = new InstitutionEntity();
+        when(institutionService.createNewInstitution(institutionBeforeCreate)).thenReturn(institutionEntityAfterCreate);
+        //      when
+        Institution result = workPlacesController.createNewInstitution(institutionBeforeCreate, USERNAME);
+        //      then
+        verify(userService, times(1)).addWorkPlace(USERNAME, institutionEntityAfterCreate);
+        verify(institutionService, times(1)).createNewInstitution(institutionBeforeCreate);
         verifyNoMoreInteractions(userService);
         verifyNoMoreInteractions(institutionService);
     }

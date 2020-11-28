@@ -3,6 +3,7 @@ package com.zdzimi.registration.controller.restController;
 import com.zdzimi.registration.core.model.Visit;
 import com.zdzimi.registration.data.entity.InstitutionEntity;
 import com.zdzimi.registration.data.entity.UserEntity;
+import com.zdzimi.registration.data.entity.VisitEntity;
 import com.zdzimi.registration.service.InstitutionService;
 import com.zdzimi.registration.service.UserService;
 import com.zdzimi.registration.service.VisitService;
@@ -68,7 +69,7 @@ class TimetableControllerTest {
         Visit visit = new Visit();
         when(visitService.getCurrentVisit(representativeEntity, institutionEntity, VISIT_ID)).thenReturn(visit);
         //      when
-        timetableController.getVisit(USERNAME, INSTITUTION_NAME, REPRESENTATIVE_NAME, VISIT_ID);
+        Visit result = timetableController.getVisit(USERNAME, INSTITUTION_NAME, REPRESENTATIVE_NAME, VISIT_ID);
         //      then
         verify(userService, times(1)).getUserEntityByUsername(REPRESENTATIVE_NAME);
         verify(institutionService, times(1)).getInstitutionEntityByInstitutionName(INSTITUTION_NAME);
@@ -87,8 +88,10 @@ class TimetableControllerTest {
         when(userService.getUserEntityByUsername(REPRESENTATIVE_NAME)).thenReturn(representativeEntity);
         InstitutionEntity institutionEntity = new InstitutionEntity();
         when(institutionService.getInstitutionEntityByInstitutionName(INSTITUTION_NAME)).thenReturn(institutionEntity);
+        VisitEntity visitEntity = new VisitEntity();
+        when(visitService.getCurrentByVisitIdAndRepresentativeAndInstitution(representativeEntity, institutionEntity, VISIT_ID)).thenReturn(visitEntity);
         Visit visit = new Visit();
-        when(visitService.bookVisit(userEntity, representativeEntity, institutionEntity, VISIT_ID)).thenReturn(visit);
+        when(visitService.bookVisit(visitEntity, userEntity)).thenReturn(visit);
         //      when
         Visit result = timetableController.bookVisit(USERNAME, INSTITUTION_NAME, REPRESENTATIVE_NAME, VISIT_ID);
         //      then
@@ -96,7 +99,9 @@ class TimetableControllerTest {
         verify(userService, times(1)).getUserEntityByUsername(USERNAME);
         verify(userService, times(1)).getUserEntityByUsername(REPRESENTATIVE_NAME);
         verify(institutionService, times(1)).getInstitutionEntityByInstitutionName(INSTITUTION_NAME);
-        verify(visitService, times(1)).bookVisit(userEntity, representativeEntity, institutionEntity, VISIT_ID);
+        verify(visitService, times(1)).getCurrentByVisitIdAndRepresentativeAndInstitution(representativeEntity, institutionEntity, VISIT_ID);
+        verify(visitService, times(1)).bookVisit(visitEntity, userEntity);
+        verify(userService, times(1)).addRecognizedInstitution(userEntity, institutionEntity);
         verifyNoMoreInteractions(userService);
         verifyNoMoreInteractions(institutionService);
         verifyNoMoreInteractions(visitService);

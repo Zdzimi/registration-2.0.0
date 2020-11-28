@@ -38,7 +38,7 @@ class UserServiceTest {
     }
 
     @Test
-    void getUserByUsername() {
+    void getByUsername() {
         //      given
         UserEntity userEntity = new UserEntity();
         userEntity.setUserId(USER_ID);
@@ -138,7 +138,7 @@ class UserServiceTest {
     }
 
     @Test
-    void shouldThrowUserNotFoundException_NotFoundByUsernameAndWorkPlaces() {
+    void shouldThrowUserNotFoundException_whenGetByUsernameAndWorkPlaces() {
         //      given
         InstitutionEntity institutionEntity = new InstitutionEntity();
         institutionEntity.setInstitutionName(INSTITUTION_NAME);

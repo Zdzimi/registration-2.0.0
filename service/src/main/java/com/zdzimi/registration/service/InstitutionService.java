@@ -9,7 +9,6 @@ import com.zdzimi.registration.service.mapper.InstitutionMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,10 +47,14 @@ public class InstitutionService {
                 .orElseThrow(() -> new InstitutionNotFoundException(institutionName));
     }
 
-    public Institution getWorkPlace(UserEntity userEntity, String institutionName) {
-        InstitutionEntity institutionEntity = institutionRepository.findByInstitutionNameAndRepresentatives(institutionName, userEntity)
-                .orElseThrow(() -> new InstitutionNotFoundException(userEntity.getUsername(), institutionName));
+    public Institution getWorkPlace(UserEntity representativeEntity, String institutionName) {
+        InstitutionEntity institutionEntity = getWorkPlaceEntityByRepresentativeEntityAndInstitutionName(representativeEntity, institutionName);
         return institutionMapper.convertToInstitution(institutionEntity);
+    }
+
+    public InstitutionEntity getWorkPlaceEntityByRepresentativeEntityAndInstitutionName(UserEntity representativeEntity, String institutionName) {
+        return institutionRepository.findByInstitutionNameAndRepresentatives(institutionName, representativeEntity)
+                    .orElseThrow(() -> new InstitutionNotFoundException(representativeEntity.getUsername(), institutionName));
     }
 
     public List<Institution> getWorkPlaces(UserEntity userEntity) {

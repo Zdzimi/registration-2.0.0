@@ -44,4 +44,6 @@ public class PlaceController {
         InstitutionEntity institutionEntity = institutionService.getInstitutionEntityByInstitutionName(institutionName);
         return placeService.getPlace(institutionEntity, placeName);
     }
+
+    //  todo - deletePlace() {...}
 }

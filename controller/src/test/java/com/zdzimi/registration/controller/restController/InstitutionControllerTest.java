@@ -1,14 +1,11 @@
 package com.zdzimi.registration.controller.restController;
 
 import com.zdzimi.registration.core.model.Institution;
-import com.zdzimi.registration.data.entity.InstitutionEntity;
 import com.zdzimi.registration.data.entity.UserEntity;
 import com.zdzimi.registration.service.InstitutionService;
 import com.zdzimi.registration.service.UserService;
-import com.zdzimi.registration.service.mapper.InstitutionMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.modelmapper.ModelMapper;
 
 import java.util.Arrays;
 import java.util.List;
@@ -25,14 +22,13 @@ class InstitutionControllerTest {
     private InstitutionController institutionController;
     private InstitutionService institutionService;
     private UserService userService;
-    private InstitutionMapper institutionMapper = new InstitutionMapper(new ModelMapper());
 
     @BeforeEach
     void setUp() {
         institutionService = mock(InstitutionService.class);
         userService = mock(UserService.class);
         initMocks(this);
-        institutionController = new InstitutionController(institutionService, userService, institutionMapper);
+        institutionController = new InstitutionController(institutionService, userService);
     }
 
     @Test
@@ -76,20 +72,6 @@ class InstitutionControllerTest {
         //      then
         assertEquals(INSTITUTION_NAME, result.getInstitutionName());
         verify(institutionService, times(1)).getByInstitutionName(INSTITUTION_NAME);
-        verifyNoMoreInteractions(institutionService);
-    }
-    @Test
-    void shouldCreateNewInstitution() {
-        //      given
-        Institution institutionBeforeCreate = new Institution();
-        InstitutionEntity institutionEntityAfterCreate = new InstitutionEntity();
-        when(institutionService.createNewInstitution(institutionBeforeCreate)).thenReturn(institutionEntityAfterCreate);
-        //      when
-        institutionController.createNewInstitution(institutionBeforeCreate, USERNAME);
-        //      then
-        verify(userService, times(1)).addWorkPlace(USERNAME, institutionEntityAfterCreate);
-        verify(institutionService, times(1)).createNewInstitution(institutionBeforeCreate);
-        verifyNoMoreInteractions(userService);
         verifyNoMoreInteractions(institutionService);
     }
 }

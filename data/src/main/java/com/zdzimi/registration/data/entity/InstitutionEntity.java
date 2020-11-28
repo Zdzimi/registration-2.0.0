@@ -34,4 +34,7 @@ public class InstitutionEntity {
     @JsonIgnore
     @OneToMany(mappedBy = "institution")
     private Collection<PlaceEntity> places;
+    @JsonIgnore
+    @OneToMany(mappedBy = "institution")
+    private Collection<VisitEntity> visits;
 }

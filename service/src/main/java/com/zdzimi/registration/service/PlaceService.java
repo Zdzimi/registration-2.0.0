@@ -38,8 +38,12 @@ public class PlaceService {
     }
 
     public Place getPlace(InstitutionEntity institutionEntity, String placeName) {
-        PlaceEntity placeEntity = placeRepository.findByInstitutionAndPlaceName(institutionEntity, placeName)
-                .orElseThrow(() -> new PlaceNotFoundException(institutionEntity.getInstitutionName(), placeName));
+        PlaceEntity placeEntity = getPlaceEntity(institutionEntity, placeName);
         return placeMapper.convertToPlace(placeEntity);
+    }
+
+    public PlaceEntity getPlaceEntity(InstitutionEntity institutionEntity, String placeName) {
+        return placeRepository.findByInstitutionAndPlaceName(institutionEntity, placeName)
+                    .orElseThrow(() -> new PlaceNotFoundException(institutionEntity.getInstitutionName(), placeName));
     }
 }

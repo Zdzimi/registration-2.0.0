@@ -56,8 +56,9 @@ class UserVisitControllerTest {
         when(userService.getUserEntityByUsername(USERNAME)).thenReturn(userEntity);
         when(visitService.getByUserAndVisitId(userEntity, VISIT_ID)).thenReturn(visit);
         //      when
-        userVisitController.getUsersVisit(USERNAME, VISIT_ID);
+        Visit result = userVisitController.getUsersVisit(USERNAME, VISIT_ID);
         //      then
+        assertEquals(visit, result);
         verify(userService, times(1)).getUserEntityByUsername(USERNAME);
         verify(visitService, times(1)).getByUserAndVisitId(userEntity, VISIT_ID);
         verifyNoMoreInteractions(userService);

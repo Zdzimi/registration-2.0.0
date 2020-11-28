@@ -3,6 +3,7 @@ package com.zdzimi.registration.controller.restController;
 import com.zdzimi.registration.core.model.Visit;
 import com.zdzimi.registration.data.entity.InstitutionEntity;
 import com.zdzimi.registration.data.entity.UserEntity;
+import com.zdzimi.registration.data.entity.VisitEntity;
 import com.zdzimi.registration.service.InstitutionService;
 import com.zdzimi.registration.service.UserService;
 import com.zdzimi.registration.service.VisitService;
@@ -53,6 +54,9 @@ public class TimetableController {
         UserEntity userEntity = userService.getUserEntityByUsername(username);
         UserEntity representativeEntity = userService.getUserEntityByUsername(representativeName);
         InstitutionEntity institutionEntity = institutionService.getInstitutionEntityByInstitutionName(institutionName);
-        return visitService.bookVisit(userEntity, representativeEntity, institutionEntity, visitId);
+        VisitEntity visitEntity = visitService.getCurrentByVisitIdAndRepresentativeAndInstitution(representativeEntity, institutionEntity, visitId);
+        Visit visit = visitService.bookVisit(visitEntity, userEntity);
+        userService.addRecognizedInstitution(userEntity, institutionEntity);
+        return visit;
     }
 }
