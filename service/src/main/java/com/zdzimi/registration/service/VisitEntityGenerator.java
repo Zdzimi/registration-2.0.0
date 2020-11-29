@@ -29,6 +29,8 @@ public class VisitEntityGenerator {
     }
 
     public List<VisitEntity> createVisits(TimetableTemplate timetableTemplate, UserEntity representativeEntity, InstitutionEntity institutionEntity) {
+        LocalDateTime now = LocalDateTime.now();
+
         int year = timetableTemplate.getYear();
         int month = timetableTemplate.getMonth();
         long visitLength = timetableTemplate.getVisitLength();
@@ -43,15 +45,17 @@ public class VisitEntityGenerator {
             PlaceEntity placeEntity = placeService.getPlaceEntity(institutionEntity, placeName);
 
             while (workStart.isBefore(workEnd)) {
-                VisitEntity visitEntity = new VisitEntity();
                 LocalDateTime visitStart = LocalDateTime.of(year, month, dayOfMonth, workStart.getHour(), workStart.getMinute());
-                LocalDateTime visitEnd = visitStart.plusMinutes(visitLength);
-                visitEntity.setVisitStart(Timestamp.valueOf(visitStart));
-                visitEntity.setVisitEnd(Timestamp.valueOf(visitEnd));
-                visitEntity.setRepresentative(representativeEntity);
-                visitEntity.setPlace(placeEntity);
-                visitEntity.setInstitution(institutionEntity);
-                visits.add(visitEntity);
+                if (now.isBefore(visitStart)){
+                    LocalDateTime visitEnd = visitStart.plusMinutes(visitLength);
+                    VisitEntity visitEntity = new VisitEntity();
+                    visitEntity.setVisitStart(Timestamp.valueOf(visitStart));
+                    visitEntity.setVisitEnd(Timestamp.valueOf(visitEnd));
+                    visitEntity.setRepresentative(representativeEntity);
+                    visitEntity.setPlace(placeEntity);
+                    visitEntity.setInstitution(institutionEntity);
+                    visits.add(visitEntity);
+                }
                 workStart = workStart.plusMinutes(visitLength);
             }
         }
