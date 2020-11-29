@@ -19,5 +19,4 @@ public class Place {
     @NotNull
     @OnlyLettersAndDigits
     private String placeName;
-    private Institution institution;
 }

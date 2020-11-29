@@ -2,10 +2,14 @@ package com.zdzimi.registration.service;
 
 import com.zdzimi.registration.core.model.Visit;
 import com.zdzimi.registration.data.entity.InstitutionEntity;
+import com.zdzimi.registration.data.entity.PlaceEntity;
 import com.zdzimi.registration.data.entity.UserEntity;
 import com.zdzimi.registration.data.entity.VisitEntity;
 import com.zdzimi.registration.data.exception.VisitNotFoundException;
 import com.zdzimi.registration.data.repository.VisitRepository;
+import com.zdzimi.registration.service.mapper.InstitutionMapper;
+import com.zdzimi.registration.service.mapper.PlaceMapper;
+import com.zdzimi.registration.service.mapper.UserMapper;
 import com.zdzimi.registration.service.mapper.VisitMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,7 +40,12 @@ class VisitServiceTest {
 
     private VisitService visitService;
     private VisitRepository visitRepository;
-    private VisitMapper visitMapper = new VisitMapper(new ModelMapper());
+
+    private ModelMapper modelMapper = new ModelMapper();
+    private UserMapper userMapper = new UserMapper(modelMapper);
+    private PlaceMapper placeMapper = new PlaceMapper(modelMapper);
+    private InstitutionMapper institutionMapper = new InstitutionMapper(modelMapper);
+    private VisitMapper visitMapper = new VisitMapper(modelMapper, userMapper, placeMapper, institutionMapper);
 
     @BeforeEach
     void setUp() {
@@ -49,9 +58,7 @@ class VisitServiceTest {
     void shouldGetAllByUser() {
         //      given
         UserEntity userEntity = new UserEntity();
-        VisitEntity visitEntity = new VisitEntity();
-        visitEntity.setVisitStart(TIMESTAMP_START);
-        visitEntity.setVisitEnd(TIMESTAMP_END);
+        VisitEntity visitEntity = createVisitEntity();
         when(visitRepository.findByUser(userEntity)).thenReturn(Arrays.asList(visitEntity));
         //      when
         List<Visit> result = visitService.getAllByUser(userEntity);
@@ -67,10 +74,7 @@ class VisitServiceTest {
     void shouldGetByUserAndVisitId() {
         //      given
         UserEntity userEntity = new UserEntity();
-        VisitEntity visitEntity = new VisitEntity();
-        visitEntity.setVisitId(VISIT_ID);
-        visitEntity.setVisitStart(TIMESTAMP_START);
-        visitEntity.setVisitEnd(TIMESTAMP_END);
+        VisitEntity visitEntity = createVisitEntity();
         when(visitRepository.findByUserAndVisitId(userEntity, VISIT_ID)).thenReturn(Optional.of(visitEntity));
         //      when
         Visit result = visitService.getByUserAndVisitId(userEntity, VISIT_ID);
@@ -139,9 +143,7 @@ class VisitServiceTest {
         InstitutionEntity institutionEntity = new InstitutionEntity();
         Timestamp dateMin = Timestamp.valueOf(LocalDateTime.of(YEAR, 1, 1, 0, 0));
         Timestamp dateMax = Timestamp.valueOf(LocalDateTime.of(YEAR, 12, 31, 23, 59, 59));
-        VisitEntity visitEntity = new VisitEntity();
-        visitEntity.setVisitStart(TIMESTAMP_START);
-        visitEntity.setVisitEnd(TIMESTAMP_END);
+        VisitEntity visitEntity = createVisitEntity();
         when(visitRepository.findByRepresentativeAndInstitutionAndVisitStartBetween(representativeEntity, institutionEntity, dateMin, dateMax))
                 .thenReturn(Arrays.asList(visitEntity));
         //      when
@@ -162,9 +164,7 @@ class VisitServiceTest {
         InstitutionEntity institutionEntity = new InstitutionEntity();
         Timestamp dateMin = Timestamp.valueOf(LocalDateTime.of(YEAR, MONTH, 1, 0, 0));
         Timestamp dateMax = Timestamp.valueOf(LocalDateTime.of(YEAR, MONTH, 31, 23, 59, 59));
-        VisitEntity visitEntity = new VisitEntity();
-        visitEntity.setVisitStart(TIMESTAMP_START);
-        visitEntity.setVisitEnd(TIMESTAMP_END);
+        VisitEntity visitEntity = createVisitEntity();
         when(visitRepository.findByRepresentativeAndInstitutionAndVisitStartBetween(representativeEntity, institutionEntity, dateMin, dateMax))
                 .thenReturn(Arrays.asList(visitEntity));
         //      when
@@ -185,9 +185,7 @@ class VisitServiceTest {
         InstitutionEntity institutionEntity = new InstitutionEntity();
         Timestamp dateMin = Timestamp.valueOf(LocalDateTime.of(YEAR, MONTH, DAY_OF_MONTH, 0, 0));
         Timestamp dateMax = Timestamp.valueOf(LocalDateTime.of(YEAR, MONTH, DAY_OF_MONTH, 23, 59, 59));
-        VisitEntity visitEntity = new VisitEntity();
-        visitEntity.setVisitStart(TIMESTAMP_START);
-        visitEntity.setVisitEnd(TIMESTAMP_END);
+        VisitEntity visitEntity = createVisitEntity();
         when(visitRepository.findByRepresentativeAndInstitutionAndVisitStartBetween(representativeEntity, institutionEntity, dateMin, dateMax))
                 .thenReturn(Arrays.asList(visitEntity));
         //      when
@@ -207,9 +205,7 @@ class VisitServiceTest {
         //      given
         UserEntity representativeEntity = new UserEntity();
         InstitutionEntity institutionEntity = new InstitutionEntity();
-        VisitEntity visitEntity = new VisitEntity();
-        visitEntity.setVisitStart(TIMESTAMP_START);
-        visitEntity.setVisitEnd(TIMESTAMP_END);
+        VisitEntity visitEntity = createVisitEntity();
         when(visitRepository.findByVisitIdAndRepresentativeAndInstitution(VISIT_ID, representativeEntity, institutionEntity))
                 .thenReturn(Optional.of(visitEntity));
         //      when
@@ -299,9 +295,7 @@ class VisitServiceTest {
     @Test
     void shouldSaveAll() {
         //      given
-        VisitEntity visitEntity = new VisitEntity();
-        visitEntity.setVisitStart(TIMESTAMP_START);
-        visitEntity.setVisitEnd(TIMESTAMP_END);
+        VisitEntity visitEntity = createVisitEntity();
         List<VisitEntity> entities = Arrays.asList(visitEntity);
         when(visitRepository.saveAll(ArgumentMatchers.anyCollection())).thenReturn(entities);
         //      when
@@ -325,5 +319,15 @@ class VisitServiceTest {
         //      then
         verify(visitRepository, times(1)).save(visitEntity);
         verifyNoMoreInteractions(visitRepository);
+    }
+
+    private VisitEntity createVisitEntity() {
+        VisitEntity visitEntity = new VisitEntity();
+        visitEntity.setVisitId(VISIT_ID);
+        visitEntity.setVisitStart(TIMESTAMP_START);
+        visitEntity.setVisitEnd(TIMESTAMP_END);
+        visitEntity.setPlace(new PlaceEntity());
+        visitEntity.setInstitution(new InstitutionEntity());
+        return visitEntity;
     }
 }

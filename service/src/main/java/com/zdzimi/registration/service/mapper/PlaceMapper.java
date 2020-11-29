@@ -25,11 +25,6 @@ public class PlaceMapper {
 
     public PlaceEntity convertToPlaceEntity(Place place) {
         PlaceEntity placeEntity = modelMapper.map(place, PlaceEntity.class);
-        if (place.getInstitution() != null) {
-            InstitutionMapper institutionMapper = new InstitutionMapper(modelMapper);
-            InstitutionEntity institutionEntity = institutionMapper.convertToInstitutionEntity(place.getInstitution());
-            placeEntity.setInstitution(institutionEntity);
-        }
         placeEntity.setVisits(Collections.emptyList());
         return placeEntity;
     }

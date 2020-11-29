@@ -17,6 +17,7 @@ public class PlaceEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long placeId;
     private String placeName;
+    @JsonIgnore
     @ManyToOne
     private InstitutionEntity institution;
     @JsonIgnore

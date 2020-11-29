@@ -21,6 +21,9 @@ public class UserMapper {
     }
 
     public User convertToUser(UserEntity userEntity) {
+        if (userEntity == null) {
+            return null;
+        }
         User user = modelMapper.map(userEntity, User.class);
         String role = userEntity.getRole();
         if (role.equals(ROLE_USER.name())) {

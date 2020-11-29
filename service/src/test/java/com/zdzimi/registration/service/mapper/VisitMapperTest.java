@@ -29,7 +29,11 @@ class VisitMapperTest {
     private static final Timestamp TIMESTAMP_START = Timestamp.valueOf(LOCAL_DATE_TIME_START);
     private static final Timestamp TIMESTAMP_END = Timestamp.valueOf(LOCAL_DATE_TIME_END);
 
-    private VisitMapper visitMapper = new VisitMapper(new ModelMapper());
+    private ModelMapper modelMapper = new ModelMapper();
+    private UserMapper userMapper = new UserMapper(modelMapper);
+    private PlaceMapper placeMapper = new PlaceMapper(modelMapper);
+    private InstitutionMapper institutionMapper = new InstitutionMapper(modelMapper);
+    private VisitMapper visitMapper = new VisitMapper(modelMapper, userMapper, placeMapper, institutionMapper);
 
     @Test
     void shouldConvertToVisit() {
@@ -46,7 +50,7 @@ class VisitMapperTest {
         assertEquals(NAME, result.getUser().getName());
         assertEquals(SURNAME, result.getUser().getSurname());
         assertEquals(EMAIL, result.getUser().getEmail());
-        assertEquals(PASSWORD, result.getUser().getPassword());
+        assertNull(result.getUser().getPassword());
         assertEquals(ROLE_ROLE, result.getUser().getRole());
 
         assertEquals(USER_ID, result.getRepresentative().getUserId());
@@ -54,7 +58,7 @@ class VisitMapperTest {
         assertEquals(NAME, result.getRepresentative().getName());
         assertEquals(SURNAME, result.getRepresentative().getSurname());
         assertEquals(EMAIL, result.getRepresentative().getEmail());
-        assertEquals(PASSWORD, result.getRepresentative().getPassword());
+        assertNull(result.getRepresentative().getPassword());
         assertEquals(ROLE_ROLE, result.getRepresentative().getRole());
 
         assertEquals(PLACE_ID, result.getPlace().getPlaceId());

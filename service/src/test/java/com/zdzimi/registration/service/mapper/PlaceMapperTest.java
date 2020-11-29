@@ -1,6 +1,5 @@
 package com.zdzimi.registration.service.mapper;
 
-import com.zdzimi.registration.core.model.Institution;
 import com.zdzimi.registration.core.model.Place;
 import com.zdzimi.registration.data.entity.InstitutionEntity;
 import com.zdzimi.registration.data.entity.PlaceEntity;
@@ -11,7 +10,6 @@ import org.modelmapper.ModelMapper;
 import java.util.Arrays;
 
 import static com.zdzimi.registration.service.mapper.InstitutionMapperTest.*;
-import static com.zdzimi.registration.service.mapper.InstitutionMapperTest.getInstitution;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PlaceMapperTest {
@@ -29,16 +27,6 @@ class PlaceMapperTest {
 
         assertEquals(PLACE_ID, result.getPlaceId());
         assertEquals(PLACE_NAME, result.getPlaceName());
-
-        assertEquals(INSTITUTION_ID, result.getInstitution().getInstitutionId());
-        assertEquals(INSTITUTION_NAME, result.getInstitution().getInstitutionName());
-        assertEquals(PROVINCE, result.getInstitution().getProvince());
-        assertEquals(CITY, result.getInstitution().getCity());
-        assertEquals(STREET, result.getInstitution().getStreet());
-        assertEquals(GATE_NUMBER, result.getInstitution().getGateNumber());
-        assertEquals(PREMISES_NUMBER, result.getInstitution().getPremisesNumber());
-        assertEquals(TYPE_OF_SERVICE, result.getInstitution().getTypeOfService());
-        assertEquals(DESCRIPTION, result.getInstitution().getDescription());
     }
 
     @Test
@@ -49,18 +37,7 @@ class PlaceMapperTest {
 
         assertEquals(PLACE_ID, result.getPlaceId());
         assertEquals(PLACE_NAME, result.getPlaceName());
-        assertEquals(INSTITUTION_ID, result.getInstitution().getInstitutionId());
-        assertEquals(INSTITUTION_NAME, result.getInstitution().getInstitutionName());
-        assertEquals(PROVINCE, result.getInstitution().getProvince());
-        assertEquals(CITY, result.getInstitution().getCity());
-        assertEquals(STREET, result.getInstitution().getStreet());
-        assertEquals(GATE_NUMBER, result.getInstitution().getGateNumber());
-        assertEquals(PREMISES_NUMBER, result.getInstitution().getPremisesNumber());
-        assertEquals(TYPE_OF_SERVICE, result.getInstitution().getTypeOfService());
-        assertEquals(DESCRIPTION, result.getInstitution().getDescription());
-        assertTrue(result.getInstitution().getUsers().isEmpty());
-        assertTrue(result.getInstitution().getRepresentatives().isEmpty());
-        assertTrue(result.getInstitution().getPlaces().isEmpty());
+        assertNull(result.getInstitution());
         assertTrue(result.getVisits().isEmpty());
     }
 
@@ -80,10 +57,6 @@ class PlaceMapperTest {
         Place place = new Place();
         place.setPlaceId(PLACE_ID);
         place.setPlaceName(PLACE_NAME);
-
-        Institution institution = getInstitution();
-
-        place.setInstitution(institution);
         return place;
     }
 
