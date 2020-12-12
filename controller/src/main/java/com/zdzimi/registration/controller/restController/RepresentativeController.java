@@ -1,5 +1,6 @@
 package com.zdzimi.registration.controller.restController;
 
+import com.zdzimi.registration.controller.link.LinkCreator;
 import com.zdzimi.registration.core.model.User;
 import com.zdzimi.registration.data.entity.InstitutionEntity;
 import com.zdzimi.registration.service.InstitutionService;
@@ -15,17 +16,21 @@ public class RepresentativeController {
 
     private UserService userService;
     private InstitutionService institutionService;
+    private LinkCreator linkCreator;
 
     @Autowired
-    public RepresentativeController(UserService userService, InstitutionService institutionService) {
+    public RepresentativeController(UserService userService, InstitutionService institutionService, LinkCreator linkCreator) {
         this.userService = userService;
         this.institutionService = institutionService;
+        this.linkCreator = linkCreator;
     }
 
     @GetMapping
     public List<User> getRepresentatives (@PathVariable String username, @PathVariable String institutionName) {
         InstitutionEntity institutionEntity = institutionService.getInstitutionEntityByInstitutionName(institutionName);
-        return userService.getByWorkPlaces(institutionEntity);
+        List<User> representatives = userService.getByWorkPlaces(institutionEntity);
+        linkCreator.addLinksToRepresentatives(representatives, username, institutionName);
+        return representatives;
     }
 
     @GetMapping("/{representativeName}")
@@ -33,6 +38,8 @@ public class RepresentativeController {
                                   @PathVariable String institutionName,
                                   @PathVariable String representativeName) {
         InstitutionEntity institutionEntity = institutionService.getInstitutionEntityByInstitutionName(institutionName);
-        return userService.getByUsernameAndWorkPlaces(representativeName, institutionEntity);
+        User representative = userService.getByUsernameAndWorkPlaces(representativeName, institutionEntity);
+        linkCreator.addLinksToRepresentative(representative, username, institutionName);
+        return representative;
     }
 }

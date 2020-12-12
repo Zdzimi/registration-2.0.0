@@ -1,5 +1,6 @@
 package com.zdzimi.registration.controller.restController;
 
+import com.zdzimi.registration.controller.link.LinkCreator;
 import com.zdzimi.registration.core.model.Visit;
 import com.zdzimi.registration.data.entity.InstitutionEntity;
 import com.zdzimi.registration.data.entity.UserEntity;
@@ -28,14 +29,16 @@ class TimetableControllerTest {
     private VisitService visitService;
     private InstitutionService institutionService;
     private UserService userService;
+    private LinkCreator linkCreator;
 
     @BeforeEach
     void setUp() {
         visitService = mock(VisitService.class);
         institutionService = mock(InstitutionService.class);
         userService = mock(UserService.class);
+        linkCreator = mock(LinkCreator.class);
         initMocks(this);
-        timetableController = new TimetableController(visitService, institutionService, userService);
+        timetableController = new TimetableController(visitService, institutionService, userService, linkCreator);
     }
 
     @Test

@@ -1,5 +1,6 @@
 package com.zdzimi.registration.controller.restController;
 
+import com.zdzimi.registration.controller.link.LinkCreator;
 import com.zdzimi.registration.core.model.User;
 import com.zdzimi.registration.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,13 +19,15 @@ class UserControllerTest {
     private UserController userController;
     private UserService userService;
     private PasswordEncoder passwordEncoder;
+    private LinkCreator linkCreator;
 
     @BeforeEach
     void setUp() {
         userService = mock(UserService.class);
         passwordEncoder = mock(PasswordEncoder.class);
+        linkCreator = mock(LinkCreator.class);
         initMocks(this);
-        userController = new UserController(userService, passwordEncoder);
+        userController = new UserController(userService, passwordEncoder, linkCreator);
     }
 
     @Test

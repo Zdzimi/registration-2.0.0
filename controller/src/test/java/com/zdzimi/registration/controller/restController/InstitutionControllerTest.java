@@ -1,5 +1,6 @@
 package com.zdzimi.registration.controller.restController;
 
+import com.zdzimi.registration.controller.link.LinkCreator;
 import com.zdzimi.registration.core.model.Institution;
 import com.zdzimi.registration.data.entity.UserEntity;
 import com.zdzimi.registration.service.InstitutionService;
@@ -22,13 +23,15 @@ class InstitutionControllerTest {
     private InstitutionController institutionController;
     private InstitutionService institutionService;
     private UserService userService;
+    private LinkCreator linkCreator;
 
     @BeforeEach
     void setUp() {
         institutionService = mock(InstitutionService.class);
         userService = mock(UserService.class);
+        linkCreator = mock(LinkCreator.class);
         initMocks(this);
-        institutionController = new InstitutionController(institutionService, userService);
+        institutionController = new InstitutionController(institutionService, userService, linkCreator);
     }
 
     @Test
@@ -37,7 +40,7 @@ class InstitutionControllerTest {
         Institution institution = new Institution();
         when(institutionService.getAll()).thenReturn(Arrays.asList(institution));
         //      when
-        List<Institution> result = institutionController.getInstitutions();
+        List<Institution> result = institutionController.getInstitutions(USERNAME);
         //      then
         assertEquals(1, result.size());
         verify(institutionService, times(1)).getAll();
@@ -68,7 +71,7 @@ class InstitutionControllerTest {
         institution.setInstitutionName(INSTITUTION_NAME);
         when(institutionService.getByInstitutionName(INSTITUTION_NAME)).thenReturn(institution);
         //      when
-        Institution result = institutionController.getInstitution(INSTITUTION_NAME);
+        Institution result = institutionController.getInstitution(USERNAME, INSTITUTION_NAME);
         //      then
         assertEquals(INSTITUTION_NAME, result.getInstitutionName());
         verify(institutionService, times(1)).getByInstitutionName(INSTITUTION_NAME);

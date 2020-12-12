@@ -2,6 +2,7 @@ package com.zdzimi.registration.core.model.template;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.hateoas.EntityModel;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -10,7 +11,7 @@ import java.util.Collection;
 
 @Getter
 @Setter
-public class TimetableTemplate {
+public class TimetableTemplate extends EntityModel {
 
     @NotNull
     private int year;

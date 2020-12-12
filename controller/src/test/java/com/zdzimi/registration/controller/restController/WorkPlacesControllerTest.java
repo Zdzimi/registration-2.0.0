@@ -1,5 +1,6 @@
 package com.zdzimi.registration.controller.restController;
 
+import com.zdzimi.registration.controller.link.LinkCreator;
 import com.zdzimi.registration.core.model.Institution;
 import com.zdzimi.registration.data.entity.InstitutionEntity;
 import com.zdzimi.registration.data.entity.UserEntity;
@@ -26,13 +27,15 @@ class WorkPlacesControllerTest {
     private InstitutionService institutionService;
     private UserService userService;
     private InstitutionMapper institutionMapper = new InstitutionMapper(new ModelMapper());
+    private LinkCreator linkCreator;
 
     @BeforeEach
     void setUp() {
         institutionService = mock(InstitutionService.class);
         userService = mock(UserService.class);
+        linkCreator = mock(LinkCreator.class);
         initMocks(this);
-        workPlacesController = new WorkPlacesController(institutionService, userService, institutionMapper);
+        workPlacesController = new WorkPlacesController(institutionService, userService, institutionMapper, linkCreator);
     }
 
     @Test

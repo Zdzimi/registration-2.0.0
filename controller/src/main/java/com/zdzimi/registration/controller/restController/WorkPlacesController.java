@@ -1,5 +1,6 @@
 package com.zdzimi.registration.controller.restController;
 
+import com.zdzimi.registration.controller.link.LinkCreator;
 import com.zdzimi.registration.core.model.Institution;
 import com.zdzimi.registration.core.validation.OnCreate;
 import com.zdzimi.registration.data.entity.InstitutionEntity;
@@ -21,24 +22,33 @@ public class WorkPlacesController {
     private InstitutionService institutionService;
     private UserService userService;
     private InstitutionMapper institutionMapper;
+    private LinkCreator linkCreator;
 
     @Autowired
-    public WorkPlacesController(InstitutionService institutionService, UserService userService, InstitutionMapper institutionMapper) {
+    public WorkPlacesController(InstitutionService institutionService,
+                                UserService userService,
+                                InstitutionMapper institutionMapper,
+                                LinkCreator linkCreator) {
         this.institutionService = institutionService;
         this.userService = userService;
         this.institutionMapper = institutionMapper;
+        this.linkCreator = linkCreator;
     }
 
     @GetMapping
     public List<Institution> getWorkPlaces(@PathVariable String username) {
         UserEntity userEntity = userService.getUserEntityByUsername(username);
-        return institutionService.getWorkPlaces(userEntity);
+        List<Institution> workPlaces = institutionService.getWorkPlaces(userEntity);
+        linkCreator.addLinksToWorkPlaces(workPlaces, username);
+        return workPlaces;
     }
 
     @GetMapping("/{institutionName}")
-    public Institution getWorkPlace(@PathVariable String username, String institutionName) {
+    public Institution getWorkPlace(@PathVariable String username, @PathVariable String institutionName) {
         UserEntity userEntity = userService.getUserEntityByUsername(username);
-        return institutionService.getWorkPlace(userEntity, institutionName);
+        Institution workPlace = institutionService.getWorkPlace(userEntity, institutionName);
+        linkCreator.addLinksToWorkPlace(workPlace, username);
+        return workPlace;
     }
 
     @PostMapping("/new-institution")
@@ -47,7 +57,9 @@ public class WorkPlacesController {
                                             @PathVariable String username) {
         InstitutionEntity newInstitutionEntity = institutionService.createNewInstitution(institution);
         userService.addWorkPlace(username, newInstitutionEntity);
-        return institutionMapper.convertToInstitution(newInstitutionEntity);
+        Institution newInstitution = institutionMapper.convertToInstitution(newInstitutionEntity);
+        linkCreator.addLinksToWorkPlace(newInstitution, username);
+        return newInstitution;
     }
 
     //  todo - inviteRepresentative() {...}

@@ -1,5 +1,6 @@
 package com.zdzimi.registration.controller.restController;
 
+import com.zdzimi.registration.controller.link.LinkCreator;
 import com.zdzimi.registration.core.model.Visit;
 import com.zdzimi.registration.core.model.template.TimetableTemplate;
 import com.zdzimi.registration.data.entity.InstitutionEntity;
@@ -22,19 +23,23 @@ public class RepresentativeUtilsController {
     private TimetableTemplateService timetableTemplateService;
     private VisitEntityGenerator visitEntityGenerator;
     private ConflictAnalyzer conflictAnalyzer;
+    private LinkCreator linkCreator;
 
     @Autowired
     public RepresentativeUtilsController(VisitService visitService,
                                          UserService userService,
                                          InstitutionService institutionService,
                                          TimetableTemplateService timetableTemplateService,
-                                         VisitEntityGenerator visitEntityGenerator, ConflictAnalyzer conflictAnalyzer) {
+                                         VisitEntityGenerator visitEntityGenerator,
+                                         ConflictAnalyzer conflictAnalyzer,
+                                         LinkCreator linkCreator) {
         this.visitService = visitService;
         this.userService = userService;
         this.institutionService = institutionService;
         this.timetableTemplateService = timetableTemplateService;
         this.visitEntityGenerator = visitEntityGenerator;
         this.conflictAnalyzer = conflictAnalyzer;
+        this.linkCreator = linkCreator;
     }
 
     @GetMapping("/get-next-template")
@@ -43,7 +48,9 @@ public class RepresentativeUtilsController {
         InstitutionEntity institutionEntity = institutionService
                 .getWorkPlaceEntityByRepresentativeEntityAndInstitutionName(representativeEntity, institutionName);
         Visit lastProvidedVisit = visitService.getLastProvidedVisit(representativeEntity, institutionEntity);
-        return timetableTemplateService.prepareTemplate(lastProvidedVisit);
+        TimetableTemplate timetableTemplate = timetableTemplateService.prepareTemplate(lastProvidedVisit);
+        linkCreator.addLinksToTemplate(timetableTemplate, username, institutionName);
+        return timetableTemplate;
     }
 
     @GetMapping("/year/{year}")
@@ -53,7 +60,9 @@ public class RepresentativeUtilsController {
         UserEntity representativeEntity = userService.getUserEntityByUsername(username);
         InstitutionEntity institutionEntity = institutionService
                 .getWorkPlaceEntityByRepresentativeEntityAndInstitutionName(representativeEntity, institutionName);
-        return visitService.getByRepresentativeAndInstitutionAndYear(representativeEntity, institutionEntity, year);
+        List<Visit> visits = visitService.getByRepresentativeAndInstitutionAndYear(representativeEntity, institutionEntity, year);
+        linkCreator.addLinksToRepresentativesVisits(visits, username, institutionName);
+        return visits;
     }
 
     @GetMapping("/year/{year}/month/{month}")
@@ -64,13 +73,19 @@ public class RepresentativeUtilsController {
         UserEntity representativeEntity = userService.getUserEntityByUsername(username);
         InstitutionEntity institutionEntity = institutionService
                 .getWorkPlaceEntityByRepresentativeEntityAndInstitutionName(representativeEntity, institutionName);
-        return visitService.getByRepresentativeAndInstitutionAndYearAndMonth(representativeEntity, institutionEntity, year, month);
+        List<Visit> visits = visitService.getByRepresentativeAndInstitutionAndYearAndMonth(representativeEntity, institutionEntity, year, month);
+        linkCreator.addLinksToRepresentativesVisits(visits, username, institutionName);
+        return visits;
     }
 
     @GetMapping("/year/{year}/month/{month}/get-template")
-    public TimetableTemplate prepareTemplateByYearAndMonth(@PathVariable int year,
+    public TimetableTemplate prepareTemplateByYearAndMonth(@PathVariable String username,
+                                                           @PathVariable String institutionName,
+                                                           @PathVariable int year,
                                                            @PathVariable int month) {
-        return timetableTemplateService.prepareTemplate(year, month);
+        TimetableTemplate timetableTemplate = timetableTemplateService.prepareTemplate(year, month);
+        linkCreator.addLinksToTemplate(timetableTemplate, username, institutionName);
+        return timetableTemplate;
     }
 
     @GetMapping("/year/{year}/month/{month}/day/{day}")
@@ -82,7 +97,9 @@ public class RepresentativeUtilsController {
         UserEntity representativeEntity = userService.getUserEntityByUsername(username);
         InstitutionEntity institutionEntity = institutionService
                 .getWorkPlaceEntityByRepresentativeEntityAndInstitutionName(representativeEntity, institutionName);
-        return visitService.getByRepresentativeAndInstitutionAndYearAndMonthAndDay(representativeEntity, institutionEntity, year, month, day);
+        List<Visit> visits = visitService.getByRepresentativeAndInstitutionAndYearAndMonthAndDay(representativeEntity, institutionEntity, year, month, day);
+        linkCreator.addLinksToRepresentativesVisits(visits, username, institutionName);
+        return visits;
     }
 
     @GetMapping("/year/{year}/month/{month}/day/{day}/visit/{visitId}")
@@ -92,7 +109,9 @@ public class RepresentativeUtilsController {
         UserEntity representativeEntity = userService.getUserEntityByUsername(username);
         InstitutionEntity institutionEntity = institutionService
                 .getWorkPlaceEntityByRepresentativeEntityAndInstitutionName(representativeEntity, institutionName);
-        return visitService.getByRepresentativeAndInstitutionAndVisitId(representativeEntity, institutionEntity, visitId);
+        Visit visit = visitService.getByRepresentativeAndInstitutionAndVisitId(representativeEntity, institutionEntity, visitId);
+        linkCreator.addLinksToRepresentativesVisit(visit, username, institutionName);
+        return visit;
     }
 
     @DeleteMapping("/year/{year}/month/{month}/day/{day}/visit/{visitId}")
@@ -114,6 +133,8 @@ public class RepresentativeUtilsController {
                 .getWorkPlaceEntityByRepresentativeEntityAndInstitutionName(representativeEntity, institutionName);
         List<VisitEntity> visitEntities = visitEntityGenerator.createVisits(timetableTemplate, representativeEntity, institutionEntity);
         conflictAnalyzer.checkConflicts(visitEntities, representativeEntity, institutionEntity);
-        return visitService.saveAll(visitEntities);
+        List<Visit> visits = visitService.saveAll(visitEntities);
+        linkCreator.addLinksToRepresentativesVisits(visits, username, institutionName);
+        return visits;
     }
 }

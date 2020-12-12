@@ -1,5 +1,6 @@
 package com.zdzimi.registration.controller.restController;
 
+import com.zdzimi.registration.controller.link.LinkCreator;
 import com.zdzimi.registration.core.model.Visit;
 import com.zdzimi.registration.data.entity.InstitutionEntity;
 import com.zdzimi.registration.data.entity.UserEntity;
@@ -19,12 +20,14 @@ public class TimetableController {
     private VisitService visitService;
     private InstitutionService institutionService;
     private UserService userService;
+    private LinkCreator linkCreator;
 
     @Autowired
-    public TimetableController(VisitService visitService, InstitutionService institutionService, UserService userService) {
+    public TimetableController(VisitService visitService, InstitutionService institutionService, UserService userService, LinkCreator linkCreator) {
         this.visitService = visitService;
         this.institutionService = institutionService;
         this.userService = userService;
+        this.linkCreator = linkCreator;
     }
 
     @GetMapping
@@ -33,7 +36,9 @@ public class TimetableController {
                                  @PathVariable String representativeName) {
         UserEntity representativeEntity = userService.getUserEntityByUsername(representativeName);
         InstitutionEntity institutionEntity = institutionService.getInstitutionEntityByInstitutionName(institutionName);
-        return visitService.getCurrentVisits(representativeEntity, institutionEntity);
+        List<Visit> currentVisits = visitService.getCurrentVisits(representativeEntity, institutionEntity);
+        linkCreator.addLinksToCurrentVisits(currentVisits, username, institutionName, representativeName);
+        return currentVisits;
     }
 
     @GetMapping("/{visitId}")
@@ -43,7 +48,9 @@ public class TimetableController {
                           @PathVariable long visitId) {
         UserEntity representativeEntity = userService.getUserEntityByUsername(representativeName);
         InstitutionEntity institutionEntity = institutionService.getInstitutionEntityByInstitutionName(institutionName);
-        return visitService.getCurrentVisit(representativeEntity, institutionEntity, visitId);
+        Visit visit = visitService.getCurrentVisit(representativeEntity, institutionEntity, visitId);
+        linkCreator.addLinksToCurrentVisit(visit, username, institutionName, representativeName);
+        return visit;
     }
 
     @PatchMapping("/{visitId}")
@@ -57,6 +64,7 @@ public class TimetableController {
         VisitEntity visitEntity = visitService.getCurrentByVisitIdAndRepresentativeAndInstitution(representativeEntity, institutionEntity, visitId);
         Visit visit = visitService.bookVisit(visitEntity, userEntity);
         userService.addRecognizedInstitution(userEntity, institutionEntity);
+        linkCreator.addLinksToCurrentVisit(visit, username, institutionName, representativeName);
         return visit;
     }
 }

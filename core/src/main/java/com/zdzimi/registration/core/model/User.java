@@ -6,6 +6,7 @@ import com.zdzimi.registration.core.validation.OnlyLettersAndDigits;
 import com.zdzimi.registration.core.validation.Password;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.hateoas.EntityModel;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
@@ -13,7 +14,7 @@ import javax.validation.constraints.Null;
 
 @Getter
 @Setter
-public class User {
+public class User extends EntityModel {
 
     @Null(groups = OnCreate.class)
     @NotNull(groups = OnUpdate.class)

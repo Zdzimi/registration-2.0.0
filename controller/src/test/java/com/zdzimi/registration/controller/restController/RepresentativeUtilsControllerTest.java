@@ -1,5 +1,6 @@
 package com.zdzimi.registration.controller.restController;
 
+import com.zdzimi.registration.controller.link.LinkCreator;
 import com.zdzimi.registration.core.model.Visit;
 import com.zdzimi.registration.core.model.template.TimetableTemplate;
 import com.zdzimi.registration.data.entity.InstitutionEntity;
@@ -33,6 +34,7 @@ class RepresentativeUtilsControllerTest {
     private TimetableTemplateService timetableTemplateService;
     private VisitEntityGenerator visitEntityGenerator;
     private ConflictAnalyzer conflictAnalyzer;
+    private LinkCreator linkCreator;
 
     @BeforeEach
     void setUp() {
@@ -42,10 +44,11 @@ class RepresentativeUtilsControllerTest {
         timetableTemplateService = mock(TimetableTemplateService.class);
         visitEntityGenerator = mock(VisitEntityGenerator.class);
         conflictAnalyzer = mock(ConflictAnalyzer.class);
+        linkCreator = mock(LinkCreator.class);
         initMocks(this);
         representativeUtilsController = new RepresentativeUtilsController(
-                visitService, userService, institutionService, timetableTemplateService, visitEntityGenerator, conflictAnalyzer
-        );
+                visitService, userService, institutionService, timetableTemplateService, visitEntityGenerator, conflictAnalyzer,
+                linkCreator);
     }
 
     @Test
@@ -129,7 +132,7 @@ class RepresentativeUtilsControllerTest {
         TimetableTemplate timetableTemplate = new TimetableTemplate();
         when(timetableTemplateService.prepareTemplate(YEAR, MONTH)).thenReturn(timetableTemplate);
         //      when
-        TimetableTemplate result = representativeUtilsController.prepareTemplateByYearAndMonth(YEAR, MONTH);
+        TimetableTemplate result = representativeUtilsController.prepareTemplateByYearAndMonth(USERNAME, INSTITUTION_NAME, YEAR, MONTH);
         //      them
         assertEquals(timetableTemplate, result);
         verify(timetableTemplateService, times(1)).prepareTemplate(YEAR, MONTH);

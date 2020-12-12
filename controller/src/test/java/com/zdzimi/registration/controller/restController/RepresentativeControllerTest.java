@@ -1,5 +1,6 @@
 package com.zdzimi.registration.controller.restController;
 
+import com.zdzimi.registration.controller.link.LinkCreator;
 import com.zdzimi.registration.core.model.User;
 import com.zdzimi.registration.data.entity.InstitutionEntity;
 import com.zdzimi.registration.service.InstitutionService;
@@ -23,13 +24,15 @@ class RepresentativeControllerTest {
     private RepresentativeController representativeController;
     private UserService userService;
     private InstitutionService institutionService;
+    private LinkCreator linkCreator;
 
     @BeforeEach
     void setUp() {
         userService = mock(UserService.class);
         institutionService = mock(InstitutionService.class);
+        linkCreator = mock(LinkCreator.class);
         initMocks(this);
-        representativeController = new RepresentativeController(userService, institutionService);
+        representativeController = new RepresentativeController(userService, institutionService, linkCreator);
     }
 
     @Test

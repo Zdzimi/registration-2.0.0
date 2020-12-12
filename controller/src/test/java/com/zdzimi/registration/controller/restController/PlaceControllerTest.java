@@ -1,5 +1,6 @@
 package com.zdzimi.registration.controller.restController;
 
+import com.zdzimi.registration.controller.link.LinkCreator;
 import com.zdzimi.registration.core.model.Place;
 import com.zdzimi.registration.data.entity.InstitutionEntity;
 import com.zdzimi.registration.service.InstitutionService;
@@ -23,13 +24,15 @@ class PlaceControllerTest {
     private PlaceController placeController;
     private PlaceService placeService;
     private InstitutionService institutionService;
+    private LinkCreator linkCreator;
 
     @BeforeEach
     void setUp() {
         placeService = mock(PlaceService.class);
         institutionService = mock(InstitutionService.class);
+        linkCreator = mock((LinkCreator.class));
         initMocks(this);
-        placeController = new PlaceController(placeService, institutionService);
+        placeController = new PlaceController(placeService, institutionService, linkCreator);
     }
 
     @Test
