@@ -141,7 +141,7 @@ public class LinkCreator {
                 .slash(day)
                 .slash("visit")
                 .slash(visitId)
-                .withRel(day + "." + month + "." + year + " - " + visitId);
+                .withRel(day + "." + month + "." + year + "-" + visitId);
     }
 
     private Link createLinkToPlace(String username, String institutionName, String placeName) {
@@ -175,7 +175,7 @@ public class LinkCreator {
                 .slash("work-places")
                 .slash(institutionName)
                 .slash("get-next-template")
-                .withRel("Get next template");
+                .withRel("getNextTemplate");
     }
 
     private Link createLinkToPlaces(String username, String institutionName) {
@@ -184,7 +184,7 @@ public class LinkCreator {
                 .slash("work-places")
                 .slash(institutionName)
                 .slash("place")
-                .withRel("Place");
+                .withRel("place");
     }
 
     private Link createLinkToWorkPlace(String username, String institutionName) {
@@ -200,7 +200,7 @@ public class LinkCreator {
                 .slash(username)
                 .slash("visits")
                 .slash(visitId)
-                .withRel("Visit: " + visitId);
+                .withRel("visit-" + visitId);
     }
 
     private Link createLinkToCurrentVisit(String username, String institutionName, String representativeName, Long visitId) {
@@ -212,7 +212,7 @@ public class LinkCreator {
                 .slash(representativeName)
                 .slash("timetable")
                 .slash(visitId)
-                .withRel("Visit: " + visitId);
+                .withRel("visit-" + visitId);
     }
 
     private Link createLinkToTimetable(String username, String institutionName, String representativeUsername) {
@@ -223,7 +223,7 @@ public class LinkCreator {
                 .slash("representative")
                 .slash(representativeUsername)
                 .slash("timetable")
-                .withRel("Timetable");
+                .withRel("timetable");
     }
 
     private Link createLinkToRepresentative(String username, String institutionName, String representativeUsername) {
@@ -248,7 +248,7 @@ public class LinkCreator {
                 .slash("institution")
                 .slash(institutionName)
                 .slash("representative")
-                .withRel("Representative");
+                .withRel("representative");
     }
 
     private Link createLinkToInstitution(String username, String institutionName) {
@@ -263,14 +263,14 @@ public class LinkCreator {
         return linkTo(UserController.class)
                 .slash(user.getUsername())
                 .slash("visits")
-                .withRel("Visits");
+                .withRel("visits");
     }
 
     private Link createLinkToWorkPlaces(User user) {
         return linkTo(UserController.class)
                 .slash(user.getUsername())
                 .slash("work-places")
-                .withRel("Work Places");
+                .withRel("workPlaces");
     }
 
     private Link createLinkToRecognizedInstitutions(User user) {
@@ -278,7 +278,7 @@ public class LinkCreator {
                 .slash(user.getUsername())
                 .slash("institution")
                 .slash("recognized")
-                .withRel("Recognized Institutions");
+                .withRel("recognizedInstitutions");
     }
 
     private Link createLinkToAllInstitutions(User user) {
@@ -286,6 +286,6 @@ public class LinkCreator {
                 .slash(user.getUsername())
                 .slash("institution")
                 .slash("all")
-                .withRel("All Institutions");
+                .withRel("allInstitutions");
     }
 }

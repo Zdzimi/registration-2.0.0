@@ -15,6 +15,7 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/registration")
 @Validated
+@CrossOrigin
 public class UserController {
 
     private UserService userService;
