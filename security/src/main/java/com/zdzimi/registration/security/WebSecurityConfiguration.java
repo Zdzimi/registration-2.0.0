@@ -42,9 +42,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 //                .permitAll()
                 .fullyAuthenticated()
                 .and()
-                .httpBasic()
-                .and()
-                .formLogin().and().logout();
+                .httpBasic();
     }
 
     @Bean

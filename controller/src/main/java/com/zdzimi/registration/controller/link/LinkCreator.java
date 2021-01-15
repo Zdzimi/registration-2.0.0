@@ -21,8 +21,11 @@ public class LinkCreator {
     public void addLinksToUser(User user) {
         user.add(createLinkToAllInstitutions(user),
                 createLinkToRecognizedInstitutions(user),
+                createLinkToAdvancedSearching(user),
                 createLinkToWorkPlaces(user),
-                createLinkToVisits(user));
+                createLinkToVisits(user),
+                createLinkToUpdateUser(user),
+                createLinkToCreateWorkPlace(user));
     }
 
     public void addLinksToInstitutions(List<Institution> institutions, String username) {
@@ -259,6 +262,20 @@ public class LinkCreator {
                 .withRel(institutionName);
     }
 
+    private Link createLinkToCreateWorkPlace(User user) {
+        return linkTo(UserController.class)
+                .slash(user.getUsername())
+                .slash("new-work-place")
+                .withRel("createWorkPlace");
+    }
+
+    private Link createLinkToUpdateUser(User user) {
+        return linkTo(UserController.class)
+                .slash(user.getUsername())
+                .slash("update-user")
+                .withRel("updateUser");
+    }
+
     private Link createLinkToVisits(User user) {
         return linkTo(UserController.class)
                 .slash(user.getUsername())
@@ -273,19 +290,24 @@ public class LinkCreator {
                 .withRel("workPlaces");
     }
 
+    private Link createLinkToAdvancedSearching(User user) {
+        return linkTo(UserController.class)
+                .slash(user.getUsername())
+                .slash("institutions?institutionName=pInstitutionName&province=pProvince&city=pCity&typeOfServices=pTypeOfServices")
+                .withRel("searchBy");
+    }
+
     private Link createLinkToRecognizedInstitutions(User user) {
         return linkTo(UserController.class)
                 .slash(user.getUsername())
-                .slash("institution")
-                .slash("recognized")
+                .slash("recognized-institutions")
                 .withRel("recognizedInstitutions");
     }
 
     private Link createLinkToAllInstitutions(User user) {
         return linkTo(UserController.class)
                 .slash(user.getUsername())
-                .slash("institution")
-                .slash("all")
+                .slash("all-institutions")
                 .withRel("allInstitutions");
     }
 }

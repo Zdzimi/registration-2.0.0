@@ -16,7 +16,9 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/registration/{username}/work-places")
+@RequestMapping("/registration/{username}")
+@Validated
+@CrossOrigin
 public class WorkPlacesController {
 
     private InstitutionService institutionService;
@@ -35,7 +37,7 @@ public class WorkPlacesController {
         this.linkCreator = linkCreator;
     }
 
-    @GetMapping
+    @GetMapping("/work-places")
     public List<Institution> getWorkPlaces(@PathVariable String username) {
         UserEntity userEntity = userService.getUserEntityByUsername(username);
         List<Institution> workPlaces = institutionService.getWorkPlaces(userEntity);
@@ -43,7 +45,7 @@ public class WorkPlacesController {
         return workPlaces;
     }
 
-    @GetMapping("/{institutionName}")
+    @GetMapping("/work-place/{institutionName}")
     public Institution getWorkPlace(@PathVariable String username, @PathVariable String institutionName) {
         UserEntity userEntity = userService.getUserEntityByUsername(username);
         Institution workPlace = institutionService.getWorkPlace(userEntity, institutionName);
@@ -51,7 +53,7 @@ public class WorkPlacesController {
         return workPlace;
     }
 
-    @PostMapping("/new-institution")
+    @PostMapping("/new-work-place")
     @Validated(OnCreate.class)
     public Institution createNewInstitution(@Valid @RequestBody Institution institution,
                                             @PathVariable String username) {

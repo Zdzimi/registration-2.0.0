@@ -67,22 +67,34 @@ class LinkCreatorTest {
     void shouldAddLinks() {
         linkCreator.addLinksToUser(user);
         Links links = user.getLinks();
-        Link allInstitutions = links.getLink("allInstitutions").get();
-        Link recognizedInstitutions = links.getLink("recognizedInstitutions").get();
-        Link work_places = links.getLink("workPlaces").get();
-        Link visits = links.getLink("visits").get();
+        Link allInstitutionsLink = links.getLink("allInstitutions").get();
+        Link recognizedInstitutionsLink = links.getLink("recognizedInstitutions").get();
+        Link searchByLink = links.getLink("searchBy").get();
+        Link workPlacesLink = links.getLink("workPlaces").get();
+        Link visitsLink = links.getLink("visits").get();
+        Link updateUserLink = links.getLink("updateUser").get();
+        Link createWorkPlacesLink = links.getLink("createWorkPlace").get();
 
-        assertEquals("/registration/Adrianna/institution/all", allInstitutions.getHref());
-        assertEquals("allInstitutions", allInstitutions.getRel().value());
+        assertEquals("/registration/Adrianna/all-institutions", allInstitutionsLink.getHref());
+        assertEquals("allInstitutions", allInstitutionsLink.getRel().value());
 
-        assertEquals("/registration/Adrianna/institution/recognized", recognizedInstitutions.getHref());
-        assertEquals("recognizedInstitutions", recognizedInstitutions.getRel().value());
+        assertEquals("/registration/Adrianna/recognized-institutions", recognizedInstitutionsLink.getHref());
+        assertEquals("recognizedInstitutions", recognizedInstitutionsLink.getRel().value());
 
-        assertEquals("/registration/Adrianna/work-places", work_places.getHref());
-        assertEquals("workPlaces", work_places.getRel().value());
+        assertEquals("/registration/Adrianna/institutions?institutionName=pInstitutionName&province=pProvince&city=pCity&typeOfServices=pTypeOfServices", searchByLink.getHref());
+        assertEquals("searchBy", searchByLink.getRel().value());
 
-        assertEquals("/registration/Adrianna/visits", visits.getHref());
-        assertEquals("visits", visits.getRel().value());
+        assertEquals("/registration/Adrianna/work-places", workPlacesLink.getHref());
+        assertEquals("workPlaces", workPlacesLink.getRel().value());
+
+        assertEquals("/registration/Adrianna/visits", visitsLink.getHref());
+        assertEquals("visits", visitsLink.getRel().value());
+
+        assertEquals("/registration/Adrianna/update-user", updateUserLink.getHref());
+        assertEquals("updateUser", updateUserLink.getRel().value());
+
+        assertEquals("/registration/Adrianna/new-work-place", createWorkPlacesLink.getHref());
+        assertEquals("createWorkPlace", createWorkPlacesLink.getRel().value());
     }
 
     @Test

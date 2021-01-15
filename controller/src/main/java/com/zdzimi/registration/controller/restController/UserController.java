@@ -47,5 +47,9 @@ public class UserController {
         return savedUser;
     }
 
-    //  todo - updateUser() {...}
+    @PostMapping("/{username}/update-user")
+    public User updateUser(@PathVariable String username, @RequestBody User[] users) {
+        //  todo - updateUser() {...}
+        return null;
+    }
 }

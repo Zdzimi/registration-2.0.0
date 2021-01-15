@@ -12,8 +12,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/registration/{username}/institution")
+@RequestMapping("/registration/{username}")
 @Validated
+@CrossOrigin
 public class InstitutionController {
 
     private InstitutionService institutionService;
@@ -27,14 +28,14 @@ public class InstitutionController {
         this.linkCreator = linkCreator;
     }
 
-    @GetMapping("/all")
+    @GetMapping("/all-institutions")
     public List<Institution> getInstitutions(@PathVariable String username) {
         List<Institution> institutions = institutionService.getAll();
         linkCreator.addLinksToInstitutions(institutions, username);
         return institutions;
     }
 
-    @GetMapping("/recognized")
+    @GetMapping("/recognized-institutions")
     public List<Institution> getRecognizedInstitutions(@PathVariable String username) {
         UserEntity userEntity = userService.getUserEntityByUsername(username);
         List<Institution> recognizedInstitutions = institutionService.getRecognized(userEntity);
@@ -42,7 +43,23 @@ public class InstitutionController {
         return recognizedInstitutions;
     }
 
-    @GetMapping("/{institutionName}")
+    @GetMapping("/institutions")
+    public List<Institution> searchBy(@PathVariable String username,
+                                      @RequestParam String institutionName,
+                                      @RequestParam String province,
+                                      @RequestParam String city,
+                                      @RequestParam String typeOfServices) {
+
+        // todo
+
+        System.out.println(institutionName);
+        System.out.println(province);
+        System.out.println(city);
+        System.out.println(typeOfServices);
+        return null;
+    }
+
+    @GetMapping("/institution/{institutionName}")
     public Institution getInstitution(@PathVariable String username, @PathVariable String institutionName) {
         Institution institution = institutionService.getByInstitutionName(institutionName);
         linkCreator.addLinksToInstitution(institution, username);
