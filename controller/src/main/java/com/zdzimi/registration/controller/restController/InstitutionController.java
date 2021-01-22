@@ -28,14 +28,14 @@ public class InstitutionController {
         this.linkCreator = linkCreator;
     }
 
-    @GetMapping("/all-institutions")
+    @GetMapping("/institutions/all")
     public List<Institution> getInstitutions(@PathVariable String username) {
         List<Institution> institutions = institutionService.getAll();
         linkCreator.addLinksToInstitutions(institutions, username);
         return institutions;
     }
 
-    @GetMapping("/recognized-institutions")
+    @GetMapping("/institutions/recognized")
     public List<Institution> getRecognizedInstitutions(@PathVariable String username) {
         UserEntity userEntity = userService.getUserEntityByUsername(username);
         List<Institution> recognizedInstitutions = institutionService.getRecognized(userEntity);
@@ -43,7 +43,7 @@ public class InstitutionController {
         return recognizedInstitutions;
     }
 
-    @GetMapping("/institutions")
+    @GetMapping("/institutions/search-by")
     public List<Institution> searchBy(@PathVariable String username,
                                       @RequestParam String institutionName,
                                       @RequestParam String province,

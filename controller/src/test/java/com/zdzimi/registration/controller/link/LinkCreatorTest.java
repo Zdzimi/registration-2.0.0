@@ -75,13 +75,13 @@ class LinkCreatorTest {
         Link updateUserLink = links.getLink("updateUser").get();
         Link createWorkPlacesLink = links.getLink("createWorkPlace").get();
 
-        assertEquals("/registration/Adrianna/all-institutions", allInstitutionsLink.getHref());
+        assertEquals("/registration/Adrianna/institutions/all", allInstitutionsLink.getHref());
         assertEquals("allInstitutions", allInstitutionsLink.getRel().value());
 
-        assertEquals("/registration/Adrianna/recognized-institutions", recognizedInstitutionsLink.getHref());
+        assertEquals("/registration/Adrianna/institutions/recognized", recognizedInstitutionsLink.getHref());
         assertEquals("recognizedInstitutions", recognizedInstitutionsLink.getRel().value());
 
-        assertEquals("/registration/Adrianna/institutions?institutionName=pInstitutionName&province=pProvince&city=pCity&typeOfServices=pTypeOfServices", searchByLink.getHref());
+        assertEquals("/registration/Adrianna/institutions/search-by?institutionName=pInstitutionName&province=pProvince&city=pCity&typeOfServices=pTypeOfServices", searchByLink.getHref());
         assertEquals("searchBy", searchByLink.getRel().value());
 
         assertEquals("/registration/Adrianna/work-places", workPlacesLink.getHref());
@@ -239,8 +239,8 @@ class LinkCreatorTest {
         Link barberLink = (Link) barber.getLink(barber.getInstitutionName()).get();
         Link tattooLink = (Link) tattoo.getLink(tattoo.getInstitutionName()).get();
 
-        assertEquals("/registration/Adrianna/work-places/" + barber.getInstitutionName(), barberLink.getHref());
-        assertEquals("/registration/Adrianna/work-places/" + tattoo.getInstitutionName(), tattooLink.getHref());
+        assertEquals("/registration/Adrianna/work-place/" + barber.getInstitutionName(), barberLink.getHref());
+        assertEquals("/registration/Adrianna/work-place/" + tattoo.getInstitutionName(), tattooLink.getHref());
 
         assertEquals(barber.getInstitutionName(), barberLink.getRel().value());
         assertEquals(tattoo.getInstitutionName(), tattooLink.getRel().value());
@@ -251,23 +251,30 @@ class LinkCreatorTest {
         LocalDateTime now = LocalDateTime.now();
         int year = now.getYear();
         int month = now.getMonthValue();
+        int day = now.getDayOfMonth();
 
         linkCreator.addLinksToWorkPlace(barber, user.getUsername());
 
-        Link placeLink = (Link) barber.getLink("place").get();
+        Link placeLink = (Link) barber.getLink("places").get();
+        Link representativesLink = (Link) barber.getLink("representatives").get();
         Link templateLink = (Link) barber.getLink("getNextTemplate").get();
-        Link monthLink = (Link) barber.getLink(month + "." + year).get();
-        Link userLink = (Link) barber.getLink(user.getUsername()).get();
+        Link yearLink = (Link) barber.getLink("currentYear").get();
+        Link monthLink = (Link) barber.getLink("currentMonth").get();
+        Link dayLink = (Link) barber.getLink("currentDay").get();
 
-        assertEquals("/registration/Adrianna/work-places/barber/place", placeLink.getHref());
-        assertEquals("/registration/Adrianna/work-places/barber/get-next-template", templateLink.getHref());
-        assertEquals("/registration/Adrianna/work-places/barber/year/" + year + "/month/" + month, monthLink.getHref());
-        assertEquals("/registration/Adrianna", userLink.getHref());
+        assertEquals("/registration/Adrianna/work-place/barber/places", placeLink.getHref());
+        assertEquals("/registration/Adrianna/work-place/barber/representatives", representativesLink.getHref());
+        assertEquals("/registration/Adrianna/work-place/barber/get-next-template", templateLink.getHref());
+        assertEquals("/registration/Adrianna/work-place/barber/year/" + year, yearLink.getHref());
+        assertEquals("/registration/Adrianna/work-place/barber/year/" + year + "/month/" + month, monthLink.getHref());
+        assertEquals("/registration/Adrianna/work-place/barber/year/" + year + "/month/" + month + "/day/" + day, dayLink.getHref());
 
-        assertEquals("place", placeLink.getRel().value());
+        assertEquals("places", placeLink.getRel().value());
+        assertEquals("representatives", representativesLink.getRel().value());
         assertEquals("getNextTemplate", templateLink.getRel().value());
-        assertEquals(month + "." + year, monthLink.getRel().value());
-        assertEquals(user.getUsername(), userLink.getRel().value());
+        assertEquals("currentYear", yearLink.getRel().value());
+        assertEquals("currentMonth", monthLink.getRel().value());
+        assertEquals("currentDay", dayLink.getRel().value());
     }
 
     @Test
@@ -295,7 +302,7 @@ class LinkCreatorTest {
         Link userLink = (Link) placeFirst.getLink(user.getUsername()).get();
 
         assertEquals("/registration/Adrianna/work-places/tattoo/place/" + placeFirst.getPlaceName(), placeLink.getHref());
-        assertEquals("/registration/Adrianna/work-places/" + tattoo.getInstitutionName(), institutionLink.getHref());
+        assertEquals("/registration/Adrianna/work-place/" + tattoo.getInstitutionName(), institutionLink.getHref());
         assertEquals("/registration/Adrianna", userLink.getHref());
 
         assertEquals(placeFirst.getPlaceName(), placeLink.getRel().value());
@@ -310,7 +317,7 @@ class LinkCreatorTest {
         Link institutionLink = (Link) timetableTemplate.getLink(tattoo.getInstitutionName()).get();
         Link userLink = (Link) timetableTemplate.getLink(user.getUsername()).get();
 
-        assertEquals("/registration/Adrianna/work-places/" + tattoo.getInstitutionName(), institutionLink.getHref());
+        assertEquals("/registration/Adrianna/work-place/" + tattoo.getInstitutionName(), institutionLink.getHref());
         assertEquals("/registration/Adrianna", userLink.getHref());
 
         assertEquals(tattoo.getInstitutionName(), institutionLink.getRel().value());
@@ -357,7 +364,7 @@ class LinkCreatorTest {
         Link userLink = (Link) visitFirst.getLink(user.getUsername()).get();
 
         assertEquals("/registration/Adrianna/work-places/tattoo/year/" + visitFirstYear + "/month/" + visitFirstMonth + "/day/" + visitFirstDay + "/visit/" + visitFirstId, visitLink.getHref());
-        assertEquals("/registration/Adrianna/work-places/" + tattoo.getInstitutionName(), institutionLink.getHref());
+        assertEquals("/registration/Adrianna/work-place/" + tattoo.getInstitutionName(), institutionLink.getHref());
         assertEquals("/registration/Adrianna", userLink.getHref());
 
         assertEquals(visitFirstDay + "." + visitFirstMonth + "." + visitFirstYear + "-" + visitFirstId, visitLink.getRel().value());

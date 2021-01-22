@@ -13,6 +13,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 @Controller
@@ -91,7 +92,7 @@ public class DatabaseInitializr {
         adam.setPassword(passwordEncoder.encode("Pass123"));
         adam.setRole(ROLE);
         adam.setRecognizedInstitutions(Collections.singletonList(barber));
-        adam.setWorkPlaces(Collections.singletonList(tattoo));
+        adam.setWorkPlaces(Arrays.asList(tattoo, barber));
         userRepository.save(adam);
 
         UserEntity ela = new UserEntity();

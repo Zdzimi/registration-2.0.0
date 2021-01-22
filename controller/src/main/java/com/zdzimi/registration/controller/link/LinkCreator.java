@@ -92,9 +92,11 @@ public class LinkCreator {
     public void addLinksToWorkPlace(Institution workPlace, String username) {
         @NotNull String institutionName = workPlace.getInstitutionName();
         workPlace.add(createLinkToPlaces(username, institutionName),
+                createLinkToRepresentativesOfWorkPlace(username, institutionName),
                 createLinkToGetNextTemplate(username, institutionName),
+                createLinkToCurrentYearVisits(username, institutionName),
                 createLinkToCurrentMonthVisits(username, institutionName),
-                createLinkToUser(username));
+                createLinkToCurrentDayVisits(username, institutionName));
     }
 
     public void addLinksToPlaces(List<Place> places, String username, String institutionName) {
@@ -157,25 +159,55 @@ public class LinkCreator {
                 .withRel(placeName);
     }
 
+    private Link createLinkToCurrentYearVisits(String username, String institutionName) {
+        LocalDateTime now = LocalDateTime.now();
+        int year = now.getYear();
+        return linkTo(UserController.class)
+                .slash(username)
+                .slash("work-place")
+                .slash(institutionName)
+                .slash("year")
+                .slash(year)
+                .withRel("currentYear");
+    }
+
     private Link createLinkToCurrentMonthVisits(String username, String institutionName) {
         LocalDateTime now = LocalDateTime.now();
         int year = now.getYear();
         int month = now.getMonthValue();
         return linkTo(UserController.class)
                 .slash(username)
-                .slash("work-places")
+                .slash("work-place")
                 .slash(institutionName)
                 .slash("year")
                 .slash(year)
                 .slash("month")
                 .slash(month)
-                .withRel(month + "." + year);
+                .withRel("currentMonth");
+    }
+
+    private Link createLinkToCurrentDayVisits(String username, String institutionName) {
+        LocalDateTime now = LocalDateTime.now();
+        int year = now.getYear();
+        int month = now.getMonthValue();
+        int day = now.getDayOfMonth();
+        return linkTo(UserController.class)
+                .slash(username)
+                .slash("work-place")
+                .slash(institutionName)
+                .slash("year")
+                .slash(year)
+                .slash("month")
+                .slash(month)
+                .slash("day")
+                .slash(day)
+                .withRel("currentDay");
     }
 
     private Link createLinkToGetNextTemplate(String username, String institutionName) {
         return linkTo(UserController.class)
                 .slash(username)
-                .slash("work-places")
+                .slash("work-place")
                 .slash(institutionName)
                 .slash("get-next-template")
                 .withRel("getNextTemplate");
@@ -184,16 +216,25 @@ public class LinkCreator {
     private Link createLinkToPlaces(String username, String institutionName) {
         return linkTo(UserController.class)
                 .slash(username)
-                .slash("work-places")
+                .slash("work-place")
                 .slash(institutionName)
-                .slash("place")
-                .withRel("place");
+                .slash("places")
+                .withRel("places");
+    }
+
+    private Link createLinkToRepresentativesOfWorkPlace(String username, String institutionName) {
+        return linkTo(UserController.class)
+                .slash(username)
+                .slash("work-place")
+                .slash(institutionName)
+                .slash("representatives")
+                .withRel("representatives");
     }
 
     private Link createLinkToWorkPlace(String username, String institutionName) {
         return linkTo(UserController.class)
                 .slash(username)
-                .slash("work-places")
+                .slash("work-place")
                 .slash(institutionName)
                 .withRel(institutionName);
     }
@@ -293,21 +334,24 @@ public class LinkCreator {
     private Link createLinkToAdvancedSearching(User user) {
         return linkTo(UserController.class)
                 .slash(user.getUsername())
-                .slash("institutions?institutionName=pInstitutionName&province=pProvince&city=pCity&typeOfServices=pTypeOfServices")
+                .slash("institutions")
+                .slash("search-by?institutionName=pInstitutionName&province=pProvince&city=pCity&typeOfServices=pTypeOfServices")
                 .withRel("searchBy");
     }
 
     private Link createLinkToRecognizedInstitutions(User user) {
         return linkTo(UserController.class)
                 .slash(user.getUsername())
-                .slash("recognized-institutions")
+                .slash("institutions")
+                .slash("recognized")
                 .withRel("recognizedInstitutions");
     }
 
     private Link createLinkToAllInstitutions(User user) {
         return linkTo(UserController.class)
                 .slash(user.getUsername())
-                .slash("all-institutions")
+                .slash("institutions")
+                .slash("all")
                 .withRel("allInstitutions");
     }
 }

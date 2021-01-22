@@ -14,7 +14,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/registration/{username}/work-places/{institutionName}")
+@RequestMapping("/registration/{username}/work-place/{institutionName}")
 public class RepresentativeUtilsController {
 
     private VisitService visitService;
