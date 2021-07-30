@@ -5,7 +5,6 @@ import com.zdzimi.registration.core.model.Institution;
 import com.zdzimi.registration.core.model.Place;
 import com.zdzimi.registration.core.model.User;
 import com.zdzimi.registration.core.model.Visit;
-import com.zdzimi.registration.core.model.template.TimetableTemplate;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +36,7 @@ public class LinkCreator {
 
     public void addLinksToInstitution(Institution institution, String username) {
         String institutionName = institution.getInstitutionName();
-        institution.add(createLinkToRepresentatives(username, institutionName), createLinkToUser(username));
+        institution.add(createLinkToRepresentatives(username, institutionName));
     }
 
     public void addLinksToRepresentatives(List<User> representatives, String username, String institutionName) {
@@ -50,8 +49,7 @@ public class LinkCreator {
     public void addLinksToRepresentative(User representative, String username, String institutionName) {
         @NotNull String representativeUsername = representative.getUsername();
         representative.add(createLinkToTimetable(username, institutionName, representativeUsername),
-                createLinkToInstitution(username, institutionName),
-                createLinkToUser(username));
+                createLinkToRepresentatives(username, institutionName));
     }
 
     public void addLinksToCurrentVisits(List<Visit> currentVisits, String username, String institutionName, String representativeName) {
@@ -65,8 +63,7 @@ public class LinkCreator {
         Long visitId = visit.getVisitId();
         visit.add(createLinkToCurrentVisit(username, institutionName, representativeName, visitId),
                 createLinkToTimetable(username, institutionName, representativeName),
-                createLinkToInstitution(username, institutionName),
-                createLinkToUser(username));
+                createLinkToRepresentatives(username, institutionName));
     }
 
     public void addLinksToUsersVisits(List<Visit> visits, String username) {
@@ -107,14 +104,7 @@ public class LinkCreator {
     }
 
     public void addLinksToPlace(Place place, String username, String institutionName) {
-        place.add(createLinkToPlace(username, institutionName, place.getPlaceName()),
-                createLinkToWorkPlace(username, institutionName),
-                createLinkToUser(username));
-    }
-
-    public void addLinksToTemplate(TimetableTemplate timetableTemplate, String username, String institutionName) {
-        timetableTemplate.add(createLinkToWorkPlace(username, institutionName),
-                createLinkToUser(username));
+        place.add(createLinkToPlace(username, institutionName, place.getPlaceName()));
     }
 
     public void addLinksToRepresentativesVisits(List<Visit> visits, String username, String institutionName) {
@@ -124,9 +114,7 @@ public class LinkCreator {
     }
 
     public void addLinksToRepresentativesVisit(Visit visit, String username, String institutionName) {
-        visit.add(createLinkToRepresentativesVisit(username, institutionName, visit),
-                createLinkToWorkPlace(username, institutionName),
-                createLinkToUser(username));
+        visit.add(createLinkToRepresentativesVisit(username, institutionName, visit));
     }
 
     private Link createLinkToRepresentativesVisit(String username, String institutionName, Visit visit) {
@@ -136,7 +124,7 @@ public class LinkCreator {
         Long visitId = visit.getVisitId();
         return linkTo(UserController.class)
                 .slash(username)
-                .slash("work-places")
+                .slash("work-place")
                 .slash(institutionName)
                 .slash("year")
                 .slash(year)
@@ -146,13 +134,14 @@ public class LinkCreator {
                 .slash(day)
                 .slash("visit")
                 .slash(visitId)
+//                .withSelfRel();
                 .withRel(day + "." + month + "." + year + "-" + visitId);
     }
 
     private Link createLinkToPlace(String username, String institutionName, String placeName) {
         return linkTo(UserController.class)
                 .slash(username)
-                .slash("work-places")
+                .slash("work-place")
                 .slash(institutionName)
                 .slash("place")
                 .slash(placeName)
@@ -252,7 +241,7 @@ public class LinkCreator {
                 .slash(username)
                 .slash("institution")
                 .slash(institutionName)
-                .slash("representative")
+                .slash("representatives")
                 .slash(representativeName)
                 .slash("timetable")
                 .slash(visitId)
@@ -264,7 +253,7 @@ public class LinkCreator {
                 .slash(username)
                 .slash("institution")
                 .slash(institutionName)
-                .slash("representative")
+                .slash("representatives")
                 .slash(representativeUsername)
                 .slash("timetable")
                 .withRel("timetable");
@@ -275,7 +264,7 @@ public class LinkCreator {
                 .slash(username)
                 .slash("institution")
                 .slash(institutionName)
-                .slash("representative")
+                .slash("representatives")
                 .slash(representativeUsername)
                 .withRel(representativeUsername);
     }
@@ -291,8 +280,8 @@ public class LinkCreator {
                 .slash(username)
                 .slash("institution")
                 .slash(institutionName)
-                .slash("representative")
-                .withRel("representative");
+                .slash("representatives")
+                .withRel("representatives");
     }
 
     private Link createLinkToInstitution(String username, String institutionName) {

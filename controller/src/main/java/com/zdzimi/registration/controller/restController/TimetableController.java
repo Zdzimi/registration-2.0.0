@@ -11,10 +11,10 @@ import com.zdzimi.registration.service.VisitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.*;
 
 @RestController
-@RequestMapping("/registration/{username}/institution/{institutionName}/representative/{representativeName}/timetable")
+@RequestMapping("/registration/{username}/institution/{institutionName}/representatives/{representativeName}/timetable")
 public class TimetableController {
 
     private VisitService visitService;

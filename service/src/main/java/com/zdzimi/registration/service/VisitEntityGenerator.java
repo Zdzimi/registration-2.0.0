@@ -38,25 +38,27 @@ public class VisitEntityGenerator {
         List<VisitEntity> visits = new ArrayList<>();
 
         for (Day day : days) {
-            int dayOfMonth = day.getDayOfMonth();
-            LocalTime workStart = day.getWorkStart();
-            LocalTime workEnd = day.getWorkEnd();
             String placeName = day.getPlaceName();
-            PlaceEntity placeEntity = placeService.getPlaceEntity(institutionEntity, placeName);
+            if (placeName != null) {
+                int dayOfMonth = day.getDayOfMonth();
+                LocalTime workStart = day.getWorkStart();
+                LocalTime workEnd = day.getWorkEnd();
+                PlaceEntity placeEntity = placeService.getPlaceEntity(institutionEntity, placeName);
 
-            while (workStart.isBefore(workEnd)) {
-                LocalDateTime visitStart = LocalDateTime.of(year, month, dayOfMonth, workStart.getHour(), workStart.getMinute());
-                if (now.isBefore(visitStart)){
-                    LocalDateTime visitEnd = visitStart.plusMinutes(visitLength);
-                    VisitEntity visitEntity = new VisitEntity();
-                    visitEntity.setVisitStart(Timestamp.valueOf(visitStart));
-                    visitEntity.setVisitEnd(Timestamp.valueOf(visitEnd));
-                    visitEntity.setRepresentative(representativeEntity);
-                    visitEntity.setPlace(placeEntity);
-                    visitEntity.setInstitution(institutionEntity);
-                    visits.add(visitEntity);
+                while (workStart.isBefore(workEnd)) {
+                    LocalDateTime visitStart = LocalDateTime.of(year, month, dayOfMonth, workStart.getHour(), workStart.getMinute());
+                    if (now.isBefore(visitStart)){
+                        LocalDateTime visitEnd = visitStart.plusMinutes(visitLength);
+                        VisitEntity visitEntity = new VisitEntity();
+                        visitEntity.setVisitStart(Timestamp.valueOf(visitStart));
+                        visitEntity.setVisitEnd(Timestamp.valueOf(visitEnd));
+                        visitEntity.setRepresentative(representativeEntity);
+                        visitEntity.setPlace(placeEntity);
+                        visitEntity.setInstitution(institutionEntity);
+                        visits.add(visitEntity);
+                    }
+                    workStart = workStart.plusMinutes(visitLength);
                 }
-                workStart = workStart.plusMinutes(visitLength);
             }
         }
         return visits;

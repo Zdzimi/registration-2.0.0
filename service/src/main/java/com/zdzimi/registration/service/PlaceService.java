@@ -9,9 +9,12 @@ import com.zdzimi.registration.data.repository.PlaceRepository;
 import com.zdzimi.registration.service.mapper.PlaceMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,6 +37,12 @@ public class PlaceService {
     }
 
     public Place addNewPlace(InstitutionEntity institutionEntity, Place place) {
+        Collection<PlaceEntity> places = institutionEntity.getPlaces();
+        for (PlaceEntity placeEntity : places) {
+            if (placeEntity.getPlaceName().equals(place.getPlaceName())) {
+                throw new PlaceNameException(place.getPlaceName());
+            }
+        }
         PlaceEntity placeEntity = placeMapper.convertToPlaceEntity(place);
         placeEntity.setInstitution(institutionEntity);
         PlaceEntity savedPlaceEntity = placeRepository.save(placeEntity);

@@ -42,9 +42,7 @@ public class PlaceController {
     @Validated(OnCreate.class)
     public Place addNewPlace(@Valid @RequestBody Place place, @PathVariable String username, @PathVariable String institutionName) {
         InstitutionEntity institutionEntity = institutionService.getInstitutionEntityByInstitutionName(institutionName);
-        Place savedPlace = placeService.addNewPlace(institutionEntity, place);
-        linkCreator.addLinksToPlace(savedPlace, username, institutionName);
-        return savedPlace;
+        return placeService.addNewPlace(institutionEntity, place);
     }
 
     @GetMapping("/place/{placeName}")

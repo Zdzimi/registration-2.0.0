@@ -48,9 +48,7 @@ public class RepresentativeUtilsController {
         InstitutionEntity institutionEntity = institutionService
                 .getWorkPlaceEntityByRepresentativeEntityAndInstitutionName(representativeEntity, institutionName);
         Visit lastProvidedVisit = visitService.getLastProvidedVisit(representativeEntity, institutionEntity);
-        TimetableTemplate timetableTemplate = timetableTemplateService.prepareTemplate(lastProvidedVisit);
-        linkCreator.addLinksToTemplate(timetableTemplate, username, institutionName);
-        return timetableTemplate;
+        return timetableTemplateService.prepareTemplate(lastProvidedVisit);
     }
 
     @GetMapping("/year/{year}")
@@ -83,9 +81,7 @@ public class RepresentativeUtilsController {
                                                            @PathVariable String institutionName,
                                                            @PathVariable int year,
                                                            @PathVariable int month) {
-        TimetableTemplate timetableTemplate = timetableTemplateService.prepareTemplate(year, month);
-        linkCreator.addLinksToTemplate(timetableTemplate, username, institutionName);
-        return timetableTemplate;
+        return timetableTemplateService.prepareTemplate(year, month);
     }
 
     @GetMapping("/year/{year}/month/{month}/day/{day}")
@@ -133,8 +129,6 @@ public class RepresentativeUtilsController {
                 .getWorkPlaceEntityByRepresentativeEntityAndInstitutionName(representativeEntity, institutionName);
         List<VisitEntity> visitEntities = visitEntityGenerator.createVisits(timetableTemplate, representativeEntity, institutionEntity);
         conflictAnalyzer.checkConflicts(visitEntities, representativeEntity, institutionEntity);
-        List<Visit> visits = visitService.saveAll(visitEntities);
-        linkCreator.addLinksToRepresentativesVisits(visits, username, institutionName);
-        return visits;
+        return visitService.saveAll(visitEntities);
     }
 }

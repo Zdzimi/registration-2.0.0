@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/registration/{username}/institution/{institutionName}/representative")
+@RequestMapping("/registration/{username}/institution/{institutionName}/representatives")
 public class RepresentativeController {
 
     private UserService userService;

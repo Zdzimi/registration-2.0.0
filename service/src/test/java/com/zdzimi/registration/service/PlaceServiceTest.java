@@ -54,6 +54,11 @@ class PlaceServiceTest {
         InstitutionEntity institutionEntity = new InstitutionEntity();
         institutionEntity.setInstitutionName(INSTITUTION_NAME);
 
+        PlaceEntity placeEntity = new PlaceEntity();
+        placeEntity.setPlaceName("place");
+
+        institutionEntity.setPlaces(Arrays.asList(placeEntity));
+
         Place placeBeforeSave = new Place();
         placeBeforeSave.setPlaceName(PLACE_NAME);
 
