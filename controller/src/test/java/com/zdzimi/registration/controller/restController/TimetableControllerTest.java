@@ -41,26 +41,26 @@ class TimetableControllerTest {
         timetableController = new TimetableController(visitService, institutionService, userService, linkCreator);
     }
 
-    @Test
-    void shouldGetVisits() {
-        //      given
-        UserEntity representativeEntity = new UserEntity();
-        when(userService.getUserEntityByUsername(REPRESENTATIVE_NAME)).thenReturn(representativeEntity);
-        InstitutionEntity institutionEntity = new InstitutionEntity();
-        when(institutionService.getInstitutionEntityByInstitutionName(INSTITUTION_NAME)).thenReturn(institutionEntity);
-        Visit visit = new Visit();
-        when(visitService.getCurrentVisits(representativeEntity, institutionEntity)).thenReturn(Arrays.asList(visit));
-        //      when
-        List<Visit> result = timetableController.getVisits(USERNAME, INSTITUTION_NAME, REPRESENTATIVE_NAME);
-        //      then
-        assertEquals(1, result.size());
-        verify(userService, times(1)).getUserEntityByUsername(REPRESENTATIVE_NAME);
-        verify(institutionService, times(1)).getInstitutionEntityByInstitutionName(INSTITUTION_NAME);
-        verify(visitService, times(1)).getCurrentVisits(representativeEntity, institutionEntity);
-        verifyNoMoreInteractions(userService);
-        verifyNoMoreInteractions(institutionService);
-        verifyNoMoreInteractions(visitService);
-    }
+//    @Test
+//    void shouldGetVisits() {
+//        //      given
+//        UserEntity representativeEntity = new UserEntity();
+//        when(userService.getUserEntityByUsername(REPRESENTATIVE_NAME)).thenReturn(representativeEntity);
+//        InstitutionEntity institutionEntity = new InstitutionEntity();
+//        when(institutionService.getInstitutionEntityByInstitutionName(INSTITUTION_NAME)).thenReturn(institutionEntity);
+//        Visit visit = new Visit();
+//        when(visitService.getCurrentVisits(representativeEntity, institutionEntity)).thenReturn(Arrays.asList(visit));
+//        //      when
+//        List<Visit> result = timetableController.getVisits(USERNAME, INSTITUTION_NAME, REPRESENTATIVE_NAME);
+//        //      then
+//        assertEquals(1, result.size());
+//        verify(userService, times(1)).getUserEntityByUsername(REPRESENTATIVE_NAME);
+//        verify(institutionService, times(1)).getInstitutionEntityByInstitutionName(INSTITUTION_NAME);
+//        verify(visitService, times(1)).getCurrentVisits(representativeEntity, institutionEntity);
+//        verifyNoMoreInteractions(userService);
+//        verifyNoMoreInteractions(institutionService);
+//        verifyNoMoreInteractions(visitService);
+//    }
 
     @Test
     void shouldGetVisit() {

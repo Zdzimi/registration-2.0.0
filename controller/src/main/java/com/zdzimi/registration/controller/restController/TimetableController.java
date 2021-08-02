@@ -2,6 +2,7 @@ package com.zdzimi.registration.controller.restController;
 
 import com.zdzimi.registration.controller.link.LinkCreator;
 import com.zdzimi.registration.core.model.Visit;
+import com.zdzimi.registration.core.model.timetable.MonthTimetable;
 import com.zdzimi.registration.data.entity.InstitutionEntity;
 import com.zdzimi.registration.data.entity.UserEntity;
 import com.zdzimi.registration.data.entity.VisitEntity;
@@ -31,14 +32,14 @@ public class TimetableController {
     }
 
     @GetMapping
-    public List<Visit> getVisits(@PathVariable String username,
-                                 @PathVariable String institutionName,
-                                 @PathVariable String representativeName) {
+    public List<MonthTimetable> getVisits(@PathVariable String username,
+                                          @PathVariable String institutionName,
+                                          @PathVariable String representativeName) {
         UserEntity representativeEntity = userService.getUserEntityByUsername(representativeName);
         InstitutionEntity institutionEntity = institutionService.getInstitutionEntityByInstitutionName(institutionName);
         List<Visit> currentVisits = visitService.getCurrentVisits(representativeEntity, institutionEntity);
         linkCreator.addLinksToCurrentVisits(currentVisits, username, institutionName, representativeName);
-        return currentVisits;
+        return MonthTimetable.createTimetable(currentVisits);
     }
 
     @GetMapping("/{visitId}")
