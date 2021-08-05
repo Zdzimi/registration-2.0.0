@@ -159,26 +159,26 @@ class LinkCreatorTest {
 
         linkCreator.addLinksToCurrentVisits(visits, user.getUsername(), barber.getInstitutionName(), representativeAnna.getUsername());
 
-        Link firstLink = (Link) visitFirst.getLink("visit-" + visitFirst.getVisitId()).get();
-        Link secondLink = (Link) visitSecond.getLink("visit-" + visitSecond.getVisitId()).get();
+        Link firstLink = (Link) visitFirst.getLink(visitFirst.getVisitStart().toString()).get();
+        Link secondLink = (Link) visitSecond.getLink(visitSecond.getVisitStart().toString()).get();
 
         assertEquals("/registration/Adrianna/institution/barber/representatives/Anna/timetable/" + visitFirst.getVisitId(), firstLink.getHref());
-        assertEquals("visit-" + visitFirst.getVisitId(), firstLink.getRel().value());
+        assertEquals(visitFirst.getVisitStart().toString(), firstLink.getRel().value());
 
         assertEquals("/registration/Adrianna/institution/barber/representatives/Anna/timetable/" + visitSecond.getVisitId(), secondLink.getHref());
-        assertEquals("visit-" + visitSecond.getVisitId(), secondLink.getRel().value());
+        assertEquals(visitSecond.getVisitStart().toString(), secondLink.getRel().value());
     }
 
     @Test
     void shouldAddLinksToCurrentVisit() {
         linkCreator.addLinksToCurrentVisit(visitFirst, user.getUsername(), barber.getInstitutionName(), representativeAnna.getUsername());
 
-        Link visitLink = (Link) visitFirst.getLink("visit-" + visitFirst.getVisitId()).get();
+        Link visitLink = (Link) visitFirst.getLink("visit").get();
         Link timetableLink = (Link) visitFirst.getLink("timetable").get();
         Link representatives = (Link) visitFirst.getLink("representatives").get();
 
         assertEquals("/registration/Adrianna/institution/barber/representatives/Anna/timetable/" + visitFirst.getVisitId(), visitLink.getHref());
-        assertEquals("visit-" + visitFirst.getVisitId(), visitLink.getRel().value());
+        assertEquals("visit", visitLink.getRel().value());
 
         assertEquals("/registration/Adrianna/institution/barber/representatives/Anna/timetable", timetableLink.getHref());
         assertEquals("timetable", timetableLink.getRel().value());
@@ -193,28 +193,24 @@ class LinkCreatorTest {
 
         linkCreator.addLinksToUsersVisits(visits, user.getUsername());
 
-        Link firstLink = (Link) visitFirst.getLink("visit-" + visitFirst.getVisitId()).get();
-        Link secondLink = (Link) visitSecond.getLink("visit-" + visitSecond.getVisitId()).get();
+        Link firstLink = (Link) visitFirst.getLink(visitFirst.getVisitStart().toString()).get();
+        Link secondLink = (Link) visitSecond.getLink(visitSecond.getVisitStart().toString()).get();
 
         assertEquals("/registration/Adrianna/visits/" + visitFirst.getVisitId(), firstLink.getHref());
-        assertEquals("visit-" + visitFirst.getVisitId(), firstLink.getRel().value());
+        assertEquals(visitFirst.getVisitStart().toString(), firstLink.getRel().value());
 
         assertEquals("/registration/Adrianna/visits/" + visitSecond.getVisitId(), secondLink.getHref());
-        assertEquals("visit-" + visitSecond.getVisitId(), secondLink.getRel().value());
+        assertEquals(visitSecond.getVisitStart().toString(), secondLink.getRel().value());
     }
 
     @Test
     void shouldAddLinksToUsersVisit() {
         linkCreator.addLinksToUsersVisit(visitFirst, user.getUsername());
 
-        Link firstLink = (Link) visitFirst.getLink("visit-" + visitFirst.getVisitId()).get();
-        Link userLink = (Link) visitFirst.getLink(user.getUsername()).get();
+        Link link = (Link) visitFirst.getLink("visit").get();
 
-        assertEquals("/registration/Adrianna/visits/" + visitFirst.getVisitId(), firstLink.getHref());
-        assertEquals("visit-" + visitFirst.getVisitId(), firstLink.getRel().value());
-
-        assertEquals("/registration/Adrianna", userLink.getHref());
-        assertEquals("Adrianna", userLink.getRel().value());
+        assertEquals("/registration/Adrianna/visits/" + visitFirst.getVisitId(), link.getHref());
+        assertEquals("visit", link.getRel().value());
     }
 
     @Test

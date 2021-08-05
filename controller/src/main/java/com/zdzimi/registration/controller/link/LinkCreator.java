@@ -54,8 +54,7 @@ public class LinkCreator {
 
     public void addLinksToCurrentVisits(List<Visit> currentVisits, String username, String institutionName, String representativeName) {
         for (Visit visit : currentVisits) {
-            Long visitId = visit.getVisitId();
-            visit.add(createLinkToCurrentVisit(username, institutionName, representativeName, visitId));
+            visit.add(createLinkToCurrentVisit(username, institutionName, representativeName, visit));
         }
     }
 
@@ -68,15 +67,13 @@ public class LinkCreator {
 
     public void addLinksToUsersVisits(List<Visit> visits, String username) {
         for (Visit visit : visits) {
-            Long visitId = visit.getVisitId();
-            visit.add(createLinkToUsersVisit(username, visitId));
+            visit.add(createLinkToUsersVisit(username, visit));
         }
     }
 
     public void addLinksToUsersVisit(Visit visit, String username) {
         Long visitId = visit.getVisitId();
-        visit.add(createLinkToUsersVisit(username, visitId),
-                createLinkToUser(username));
+        visit.add(createLinkToUsersVisit(username, visitId));
     }
 
     public void addLinksToWorkPlaces(List<Institution> workPlaces, String username) {
@@ -233,7 +230,15 @@ public class LinkCreator {
                 .slash(username)
                 .slash("visits")
                 .slash(visitId)
-                .withRel("visit-" + visitId);
+                .withRel("visit");
+    }
+
+    private Link createLinkToUsersVisit(String username, Visit visit) {
+        return linkTo(UserController.class)
+                .slash(username)
+                .slash("visits")
+                .slash(visit.getVisitId())
+                .withRel(visit.getVisitStart().toString());
     }
 
     private Link createLinkToCurrentVisit(String username, String institutionName, String representativeName, Long visitId) {
@@ -245,7 +250,19 @@ public class LinkCreator {
                 .slash(representativeName)
                 .slash("timetable")
                 .slash(visitId)
-                .withRel("visit-" + visitId);
+                .withRel("visit");
+    }
+
+    private Link createLinkToCurrentVisit(String username, String institutionName, String representativeName, Visit visit) {
+        return linkTo(UserController.class)
+                .slash(username)
+                .slash("institution")
+                .slash(institutionName)
+                .slash("representatives")
+                .slash(representativeName)
+                .slash("timetable")
+                .slash(visit.getVisitId())
+                .withRel(visit.getVisitStart().toString());
     }
 
     private Link createLinkToTimetable(String username, String institutionName, String representativeUsername) {
