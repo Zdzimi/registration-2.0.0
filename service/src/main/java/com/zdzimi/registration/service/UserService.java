@@ -77,14 +77,13 @@ public class UserService {
         }
     }
 
-    @Validated(OnUpdate.class)
-    public User update(@Valid User userNew, UserEntity userEntity) {
-        UserEntity userEntityNew = userMapper.convertToUserEntity(userNew);
-        userEntityNew.setVisits(userEntity.getVisits());
-        userEntityNew.setRecognizedInstitutions(userEntity.getRecognizedInstitutions());
-        userEntityNew.setProvidedVisits(userEntity.getProvidedVisits());
-        userEntityNew.setWorkPlaces(userEntity.getWorkPlaces());
-        UserEntity savedEntity = userRepository.save(userEntityNew);
+    public User update(User user, UserEntity oldUserEntity) {
+        UserEntity userEntity = userMapper.convertToUserEntity(user);
+        userEntity.setVisits(oldUserEntity.getVisits());
+        userEntity.setRecognizedInstitutions(oldUserEntity.getRecognizedInstitutions());
+        userEntity.setProvidedVisits(oldUserEntity.getProvidedVisits());
+        userEntity.setWorkPlaces(oldUserEntity.getWorkPlaces());
+        UserEntity savedEntity = userRepository.save(userEntity);
         return userMapper.convertToUser(savedEntity);
     }
 }

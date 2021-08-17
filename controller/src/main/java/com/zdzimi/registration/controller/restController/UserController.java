@@ -1,6 +1,7 @@
 package com.zdzimi.registration.controller.restController;
 
 import com.zdzimi.registration.controller.link.LinkCreator;
+import com.zdzimi.registration.core.model.ModifiedUser;
 import com.zdzimi.registration.core.model.Role;
 import com.zdzimi.registration.core.model.User;
 import com.zdzimi.registration.core.validation.OnCreate;
@@ -48,15 +49,24 @@ public class UserController {
     }
 
     @PostMapping("/{username}/update-user")
-    public User updateUser(@PathVariable String username, @RequestBody User[] users) {
+    public User updateUser(@Valid @RequestBody ModifiedUser modifiedUser, @PathVariable String username) {
         UserEntity userEntity = userService.getUserEntityByUsername(username);
-        User userNew = users[0];
-        User userOld = users[1];
-        if(passwordEncoder.matches(userOld.getPassword(), userEntity.getPassword())) {
-            userNew.setPassword(passwordEncoder.encode(userNew.getPassword()));
-            userNew.setRole(Role.ROLE_USER);
-            return userService.update(userNew, userEntity);
+        if(passwordEncoder.matches(modifiedUser.getOldPassword(), userEntity.getPassword())) {
+            User user = createUser(modifiedUser);
+            return userService.update(user, userEntity);
         }
         throw new InvalidPasswordException();
+    }
+
+    private User createUser(ModifiedUser modifiedUser) {
+        User user = new User();
+        user.setUserId(modifiedUser.getUserId());
+        user.setUsername(modifiedUser.getUsername());
+        user.setName(modifiedUser.getName());
+        user.setSurname(modifiedUser.getSurname());
+        user.setEmail(modifiedUser.getEmail());
+        user.setPassword(passwordEncoder.encode(modifiedUser.getNewPassword()));
+        user.setRole(Role.ROLE_USER);
+        return user;
     }
 }
