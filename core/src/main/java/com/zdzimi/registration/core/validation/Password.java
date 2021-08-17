@@ -10,7 +10,7 @@ import java.lang.annotation.*;
 @Documented
 public @interface Password {
 
-    String message() default "Password invalid";
+    String message() default "Hasło musi zawierać dużą i małą angielską literę oraz cyfrę.";
 
     Class<?>[] groups() default {};
 

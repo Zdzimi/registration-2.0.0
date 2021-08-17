@@ -39,7 +39,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/registration/new-user")
                 .permitAll()
                 .anyRequest()
-//                .permitAll()
                 .fullyAuthenticated()
                 .and()
                 .httpBasic();

@@ -8,31 +8,24 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.hateoas.EntityModel;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
+import javax.validation.constraints.*;
 
 @Getter
 @Setter
 public class User extends EntityModel {
 
-    @Null(groups = OnCreate.class)
-    @NotNull(groups = OnUpdate.class)
+    @Null
     private Long userId;
-    @NotNull
     @OnlyLettersAndDigits
     private String username;
-    @NotNull
+    @Size(min = 3, message = "Pole musi zawierać conajmniej trzy znaki.")
     private String name;
-    @NotNull
+    @Size(min = 3, message = "Pole musi zawierać conajmniej trzy znaki.")
     private String surname;
-    @NotNull
-    @Email
+    @Email(message = "Niepoprawny adres e-mail")
     private String email;
-    @NotNull
     @Password
     private String password;
-    @Null(groups = OnCreate.class)
-    @NotNull(groups = OnUpdate.class)
+    @Null
     private Role role;
 }

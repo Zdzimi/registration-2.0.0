@@ -7,8 +7,10 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.hateoas.EntityModel;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
+import javax.validation.constraints.Size;
 
 @Getter
 @Setter
@@ -17,20 +19,19 @@ public class Institution extends EntityModel {
     @Null(groups = OnCreate.class)
     @NotNull(groups = OnUpdate.class)
     private Long institutionId;
-    @NotNull
     @OnlyLettersAndDigits
     private String institutionName;
-    @NotNull
+    @Size(min = 4, message = "Pole musi zawierać conajmniej cztery znaki.")
     private String province;
-    @NotNull
+    @Size(min = 4, message = "Pole musi zawierać conajmniej cztery znaki.")
     private String city;
-    @NotNull
+    @Size(min = 4, message = "Pole musi zawierać conajmniej cztery znaki.")
     private String street;
-    @NotNull
+    @NotBlank(message = "Pole jest wymagane.")
     private String gateNumber;
     private String premisesNumber;
-    @NotNull
+    @Size(min = 4, message = "Pole musi zawierać conajmniej cztery znaki.")
     private String typeOfService;
-    @NotNull
+    @Size(min = 4, message = "Pole musi zawierać conajmniej cztery znaki.")
     private String description;
 }

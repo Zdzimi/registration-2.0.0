@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.hateoas.EntityModel;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 
@@ -17,7 +18,6 @@ public class Place extends EntityModel {
     @Null(groups = OnCreate.class)
     @NotNull(groups = OnUpdate.class)
     private Long placeId;
-    @NotNull
     @OnlyLettersAndDigits
     private String placeName;
 }

@@ -10,7 +10,7 @@ import java.lang.annotation.*;
 @Documented
 public @interface OnlyLettersAndDigits {
 
-    String message() default "Only letters and digits";
+    String message() default "Pole musi zawierać conajmniej dwa znaki (tylko angielskie litery i cyfry).";
 
     Class<?>[] groups() default {};
 

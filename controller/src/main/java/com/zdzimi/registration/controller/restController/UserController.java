@@ -38,7 +38,6 @@ public class UserController {
     }
 
     @PostMapping("/new-user")
-    @Validated(OnCreate.class)
     public User createUser(@Valid @RequestBody User user) {
         String password = user.getPassword();
         user.setPassword(passwordEncoder.encode(password));
