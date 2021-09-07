@@ -12,6 +12,9 @@ public class PasswordValidator implements ConstraintValidator<Password, String> 
         boolean containsSmallLetter = false;
         boolean containsBigLetter = false;
         boolean containsDigit = false;
+        if (value == null) {
+            return false;
+        }
         for (int i = 0; i < value.length(); i++) {
             if (isSmallLetter(value.charAt(i))) {
                 containsSmallLetter = true;

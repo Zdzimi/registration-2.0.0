@@ -21,17 +21,22 @@ public class Institution extends EntityModel {
     private Long institutionId;
     @OnlyLettersAndDigits
     private String institutionName;
+    @NotBlank(message = "Pole jest wymagane.")
     @Size(min = 4, message = "Pole musi zawierać conajmniej cztery znaki.")
     private String province;
+    @NotBlank(message = "Pole jest wymagane.")
     @Size(min = 4, message = "Pole musi zawierać conajmniej cztery znaki.")
     private String city;
+    @NotBlank(message = "Pole jest wymagane.")
     @Size(min = 4, message = "Pole musi zawierać conajmniej cztery znaki.")
     private String street;
     @NotBlank(message = "Pole jest wymagane.")
     private String gateNumber;
     private String premisesNumber;
+    @NotBlank(message = "Pole jest wymagane.")
     @Size(min = 4, message = "Pole musi zawierać conajmniej cztery znaki.")
     private String typeOfService;
+    @NotBlank(message = "Pole jest wymagane.")
     @Size(min = 4, message = "Pole musi zawierać conajmniej cztery znaki.")
     private String description;
 }

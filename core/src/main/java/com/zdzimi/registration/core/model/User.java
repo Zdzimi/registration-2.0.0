@@ -1,7 +1,5 @@
 package com.zdzimi.registration.core.model;
 
-import com.zdzimi.registration.core.validation.OnCreate;
-import com.zdzimi.registration.core.validation.OnUpdate;
 import com.zdzimi.registration.core.validation.OnlyLettersAndDigits;
 import com.zdzimi.registration.core.validation.Password;
 import lombok.Getter;
@@ -14,18 +12,17 @@ import javax.validation.constraints.*;
 @Setter
 public class User extends EntityModel {
 
-    @Null
-    private Long userId;
     @OnlyLettersAndDigits
     private String username;
+    @NotBlank(message = "Pole jest wymagane.")
     @Size(min = 3, message = "Pole musi zawierać conajmniej trzy znaki.")
     private String name;
+    @NotBlank(message = "Pole jest wymagane.")
     @Size(min = 3, message = "Pole musi zawierać conajmniej trzy znaki.")
     private String surname;
-    @Email(message = "Niepoprawny adres e-mail")
+    @NotBlank(message = "Pole jest wymagane.")
+    @Email(message = "Niepoprawny adres e-mail.")
     private String email;
     @Password
     private String password;
-    @Null
-    private Role role;
 }

@@ -42,31 +42,18 @@ public class UserController {
     public User createUser(@Valid @RequestBody User user) {
         String password = user.getPassword();
         user.setPassword(passwordEncoder.encode(password));
-        user.setRole(Role.ROLE_USER);
         User savedUser = userService.save(user);
         linkCreator.addLinksToUser(savedUser);
         return savedUser;
     }
 
-    @PostMapping("/{username}/update-user")
+    @PatchMapping("/{username}/update-user")
     public User updateUser(@Valid @RequestBody ModifiedUser modifiedUser, @PathVariable String username) {
         UserEntity userEntity = userService.getUserEntityByUsername(username);
         if(passwordEncoder.matches(modifiedUser.getOldPassword(), userEntity.getPassword())) {
-            User user = createUser(modifiedUser);
-            return userService.update(user, userEntity);
+            modifiedUser.setNewPassword(passwordEncoder.encode(modifiedUser.getNewPassword()));
+            return userService.update(userEntity, modifiedUser);
         }
         throw new InvalidPasswordException();
-    }
-
-    private User createUser(ModifiedUser modifiedUser) {
-        User user = new User();
-        user.setUserId(modifiedUser.getUserId());
-        user.setUsername(modifiedUser.getUsername());
-        user.setName(modifiedUser.getName());
-        user.setSurname(modifiedUser.getSurname());
-        user.setEmail(modifiedUser.getEmail());
-        user.setPassword(passwordEncoder.encode(modifiedUser.getNewPassword()));
-        user.setRole(Role.ROLE_USER);
-        return user;
     }
 }

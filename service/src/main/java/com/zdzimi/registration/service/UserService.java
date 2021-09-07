@@ -1,5 +1,6 @@
 package com.zdzimi.registration.service;
 
+import com.zdzimi.registration.core.model.ModifiedUser;
 import com.zdzimi.registration.core.model.User;
 import com.zdzimi.registration.core.validation.OnUpdate;
 import com.zdzimi.registration.data.entity.InstitutionEntity;
@@ -77,13 +78,13 @@ public class UserService {
         }
     }
 
-    public User update(User user, UserEntity oldUserEntity) {
-        UserEntity userEntity = userMapper.convertToUserEntity(user);
-        userEntity.setVisits(oldUserEntity.getVisits());
-        userEntity.setRecognizedInstitutions(oldUserEntity.getRecognizedInstitutions());
-        userEntity.setProvidedVisits(oldUserEntity.getProvidedVisits());
-        userEntity.setWorkPlaces(oldUserEntity.getWorkPlaces());
-        UserEntity savedEntity = userRepository.save(userEntity);
-        return userMapper.convertToUser(savedEntity);
+    public User update(UserEntity userEntity, ModifiedUser modifiedUser) {
+        userEntity.setUsername(modifiedUser.getUsername());
+        userEntity.setName(modifiedUser.getName());
+        userEntity.setSurname(modifiedUser.getSurname());
+        userEntity.setEmail(modifiedUser.getEmail());
+        userEntity.setPassword(modifiedUser.getNewPassword());
+        UserEntity savedUser = userRepository.save(userEntity);
+        return userMapper.convertToUser(savedUser);
     }
 }

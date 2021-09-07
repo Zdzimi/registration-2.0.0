@@ -48,7 +48,6 @@ class UserServiceTest {
         //      when
         User result = userService.getByUsername(USERNAME);
         //      then
-        assertEquals(USER_ID, result.getUserId());
         assertEquals(USERNAME, result.getUsername());
         verify(userRepository, times(1)).findByUsername(USERNAME);
         verifyNoMoreInteractions(userRepository);

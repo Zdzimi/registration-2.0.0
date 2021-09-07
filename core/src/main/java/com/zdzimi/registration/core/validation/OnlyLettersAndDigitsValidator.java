@@ -9,7 +9,7 @@ public class OnlyLettersAndDigitsValidator implements ConstraintValidator<OnlyLe
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {
-        if (value.length() < 2) {
+        if (value == null || value.length() < 2) {
             return false;
         }
         for (int i = 0; i < value.length(); i++) {

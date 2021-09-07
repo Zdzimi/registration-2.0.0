@@ -31,13 +31,11 @@ class UserMapperTest {
 
         User result = userMapper.convertToUser(userEntity);
 
-        assertEquals(USER_ID, result.getUserId());
         assertEquals(USERNAME, result.getUsername());
         assertEquals(NAME, result.getName());
         assertEquals(SURNAME, result.getSurname());
         assertEquals(EMAIL, result.getEmail());
         assertNull(result.getPassword());
-        assertEquals(ROLE_ROLE, result.getRole());
     }
 
     @Test
@@ -46,7 +44,7 @@ class UserMapperTest {
 
         UserEntity result = userMapper.convertToUserEntity(user);
 
-        assertEquals(USER_ID, result.getUserId());
+        assertNull(result.getUserId());
         assertEquals(USERNAME, result.getUsername());
         assertEquals(NAME, result.getName());
         assertEquals(SURNAME, result.getSurname());
@@ -77,13 +75,11 @@ class UserMapperTest {
 
     static User getUser() {
         User user = new User();
-        user.setUserId(USER_ID);
         user.setUsername(USERNAME);
         user.setName(NAME);
         user.setSurname(SURNAME);
         user.setEmail(EMAIL);
         user.setPassword(PASSWORD);
-        user.setRole(ROLE_ROLE);
         return user;
     }
 }

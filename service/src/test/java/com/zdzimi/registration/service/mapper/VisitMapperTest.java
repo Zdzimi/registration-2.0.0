@@ -45,21 +45,17 @@ class VisitMapperTest {
         assertEquals(LOCAL_DATE_TIME_START, result.getVisitStart());
         assertEquals(LOCAL_DATE_TIME_END, result.getVisitEnd());
 
-        assertEquals(USER_ID, result.getUser().getUserId());
         assertEquals(USERNAME, result.getUser().getUsername());
         assertEquals(NAME, result.getUser().getName());
         assertEquals(SURNAME, result.getUser().getSurname());
         assertEquals(EMAIL, result.getUser().getEmail());
         assertNull(result.getUser().getPassword());
-        assertEquals(ROLE_ROLE, result.getUser().getRole());
 
-        assertEquals(USER_ID, result.getRepresentative().getUserId());
         assertEquals(USERNAME, result.getRepresentative().getUsername());
         assertEquals(NAME, result.getRepresentative().getName());
         assertEquals(SURNAME, result.getRepresentative().getSurname());
         assertEquals(EMAIL, result.getRepresentative().getEmail());
         assertNull(result.getRepresentative().getPassword());
-        assertEquals(ROLE_ROLE, result.getRepresentative().getRole());
 
         assertEquals(PLACE_ID, result.getPlace().getPlaceId());
         assertEquals(PLACE_NAME, result.getPlace().getPlaceName());
@@ -77,7 +73,7 @@ class VisitMapperTest {
         assertEquals(TIMESTAMP_START, result.getVisitStart());
         assertEquals(TIMESTAMP_END, result.getVisitEnd());
 
-        assertEquals(USER_ID, result.getUser().getUserId());
+        assertNull(result.getUser().getUserId());
         assertEquals(USERNAME, result.getUser().getUsername());
         assertEquals(NAME, result.getUser().getName());
         assertEquals(SURNAME, result.getUser().getSurname());
@@ -85,7 +81,7 @@ class VisitMapperTest {
         assertEquals(PASSWORD, result.getUser().getPassword());
         assertEquals(ROLE, result.getUser().getRole());
 
-        assertEquals(USER_ID, result.getRepresentative().getUserId());
+        assertNull(result.getRepresentative().getUserId());
         assertEquals(USERNAME, result.getRepresentative().getUsername());
         assertEquals(NAME, result.getRepresentative().getName());
         assertEquals(SURNAME, result.getRepresentative().getSurname());

@@ -25,17 +25,13 @@ public class UserMapper {
             return null;
         }
         User user = modelMapper.map(userEntity, User.class);
-        String role = userEntity.getRole();
-        if (role.equals(ROLE_USER.name())) {
-            user.setRole(ROLE_USER);
-        }
-        //  else new Exception?
         user.setPassword(null);
         return user;
     }
 
     public UserEntity convertToUserEntity(User user) {
         UserEntity userEntity = modelMapper.map(user, UserEntity.class);
+        userEntity.setRole(ROLE_USER.name());
         userEntity.setVisits(Collections.emptyList());
         userEntity.setRecognizedInstitutions(Collections.emptyList());
         userEntity.setProvidedVisits(Collections.emptyList());

@@ -34,13 +34,11 @@ class UserControllerTest {
     void shouldGetUser() {
         //      given
         User user = new User();
-        user.setUserId(USER_ID);
         user.setUsername(USERNAME);
         when(userService.getByUsername(USERNAME)).thenReturn(user);
         //      when
         User result = userController.getUser(USERNAME);
         //      then
-        assertEquals(USER_ID, result.getUserId());
         assertEquals(USERNAME, result.getUsername());
         verify(userService, times(1)).getByUsername(USERNAME);
         verifyNoMoreInteractions(userService);
@@ -52,7 +50,6 @@ class UserControllerTest {
         User userBeforeSave = new User();
         userBeforeSave.setUsername(USERNAME);
         User userAfterSave = new User();
-        userAfterSave.setUserId(USER_ID);
         userAfterSave.setUsername(USERNAME);
         when(passwordEncoder.encode(userBeforeSave.getPassword())).thenReturn("Pass");
         when(userService.save(userBeforeSave)).thenReturn(userAfterSave);
