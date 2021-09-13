@@ -25,7 +25,6 @@ class PlaceMapperTest {
 
         Place result = placeMapper.convertToPlace(placeEntity);
 
-        assertEquals(PLACE_ID, result.getPlaceId());
         assertEquals(PLACE_NAME, result.getPlaceName());
     }
 
@@ -35,7 +34,7 @@ class PlaceMapperTest {
 
         PlaceEntity result = placeMapper.convertToPlaceEntity(place);
 
-        assertEquals(PLACE_ID, result.getPlaceId());
+        assertEquals(0, result.getPlaceId());
         assertEquals(PLACE_NAME, result.getPlaceName());
         assertNull(result.getInstitution());
         assertTrue(result.getVisits().isEmpty());
@@ -55,7 +54,6 @@ class PlaceMapperTest {
 
     static Place getPlace() {
         Place place = new Place();
-        place.setPlaceId(PLACE_ID);
         place.setPlaceName(PLACE_NAME);
         return place;
     }

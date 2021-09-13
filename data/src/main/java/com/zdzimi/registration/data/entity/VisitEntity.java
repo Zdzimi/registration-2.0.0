@@ -1,6 +1,5 @@
 package com.zdzimi.registration.data.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.zdzimi.registration.data.validator.OnBook;
 import com.zdzimi.registration.data.validator.OnCancel;
 import com.zdzimi.registration.data.validator.OnDelete;

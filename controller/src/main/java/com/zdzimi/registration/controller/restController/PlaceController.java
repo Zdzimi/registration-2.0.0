@@ -39,14 +39,13 @@ public class PlaceController {
     }
 
     @PostMapping("/new-place")
-    @Validated(OnCreate.class)
     public Place addNewPlace(@Valid @RequestBody Place place, @PathVariable String username, @PathVariable String institutionName) {
         InstitutionEntity institutionEntity = institutionService.getInstitutionEntityByInstitutionName(institutionName);
         return placeService.addNewPlace(institutionEntity, place);
     }
 
     @GetMapping("/place/{placeName}")
-    public Place getPlace(@PathVariable String username,@PathVariable String institutionName, @PathVariable String placeName) {
+    public Place getPlace(@PathVariable String username, @PathVariable String institutionName, @PathVariable String placeName) {
         InstitutionEntity institutionEntity = institutionService.getInstitutionEntityByInstitutionName(institutionName);
         Place place = placeService.getPlace(institutionEntity, placeName);
         linkCreator.addLinksToPlace(place, username, institutionName);
@@ -54,7 +53,7 @@ public class PlaceController {
     }
 
     @DeleteMapping("/place/{placeName}")
-    public void deletePlace(@PathVariable String username,@PathVariable String institutionName, @PathVariable String placeName) {
+    public void deletePlace(@PathVariable String username, @PathVariable String institutionName, @PathVariable String placeName) {
         InstitutionEntity institutionEntity = institutionService.getInstitutionEntityByInstitutionName(institutionName);
         PlaceEntity placeEntity = placeService.getPlaceEntity(institutionEntity, placeName);
         placeService.delete(placeEntity);

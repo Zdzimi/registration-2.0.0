@@ -2,7 +2,6 @@ package com.zdzimi.registration.service;
 
 import com.zdzimi.registration.core.model.ModifiedUser;
 import com.zdzimi.registration.core.model.User;
-import com.zdzimi.registration.core.validation.OnUpdate;
 import com.zdzimi.registration.data.entity.InstitutionEntity;
 import com.zdzimi.registration.data.entity.UserEntity;
 import com.zdzimi.registration.data.exception.UserNotFoundException;
@@ -12,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -65,10 +63,20 @@ public class UserService {
 
     public User inviteUserToWorkPlace(String username, InstitutionEntity institutionEntity) {
         // todo test
+        checkIfItDoesNotRepeatItself(username, institutionEntity);
         UserEntity userEntity = getUserEntityByUsername(username);
         userEntity.getWorkPlaces().add(institutionEntity);
         UserEntity savedUserEntity = userRepository.save(userEntity);
         return userMapper.convertToUser(savedUserEntity);
+    }
+
+    private void checkIfItDoesNotRepeatItself(String username, InstitutionEntity institutionEntity) throws RepresentativeAlreadyInvitedException {
+        List<UserEntity> representatives = userRepository.findByWorkPlaces(institutionEntity);
+        for (UserEntity userEntity : representatives) {
+            if (userEntity.getUsername().equals(username)) {
+                throw new RepresentativeAlreadyInvitedException(username);
+            }
+        }
     }
 
     public void addRecognizedInstitution(UserEntity userEntity, InstitutionEntity institutionEntity) {

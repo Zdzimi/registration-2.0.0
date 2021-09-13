@@ -37,16 +37,20 @@ public class PlaceService {
     }
 
     public Place addNewPlace(InstitutionEntity institutionEntity, Place place) {
+        checkIfItDoesNotRepeatItself(institutionEntity, place);
+        PlaceEntity placeEntity = placeMapper.convertToPlaceEntity(place);
+        placeEntity.setInstitution(institutionEntity);
+        PlaceEntity savedPlaceEntity = placeRepository.save(placeEntity);
+        return placeMapper.convertToPlace(savedPlaceEntity);
+    }
+
+    private void checkIfItDoesNotRepeatItself(InstitutionEntity institutionEntity, Place place) {
         Collection<PlaceEntity> places = institutionEntity.getPlaces();
         for (PlaceEntity placeEntity : places) {
             if (placeEntity.getPlaceName().equals(place.getPlaceName())) {
                 throw new PlaceNameException(place.getPlaceName());
             }
         }
-        PlaceEntity placeEntity = placeMapper.convertToPlaceEntity(place);
-        placeEntity.setInstitution(institutionEntity);
-        PlaceEntity savedPlaceEntity = placeRepository.save(placeEntity);
-        return placeMapper.convertToPlace(savedPlaceEntity);
     }
 
     public Place getPlace(InstitutionEntity institutionEntity, String placeName) {

@@ -44,7 +44,7 @@ class UserMapperTest {
 
         UserEntity result = userMapper.convertToUserEntity(user);
 
-        assertNull(result.getUserId());
+        assertEquals(0, result.getUserId());
         assertEquals(USERNAME, result.getUsername());
         assertEquals(NAME, result.getName());
         assertEquals(SURNAME, result.getSurname());
