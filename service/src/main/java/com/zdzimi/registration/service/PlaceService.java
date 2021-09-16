@@ -6,6 +6,7 @@ import com.zdzimi.registration.data.entity.PlaceEntity;
 import com.zdzimi.registration.data.entity.VisitEntity;
 import com.zdzimi.registration.data.exception.PlaceNotFoundException;
 import com.zdzimi.registration.data.repository.PlaceRepository;
+import com.zdzimi.registration.service.exception.DeletePlaceException;
 import com.zdzimi.registration.service.exception.PlaceNameException;
 import com.zdzimi.registration.service.mapper.PlaceMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,8 +69,9 @@ public class PlaceService {
         List<VisitEntity> visitEntities = placeEntity.getVisits().stream()
                 .filter(visitEntity -> visitEntity.getVisitStart().after(now))
                 .collect(Collectors.toList());
-        if (visitEntities.isEmpty()) {
-            placeRepository.delete(placeEntity);
+        if (!visitEntities.isEmpty()) {
+            throw new DeletePlaceException(placeEntity.getPlaceName());
         }
+        placeRepository.delete(placeEntity);
     }
 }
