@@ -39,7 +39,6 @@ public class WorkPlacesController {
     }
 
     @PostMapping("/new-work-place")
-    @Validated(OnCreate.class)
     public Institution createNewInstitution(@Valid @RequestBody Institution institution,
                                             @PathVariable String username) {
         InstitutionEntity newInstitutionEntity = institutionService.createNewInstitution(institution);

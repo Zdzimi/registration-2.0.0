@@ -73,7 +73,6 @@ class InstitutionServiceTest {
         //      when
         Institution institution = institutionService.getByInstitutionName(INSTITUTION_NAME);
         //      then
-        assertEquals(INSTITUTION_ID, institution.getInstitutionId());
         assertEquals(INSTITUTION_NAME, institution.getInstitutionName());
         verify(institutionRepository, times(1)).findByInstitutionName(INSTITUTION_NAME);
         verifyNoMoreInteractions(institutionRepository);

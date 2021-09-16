@@ -31,7 +31,6 @@ class InstitutionMapperTest {
 
         Institution result = institutionMapper.convertToInstitution(institutionEntity);
 
-        assertEquals(INSTITUTION_ID, result.getInstitutionId());
         assertEquals(INSTITUTION_NAME, result.getInstitutionName());
         assertEquals(PROVINCE, result.getProvince());
         assertEquals(CITY, result.getCity());
@@ -48,7 +47,7 @@ class InstitutionMapperTest {
 
         InstitutionEntity result = institutionMapper.convertToInstitutionEntity(institution);
 
-        assertEquals(INSTITUTION_ID, result.getInstitutionId());
+        assertEquals(0, result.getInstitutionId());
         assertEquals(INSTITUTION_NAME, result.getInstitutionName());
         assertEquals(PROVINCE, result.getProvince());
         assertEquals(CITY, result.getCity());
@@ -81,7 +80,6 @@ class InstitutionMapperTest {
 
     static Institution getInstitution() {
         Institution institution = new Institution();
-        institution.setInstitutionId(INSTITUTION_ID);
         institution.setInstitutionName(INSTITUTION_NAME);
         institution.setProvince(PROVINCE);
         institution.setCity(CITY);

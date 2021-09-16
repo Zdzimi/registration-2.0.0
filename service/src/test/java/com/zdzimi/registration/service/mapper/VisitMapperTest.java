@@ -59,7 +59,7 @@ class VisitMapperTest {
 
         assertEquals(PLACE_NAME, result.getPlace().getPlaceName());
 
-        assertEquals(INSTITUTION_ID, result.getInstitution().getInstitutionId());
+        assertEquals(INSTITUTION_NAME, result.getInstitution().getInstitutionName());
     }
 
     @Test
@@ -91,7 +91,8 @@ class VisitMapperTest {
         assertEquals(0, result.getPlace().getPlaceId());
         assertEquals(PLACE_NAME, result.getPlace().getPlaceName());
 
-        assertEquals(INSTITUTION_ID, result.getInstitution().getInstitutionId());
+        assertEquals(0, result.getInstitution().getInstitutionId());
+        assertEquals(INSTITUTION_NAME, result.getInstitution().getInstitutionName());
     }
 
     static VisitEntity getVisitEntity() {
