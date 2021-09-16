@@ -1,6 +1,6 @@
 package com.zdzimi.registration.controller.restController.advice;
 
-import com.zdzimi.registration.service.PlaceNameException;
+import com.zdzimi.registration.service.exception.PlaceNameException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 

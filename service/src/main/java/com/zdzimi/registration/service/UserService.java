@@ -6,6 +6,7 @@ import com.zdzimi.registration.data.entity.InstitutionEntity;
 import com.zdzimi.registration.data.entity.UserEntity;
 import com.zdzimi.registration.data.exception.UserNotFoundException;
 import com.zdzimi.registration.data.repository.UserRepository;
+import com.zdzimi.registration.service.exception.RepresentativeAlreadyInvitedException;
 import com.zdzimi.registration.service.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package com.zdzimi.registration.service;
+package com.zdzimi.registration.service.exception;
 
 import javax.validation.constraints.NotNull;
 

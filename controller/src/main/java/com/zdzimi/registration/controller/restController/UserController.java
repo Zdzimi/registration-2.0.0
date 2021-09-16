@@ -2,9 +2,7 @@ package com.zdzimi.registration.controller.restController;
 
 import com.zdzimi.registration.controller.link.LinkCreator;
 import com.zdzimi.registration.core.model.ModifiedUser;
-import com.zdzimi.registration.core.model.Role;
 import com.zdzimi.registration.core.model.User;
-import com.zdzimi.registration.core.validation.OnCreate;
 import com.zdzimi.registration.data.entity.UserEntity;
 import com.zdzimi.registration.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

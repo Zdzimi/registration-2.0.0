@@ -1,6 +1,6 @@
 package com.zdzimi.registration.controller.restController.advice;
 
-import com.zdzimi.registration.service.RepresentativeAlreadyInvitedException;
+import com.zdzimi.registration.service.exception.RepresentativeAlreadyInvitedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;

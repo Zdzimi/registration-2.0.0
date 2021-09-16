@@ -2,7 +2,6 @@ package com.zdzimi.registration.controller.restController;
 
 import com.zdzimi.registration.controller.link.LinkCreator;
 import com.zdzimi.registration.core.model.Place;
-import com.zdzimi.registration.core.validation.OnCreate;
 import com.zdzimi.registration.data.entity.InstitutionEntity;
 import com.zdzimi.registration.data.entity.PlaceEntity;
 import com.zdzimi.registration.service.InstitutionService;

@@ -6,12 +6,11 @@ import com.zdzimi.registration.data.entity.PlaceEntity;
 import com.zdzimi.registration.data.entity.VisitEntity;
 import com.zdzimi.registration.data.exception.PlaceNotFoundException;
 import com.zdzimi.registration.data.repository.PlaceRepository;
+import com.zdzimi.registration.service.exception.PlaceNameException;
 import com.zdzimi.registration.service.mapper.PlaceMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 
-import javax.validation.Valid;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Collection;
