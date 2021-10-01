@@ -40,4 +40,8 @@ public interface VisitRepository extends JpaRepository<VisitEntity, Long> {
     List<VisitEntity> findByInstitutionAndVisitEndIsAfterAndVisitStartIsBefore(
             InstitutionEntity institutionEntity, Timestamp firstVisitStart, Timestamp lastVisitEnd
     );
+
+    List<VisitEntity> findByInstitutionAndPlaceNameAndVisitEndIsAfter(
+            InstitutionEntity institutionEntity, String placeName, Timestamp timestamp
+    );
 }

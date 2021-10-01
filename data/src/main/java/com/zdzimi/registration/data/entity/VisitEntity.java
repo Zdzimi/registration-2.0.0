@@ -28,8 +28,7 @@ public class VisitEntity {
     private UserEntity user;
     @ManyToOne
     private UserEntity representative;
-    @ManyToOne
-    private PlaceEntity place;
+    private String placeName;
     @ManyToOne
     private InstitutionEntity institution;
 }

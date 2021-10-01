@@ -21,13 +21,15 @@ import java.util.stream.Collectors;
 @Service
 public class PlaceService {
 
-    private PlaceRepository placeRepository;
-    private PlaceMapper placeMapper;
+    private final PlaceRepository placeRepository;
+    private final PlaceMapper placeMapper;
+    private final VisitService visitService;
 
     @Autowired
-    public PlaceService(PlaceRepository placeRepository, PlaceMapper placeMapper) {
+    public PlaceService(PlaceRepository placeRepository, PlaceMapper placeMapper, VisitService visitService) {
         this.placeRepository = placeRepository;
         this.placeMapper = placeMapper;
+        this.visitService = visitService;
     }
 
     public List<Place> getPlaces(InstitutionEntity institutionEntity) {
@@ -63,12 +65,11 @@ public class PlaceService {
                     .orElseThrow(() -> new PlaceNotFoundException(institutionEntity.getInstitutionName(), placeName));
     }
 
-    //  fixme + test
-    public void delete(PlaceEntity placeEntity) {
+    //  todo test
+    public void delete(InstitutionEntity institutionEntity, PlaceEntity placeEntity) {
         Timestamp now = Timestamp.valueOf(LocalDateTime.now());
-        List<VisitEntity> visitEntities = placeEntity.getVisits().stream()
-                .filter(visitEntity -> visitEntity.getVisitStart().after(now))
-                .collect(Collectors.toList());
+        List<VisitEntity> visitEntities = visitService
+                .getByInstitutionAndPlaceNameAndVisitEndIsAfter(institutionEntity, placeEntity.getPlaceName(), now);
         if (!visitEntities.isEmpty()) {
             throw new DeletePlaceException(placeEntity.getPlaceName());
         }

@@ -2,13 +2,11 @@ package com.zdzimi.registration.service;
 
 import com.zdzimi.registration.core.model.Visit;
 import com.zdzimi.registration.data.entity.InstitutionEntity;
-import com.zdzimi.registration.data.entity.PlaceEntity;
 import com.zdzimi.registration.data.entity.UserEntity;
 import com.zdzimi.registration.data.entity.VisitEntity;
 import com.zdzimi.registration.data.exception.VisitNotFoundException;
 import com.zdzimi.registration.data.repository.VisitRepository;
 import com.zdzimi.registration.service.mapper.InstitutionMapper;
-import com.zdzimi.registration.service.mapper.PlaceMapper;
 import com.zdzimi.registration.service.mapper.UserMapper;
 import com.zdzimi.registration.service.mapper.VisitMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,6 +31,7 @@ class VisitServiceTest {
     private static final Timestamp TIMESTAMP_START = Timestamp.valueOf(LOCAL_DATE_TIME_START);
     private static final Timestamp TIMESTAMP_END = Timestamp.valueOf(LOCAL_DATE_TIME_END);
     private static final long VISIT_ID = 131423;
+    private static final String PLACE_NAME = "SALE_NO_12";
 
     private static final int YEAR = 2050;
     private static final int MONTH = 3;
@@ -41,11 +40,10 @@ class VisitServiceTest {
     private VisitService visitService;
     private VisitRepository visitRepository;
 
-    private ModelMapper modelMapper = new ModelMapper();
-    private UserMapper userMapper = new UserMapper(modelMapper);
-    private PlaceMapper placeMapper = new PlaceMapper(modelMapper);
-    private InstitutionMapper institutionMapper = new InstitutionMapper(modelMapper);
-    private VisitMapper visitMapper = new VisitMapper(modelMapper, userMapper, placeMapper, institutionMapper);
+    private final ModelMapper modelMapper = new ModelMapper();
+    private final UserMapper userMapper = new UserMapper(modelMapper);
+    private final InstitutionMapper institutionMapper = new InstitutionMapper(modelMapper);
+    private final VisitMapper visitMapper = new VisitMapper(modelMapper, userMapper, institutionMapper);
 
     @BeforeEach
     void setUp() {
@@ -326,7 +324,7 @@ class VisitServiceTest {
         visitEntity.setVisitId(VISIT_ID);
         visitEntity.setVisitStart(TIMESTAMP_START);
         visitEntity.setVisitEnd(TIMESTAMP_END);
-        visitEntity.setPlace(new PlaceEntity());
+        visitEntity.setPlaceName(PLACE_NAME);
         visitEntity.setInstitution(new InstitutionEntity());
         return visitEntity;
     }

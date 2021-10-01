@@ -15,6 +15,6 @@ public class Visit extends EntityModel {
     private LocalDateTime visitEnd;
     private User user;
     private User representative;
-    private Place place;
+    private String placeName;
     private Institution institution;
 }

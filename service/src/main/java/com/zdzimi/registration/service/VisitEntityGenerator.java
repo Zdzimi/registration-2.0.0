@@ -21,7 +21,7 @@ public class VisitEntityGenerator {
 
     //      todo - test
 
-    private PlaceService placeService;
+    private final PlaceService placeService;
 
     @Autowired
     public VisitEntityGenerator(PlaceService placeService) {
@@ -53,7 +53,7 @@ public class VisitEntityGenerator {
                         visitEntity.setVisitStart(Timestamp.valueOf(visitStart));
                         visitEntity.setVisitEnd(Timestamp.valueOf(visitEnd));
                         visitEntity.setRepresentative(representativeEntity);
-                        visitEntity.setPlace(placeEntity);
+                        visitEntity.setPlaceName(placeEntity.getPlaceName());
                         visitEntity.setInstitution(institutionEntity);
                         visits.add(visitEntity);
                     }

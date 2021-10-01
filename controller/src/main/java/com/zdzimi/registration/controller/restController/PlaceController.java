@@ -18,9 +18,9 @@ import java.util.List;
 @Validated
 public class PlaceController {
 
-    private PlaceService placeService;
-    private InstitutionService institutionService;
-    private LinkCreator linkCreator;
+    private final PlaceService placeService;
+    private final InstitutionService institutionService;
+    private final LinkCreator linkCreator;
 
     @Autowired
     public PlaceController(PlaceService placeService, InstitutionService institutionService, LinkCreator linkCreator) {
@@ -55,6 +55,6 @@ public class PlaceController {
     public void deletePlace(@PathVariable String username, @PathVariable String institutionName, @PathVariable String placeName) {
         InstitutionEntity institutionEntity = institutionService.getInstitutionEntityByInstitutionName(institutionName);
         PlaceEntity placeEntity = placeService.getPlaceEntity(institutionEntity, placeName);
-        placeService.delete(placeEntity);
+        placeService.delete(institutionEntity, placeEntity);
     }
 }

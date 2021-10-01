@@ -26,13 +26,14 @@ class PlaceServiceTest {
 
     private PlaceService placeService;
     private PlaceRepository placeRepository;
-    private PlaceMapper placeMapper = new PlaceMapper(new ModelMapper());
+    private final PlaceMapper placeMapper = new PlaceMapper(new ModelMapper());
 
     @BeforeEach
     void setUp() {
         placeRepository = mock(PlaceRepository.class);
+        VisitService visitService = mock(VisitService.class);
         initMocks(this);
-        placeService = new PlaceService(placeRepository, placeMapper);
+        placeService = new PlaceService(placeRepository, placeMapper, visitService);
     }
 
     @Test

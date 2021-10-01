@@ -17,7 +17,7 @@ public class ConflictAnalyzer {
 
     //      todo tests
 
-    private VisitService visitService;
+    private final VisitService visitService;
 
     @Autowired
     public ConflictAnalyzer(VisitService visitService) {
@@ -45,7 +45,7 @@ public class ConflictAnalyzer {
                     LocalDateTime visitStart = visitByRepresentative.getVisitStart().toLocalDateTime();
                     LocalDateTime visitEnd = visitByRepresentative.getVisitEnd().toLocalDateTime();
                     String institutionName = visitByRepresentative.getInstitution().getInstitutionName();
-                    String placeName = visitByRepresentative.getPlace().getPlaceName();
+                    String placeName = visitByRepresentative.getPlaceName();
                     conflicts.add("Conflict you have visit: " + visitStart + " - " + visitEnd + " in " + institutionName + ", " + placeName);
                 }
             }
@@ -54,7 +54,7 @@ public class ConflictAnalyzer {
                     LocalDateTime visitStart = visitByInstitution.getVisitStart().toLocalDateTime();
                     LocalDateTime visitEnd = visitByInstitution.getVisitEnd().toLocalDateTime();
                     String institutionName = visitByInstitution.getInstitution().getInstitutionName();
-                    String placeName = visitByInstitution.getPlace().getPlaceName();
+                    String placeName = visitByInstitution.getPlaceName();
                     conflicts.add("Conflict place booked: " + visitStart + " - " + visitEnd + " in " + institutionName + ", " + placeName);
                 }
             }
@@ -67,7 +67,7 @@ public class ConflictAnalyzer {
     }
 
     private boolean thereIsNoPlaceConflict(VisitEntity targetVisitEntity, VisitEntity visitByInstitution) {
-        if (targetVisitEntity.getPlace().equals(visitByInstitution.getPlace())) {
+        if (targetVisitEntity.getPlaceName().equals(visitByInstitution.getPlaceName())) {
             return thereIsNoConflict(targetVisitEntity, visitByInstitution);
         }
         return true;

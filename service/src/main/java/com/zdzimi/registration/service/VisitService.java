@@ -26,8 +26,8 @@ import java.util.stream.Collectors;
 @Service
 public class VisitService {
 
-    private VisitRepository visitRepository;
-    private VisitMapper visitMapper;
+    private final VisitRepository visitRepository;
+    private final VisitMapper visitMapper;
 
     @Autowired
     public VisitService(VisitRepository visitRepository, VisitMapper visitMapper) {
@@ -141,6 +141,12 @@ public class VisitService {
                                                                                      Timestamp lastVisitEnd) {
         return visitRepository
                 .findByInstitutionAndVisitEndIsAfterAndVisitStartIsBefore(institutionEntity, firstVisitStart, lastVisitEnd);
+    }
+
+    public List<VisitEntity> getByInstitutionAndPlaceNameAndVisitEndIsAfter(InstitutionEntity institutionEntity,
+                                                                            String placeName,
+                                                                            Timestamp now) {
+        return visitRepository.findByInstitutionAndPlaceNameAndVisitEndIsAfter(institutionEntity, placeName, now);
     }
 
     public List<Visit> saveAll(List<VisitEntity> visitEntities) {
