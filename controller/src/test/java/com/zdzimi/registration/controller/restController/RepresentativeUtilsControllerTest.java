@@ -1,6 +1,7 @@
 package com.zdzimi.registration.controller.restController;
 
 import com.zdzimi.registration.controller.link.LinkCreator;
+import com.zdzimi.registration.core.model.Place;
 import com.zdzimi.registration.core.model.Visit;
 import com.zdzimi.registration.core.model.template.TimetableTemplate;
 import com.zdzimi.registration.data.entity.InstitutionEntity;
@@ -31,6 +32,7 @@ class RepresentativeUtilsControllerTest {
     private VisitService visitService;
     private UserService userService;
     private InstitutionService institutionService;
+    private PlaceService placeService;
     private TimetableTemplateService timetableTemplateService;
     private VisitEntityGenerator visitEntityGenerator;
     private ConflictAnalyzer conflictAnalyzer;
@@ -41,13 +43,14 @@ class RepresentativeUtilsControllerTest {
         visitService = mock(VisitService.class);
         userService = mock(UserService.class);
         institutionService = mock(InstitutionService.class);
+        placeService = mock(PlaceService.class);
         timetableTemplateService = mock(TimetableTemplateService.class);
         visitEntityGenerator = mock(VisitEntityGenerator.class);
         conflictAnalyzer = mock(ConflictAnalyzer.class);
         linkCreator = mock(LinkCreator.class);
         initMocks(this);
         representativeUtilsController = new RepresentativeUtilsController(
-                visitService, userService, institutionService, timetableTemplateService, visitEntityGenerator, conflictAnalyzer,
+                visitService, userService, institutionService, placeService, timetableTemplateService, visitEntityGenerator, conflictAnalyzer,
                 linkCreator);
     }
 
@@ -59,10 +62,12 @@ class RepresentativeUtilsControllerTest {
         InstitutionEntity institutionEntity = new InstitutionEntity();
         when(institutionService.getWorkPlaceEntityByRepresentativeEntityAndInstitutionName(representativeEntity, INSTITUTION_NAME))
                 .thenReturn(institutionEntity);
+        List<Place> places = Arrays.asList(new Place());
+        when(placeService.getPlaces(institutionEntity)).thenReturn(places);
         Visit visit = new Visit();
         when(visitService.getLastProvidedVisit(representativeEntity, institutionEntity)).thenReturn(visit);
         TimetableTemplate timetableTemplate = new TimetableTemplate();
-        when(timetableTemplateService.prepareTemplate(visit)).thenReturn(timetableTemplate);
+        when(timetableTemplateService.prepareTemplate(visit, places)).thenReturn(timetableTemplate);
         //      when
         TimetableTemplate result = representativeUtilsController.prepareNextTemplate(USERNAME, INSTITUTION_NAME);
         //      then
@@ -74,7 +79,7 @@ class RepresentativeUtilsControllerTest {
         verifyNoMoreInteractions(institutionService);
         verify(visitService, times(1)).getLastProvidedVisit(representativeEntity, institutionEntity);
         verifyNoMoreInteractions(visitService);
-        verify(timetableTemplateService, times(1)).prepareTemplate(visit);
+        verify(timetableTemplateService, times(1)).prepareTemplate(visit, places);
         verifyNoMoreInteractions(timetableTemplateService);
     }
 
@@ -129,13 +134,20 @@ class RepresentativeUtilsControllerTest {
     @Test
     void shouldGetTemplateByYearAndMonth() {
         //      given
+        UserEntity representativeEntity = new UserEntity();
+        when(userService.getUserEntityByUsername(USERNAME)).thenReturn(representativeEntity);
+        InstitutionEntity institutionEntity = new InstitutionEntity();
+        when(institutionService.getWorkPlaceEntityByRepresentativeEntityAndInstitutionName(representativeEntity, INSTITUTION_NAME))
+                .thenReturn(institutionEntity);
+        List<Place> places = Arrays.asList(new Place());
+        when(placeService.getPlaces(institutionEntity)).thenReturn(places);
         TimetableTemplate timetableTemplate = new TimetableTemplate();
-        when(timetableTemplateService.prepareTemplate(YEAR, MONTH)).thenReturn(timetableTemplate);
+        when(timetableTemplateService.prepareTemplate(YEAR, MONTH, places)).thenReturn(timetableTemplate);
         //      when
         TimetableTemplate result = representativeUtilsController.prepareTemplateByYearAndMonth(USERNAME, INSTITUTION_NAME, YEAR, MONTH);
         //      them
         assertEquals(timetableTemplate, result);
-        verify(timetableTemplateService, times(1)).prepareTemplate(YEAR, MONTH);
+        verify(timetableTemplateService, times(1)).prepareTemplate(YEAR, MONTH, places);
         verifyNoMoreInteractions(timetableTemplateService);
     }
 

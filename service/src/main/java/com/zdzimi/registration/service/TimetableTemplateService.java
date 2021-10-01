@@ -1,5 +1,6 @@
 package com.zdzimi.registration.service;
 
+import com.zdzimi.registration.core.model.Place;
 import com.zdzimi.registration.core.model.Visit;
 import com.zdzimi.registration.core.model.template.Day;
 import com.zdzimi.registration.core.model.template.TimetableTemplate;
@@ -10,38 +11,39 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Service
 public class TimetableTemplateService {
 
     //      todo tests
 
-    public TimetableTemplate prepareTemplate(Visit lastProvidedVisit) {
+    public TimetableTemplate prepareTemplate(Visit lastProvidedVisit, List<Place> places) {
         LocalDateTime now = LocalDateTime.now();
         if (lastProvidedVisit != null) {
             LocalDateTime visitDateTime = lastProvidedVisit.getVisitStart();
             LocalDateTime nextMonth = getNexMonthDate(visitDateTime);
-            return createTemplate(nextMonth);
+            return createTemplate(nextMonth, places);
         } else {
-            return createTemplate(now);
+            return createTemplate(now, places);
         }
     }
 
-    public TimetableTemplate prepareTemplate(int year, int month) {
+    public TimetableTemplate prepareTemplate(int year, int month, List<Place> places) {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime firstDayOfMonth = LocalDateTime.of(year, month, 1, 0, 0);
         int monthLength = firstDayOfMonth.getMonth().length(firstDayOfMonth.toLocalDate().isLeapYear());
         LocalDateTime lastDayOfMonth = LocalDateTime.of(year, month, monthLength, 23, 59);
         if (now.isBefore(firstDayOfMonth)) {
-            return createTemplate(firstDayOfMonth);
+            return createTemplate(firstDayOfMonth, places);
         } else if (now.isAfter(firstDayOfMonth) && now.isBefore(lastDayOfMonth)) {
-            return createTemplate(now);
+            return createTemplate(now, places);
         } else {
             throw new TimetableTemplateException(year, month);
         }
     }
 
-    private TimetableTemplate createTemplate(LocalDateTime date) {
+    private TimetableTemplate createTemplate(LocalDateTime date, List<Place> places) {
         TimetableTemplate timetableTemplate = new TimetableTemplate();
         timetableTemplate.setYear(date.getYear());
         timetableTemplate.setMonth(date.getMonthValue());
@@ -59,6 +61,7 @@ public class TimetableTemplateService {
             days.add(day);
         }
         timetableTemplate.setDays(days);
+        timetableTemplate.setPlaces(places);
 
         return timetableTemplate;
     }

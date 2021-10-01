@@ -1,6 +1,7 @@
 package com.zdzimi.registration.controller.restController;
 
 import com.zdzimi.registration.controller.link.LinkCreator;
+import com.zdzimi.registration.core.model.Place;
 import com.zdzimi.registration.core.model.Visit;
 import com.zdzimi.registration.core.model.template.TimetableTemplate;
 import com.zdzimi.registration.data.entity.InstitutionEntity;
@@ -20,6 +21,7 @@ public class RepresentativeUtilsController {
     private VisitService visitService;
     private UserService userService;
     private InstitutionService institutionService;
+    private PlaceService placeService;
     private TimetableTemplateService timetableTemplateService;
     private VisitEntityGenerator visitEntityGenerator;
     private ConflictAnalyzer conflictAnalyzer;
@@ -29,6 +31,7 @@ public class RepresentativeUtilsController {
     public RepresentativeUtilsController(VisitService visitService,
                                          UserService userService,
                                          InstitutionService institutionService,
+                                         PlaceService placeService,
                                          TimetableTemplateService timetableTemplateService,
                                          VisitEntityGenerator visitEntityGenerator,
                                          ConflictAnalyzer conflictAnalyzer,
@@ -36,6 +39,7 @@ public class RepresentativeUtilsController {
         this.visitService = visitService;
         this.userService = userService;
         this.institutionService = institutionService;
+        this.placeService = placeService;
         this.timetableTemplateService = timetableTemplateService;
         this.visitEntityGenerator = visitEntityGenerator;
         this.conflictAnalyzer = conflictAnalyzer;
@@ -47,8 +51,9 @@ public class RepresentativeUtilsController {
         UserEntity representativeEntity = userService.getUserEntityByUsername(username);
         InstitutionEntity institutionEntity = institutionService
                 .getWorkPlaceEntityByRepresentativeEntityAndInstitutionName(representativeEntity, institutionName);
+        List<Place> places = placeService.getPlaces(institutionEntity);
         Visit lastProvidedVisit = visitService.getLastProvidedVisit(representativeEntity, institutionEntity);
-        return timetableTemplateService.prepareTemplate(lastProvidedVisit);
+        return timetableTemplateService.prepareTemplate(lastProvidedVisit, places);
     }
 
     @GetMapping("/year/{year}")
@@ -81,7 +86,11 @@ public class RepresentativeUtilsController {
                                                            @PathVariable String institutionName,
                                                            @PathVariable int year,
                                                            @PathVariable int month) {
-        return timetableTemplateService.prepareTemplate(year, month);
+        UserEntity representativeEntity = userService.getUserEntityByUsername(username);
+        InstitutionEntity institutionEntity = institutionService
+                .getWorkPlaceEntityByRepresentativeEntityAndInstitutionName(representativeEntity, institutionName);
+        List<Place> places = placeService.getPlaces(institutionEntity);
+        return timetableTemplateService.prepareTemplate(year, month, places);
     }
 
     @GetMapping("/year/{year}/month/{month}/day/{day}")
