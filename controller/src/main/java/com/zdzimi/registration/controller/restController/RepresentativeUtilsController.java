@@ -4,6 +4,7 @@ import com.zdzimi.registration.controller.link.LinkCreator;
 import com.zdzimi.registration.core.model.Place;
 import com.zdzimi.registration.core.model.Visit;
 import com.zdzimi.registration.core.model.template.TimetableTemplate;
+import com.zdzimi.registration.core.model.timetable.MonthTimetable;
 import com.zdzimi.registration.data.entity.InstitutionEntity;
 import com.zdzimi.registration.data.entity.UserEntity;
 import com.zdzimi.registration.data.entity.VisitEntity;
@@ -18,14 +19,14 @@ import java.util.List;
 @RequestMapping("/registration/{username}/work-place/{institutionName}")
 public class RepresentativeUtilsController {
 
-    private VisitService visitService;
-    private UserService userService;
-    private InstitutionService institutionService;
-    private PlaceService placeService;
-    private TimetableTemplateService timetableTemplateService;
-    private VisitEntityGenerator visitEntityGenerator;
-    private ConflictAnalyzer conflictAnalyzer;
-    private LinkCreator linkCreator;
+    private final VisitService visitService;
+    private final UserService userService;
+    private final InstitutionService institutionService;
+    private final PlaceService placeService;
+    private final TimetableTemplateService timetableTemplateService;
+    private final VisitEntityGenerator visitEntityGenerator;
+    private final ConflictAnalyzer conflictAnalyzer;
+    private final LinkCreator linkCreator;
 
     @Autowired
     public RepresentativeUtilsController(VisitService visitService,
@@ -57,28 +58,28 @@ public class RepresentativeUtilsController {
     }
 
     @GetMapping("/year/{year}")
-    public List<Visit> showVisitsByYear(@PathVariable String username,
-                                        @PathVariable String institutionName,
-                                        @PathVariable int year) {
+    public List<MonthTimetable> showVisitsByYear(@PathVariable String username,
+                                                 @PathVariable String institutionName,
+                                                 @PathVariable int year) {
         UserEntity representativeEntity = userService.getUserEntityByUsername(username);
         InstitutionEntity institutionEntity = institutionService
                 .getWorkPlaceEntityByRepresentativeEntityAndInstitutionName(representativeEntity, institutionName);
         List<Visit> visits = visitService.getByRepresentativeAndInstitutionAndYear(representativeEntity, institutionEntity, year);
         linkCreator.addLinksToRepresentativesVisits(visits, username, institutionName);
-        return visits;
+        return MonthTimetable.createTimetable(visits);
     }
 
     @GetMapping("/year/{year}/month/{month}")
-    public List<Visit> showVisitsByYearAndMonth(@PathVariable String username,
-                                                @PathVariable String institutionName,
-                                                @PathVariable int year,
-                                                @PathVariable int month) {
+    public List<MonthTimetable> showVisitsByYearAndMonth(@PathVariable String username,
+                                                         @PathVariable String institutionName,
+                                                         @PathVariable int year,
+                                                         @PathVariable int month) {
         UserEntity representativeEntity = userService.getUserEntityByUsername(username);
         InstitutionEntity institutionEntity = institutionService
                 .getWorkPlaceEntityByRepresentativeEntityAndInstitutionName(representativeEntity, institutionName);
         List<Visit> visits = visitService.getByRepresentativeAndInstitutionAndYearAndMonth(representativeEntity, institutionEntity, year, month);
         linkCreator.addLinksToRepresentativesVisits(visits, username, institutionName);
-        return visits;
+        return MonthTimetable.createTimetable(visits);
     }
 
     @GetMapping("/year/{year}/month/{month}/get-template")
@@ -94,7 +95,7 @@ public class RepresentativeUtilsController {
     }
 
     @GetMapping("/year/{year}/month/{month}/day/{day}")
-    public List<Visit> showVisitsByYearAndMonthAndDay(@PathVariable String username,
+    public List<MonthTimetable> showVisitsByYearAndMonthAndDay(@PathVariable String username,
                                                       @PathVariable String institutionName,
                                                       @PathVariable int year,
                                                       @PathVariable int month,
@@ -104,7 +105,7 @@ public class RepresentativeUtilsController {
                 .getWorkPlaceEntityByRepresentativeEntityAndInstitutionName(representativeEntity, institutionName);
         List<Visit> visits = visitService.getByRepresentativeAndInstitutionAndYearAndMonthAndDay(representativeEntity, institutionEntity, year, month, day);
         linkCreator.addLinksToRepresentativesVisits(visits, username, institutionName);
-        return visits;
+        return MonthTimetable.createTimetable(visits);
     }
 
     @GetMapping("/year/{year}/month/{month}/day/{day}/visit/{visitId}")

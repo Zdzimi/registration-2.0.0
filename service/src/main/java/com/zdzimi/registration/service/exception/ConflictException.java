@@ -4,7 +4,7 @@ import java.util.List;
 
 public class ConflictException extends RuntimeException {
 
-    private List<String> conflicts;
+    private final List<String> conflicts;
 
     public ConflictException(List<String> conflicts) {
         super("conflict");

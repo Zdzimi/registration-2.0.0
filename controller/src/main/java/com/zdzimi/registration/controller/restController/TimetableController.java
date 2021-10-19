@@ -18,10 +18,10 @@ import java.util.*;
 @RequestMapping("/registration/{username}/institution/{institutionName}/representatives/{representativeName}/timetable")
 public class TimetableController {
 
-    private VisitService visitService;
-    private InstitutionService institutionService;
-    private UserService userService;
-    private LinkCreator linkCreator;
+    private final VisitService visitService;
+    private final InstitutionService institutionService;
+    private final UserService userService;
+    private final LinkCreator linkCreator;
 
     @Autowired
     public TimetableController(VisitService visitService, InstitutionService institutionService, UserService userService, LinkCreator linkCreator) {

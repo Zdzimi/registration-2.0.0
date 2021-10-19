@@ -4,7 +4,6 @@ import com.zdzimi.registration.core.model.Institution;
 import com.zdzimi.registration.core.model.Place;
 import com.zdzimi.registration.core.model.User;
 import com.zdzimi.registration.core.model.Visit;
-import com.zdzimi.registration.core.model.template.TimetableTemplate;
 import org.junit.jupiter.api.Test;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Links;
@@ -17,16 +16,16 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class LinkCreatorTest {
 
-    private User user;
-    private Institution barber;
-    private Institution tattoo;
-    private User representativeAnna;
-    private User representativeBarbara;
-    private Visit visitFirst;
-    private Visit visitSecond;
-    private Place placeFirst;
-    private Place placeSecond;
-    private TimetableTemplate timetableTemplate;
+    private final User user;
+    private final Institution barber;
+    private final Institution tattoo;
+    private final User representativeAnna;
+    private final User representativeBarbara;
+    private final Visit visitFirst;
+    private final Visit visitSecond;
+    private final Place placeFirst;
+    private final Place placeSecond;
+    private final LinkCreator linkCreator;
 
     {
         user = new User();
@@ -58,10 +57,8 @@ class LinkCreatorTest {
         placeSecond = new Place();
         placeSecond.setPlaceName("roomNo2");
 
-        timetableTemplate = new TimetableTemplate();
+        linkCreator = new LinkCreator();
     }
-
-    private LinkCreator linkCreator = new LinkCreator();
 
     @Test
     void shouldAddLinks() {
@@ -303,14 +300,14 @@ class LinkCreatorTest {
         int visitSecondDay = visitSecond.getVisitStart().getDayOfMonth();
         Long visitSecondId = visitSecond.getVisitId();
 
-        Link visitFirstLink = (Link) visitFirst.getLink(visitFirstDay + "." + visitFirstMonth + "." + visitFirstYear + "-" + visitFirstId).get();
-        Link visitSecondLink = (Link) visitSecond.getLink(visitSecondDay + "." + visitSecondMonth + "." + visitSecondYear + "-" + visitSecondId).get();
+        Link visitFirstLink = (Link) visitFirst.getLink(visitFirst.getVisitStart().toString()).get();
+        Link visitSecondLink = (Link) visitSecond.getLink(visitSecond.getVisitStart().toString()).get();
 
         assertEquals("/registration/Adrianna/work-place/tattoo/year/" + visitFirstYear + "/month/" + visitFirstMonth + "/day/" + visitFirstDay + "/visit/" + visitFirstId, visitFirstLink.getHref());
         assertEquals("/registration/Adrianna/work-place/tattoo/year/" + visitSecondYear + "/month/" + visitSecondMonth + "/day/" + visitSecondDay + "/visit/" + visitSecondId, visitSecondLink.getHref());
 
-        assertEquals(visitFirstDay + "." + visitFirstMonth + "." + visitFirstYear + "-" + visitFirstId, visitFirstLink.getRel().value());
-        assertEquals(visitSecondDay + "." + visitSecondMonth + "." + visitSecondYear + "-" + visitSecondId, visitSecondLink.getRel().value());
+        assertEquals(visitFirst.getVisitStart().toString(), visitFirstLink.getRel().value());
+        assertEquals(visitSecond.getVisitStart().toString(), visitSecondLink.getRel().value());
     }
 
     @Test
@@ -322,10 +319,10 @@ class LinkCreatorTest {
         int visitFirstDay = visitFirst.getVisitStart().getDayOfMonth();
         Long visitFirstId = visitFirst.getVisitId();
 
-        Link visitLink = (Link) visitFirst.getLink(visitFirstDay + "." + visitFirstMonth + "." + visitFirstYear + "-" + visitFirstId).get();
+        Link visitLink = (Link) visitFirst.getLink("visit").get();
 
         assertEquals("/registration/Adrianna/work-place/tattoo/year/" + visitFirstYear + "/month/" + visitFirstMonth + "/day/" + visitFirstDay + "/visit/" + visitFirstId, visitLink.getHref());
 
-        assertEquals(visitFirstDay + "." + visitFirstMonth + "." + visitFirstYear + "-" + visitFirstId, visitLink.getRel().value());
+        assertEquals("visit", visitLink.getRel().value());
     }
 }

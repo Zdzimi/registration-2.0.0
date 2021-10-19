@@ -100,8 +100,10 @@ public class VisitService {
                                                                         InstitutionEntity institutionEntity,
                                                                         int year,
                                                                         int month) {
-        Timestamp dateMin = Timestamp.valueOf(LocalDateTime.of(year, month, 1, 0, 0));
-        Timestamp dateMax = Timestamp.valueOf(LocalDateTime.of(year, month, 31, 23, 59, 59));
+        LocalDateTime firstDay = LocalDateTime.of(year, month, 1, 0, 0);
+        Timestamp dateMin = Timestamp.valueOf(firstDay);
+        int length = firstDay.getMonth().length(firstDay.toLocalDate().isLeapYear());
+        Timestamp dateMax = Timestamp.valueOf(LocalDateTime.of(year, month, length, 23, 59, 59));
         return getByRepresentativeAndInstitutionAndVisitStartBetween(representativeEntity, institutionEntity, dateMin, dateMax);
     }
 

@@ -4,6 +4,7 @@ import com.zdzimi.registration.controller.link.LinkCreator;
 import com.zdzimi.registration.core.model.Place;
 import com.zdzimi.registration.core.model.Visit;
 import com.zdzimi.registration.core.model.template.TimetableTemplate;
+import com.zdzimi.registration.core.model.timetable.MonthTimetable;
 import com.zdzimi.registration.data.entity.InstitutionEntity;
 import com.zdzimi.registration.data.entity.UserEntity;
 import com.zdzimi.registration.data.entity.VisitEntity;
@@ -11,6 +12,7 @@ import com.zdzimi.registration.service.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,7 +38,6 @@ class RepresentativeUtilsControllerTest {
     private TimetableTemplateService timetableTemplateService;
     private VisitEntityGenerator visitEntityGenerator;
     private ConflictAnalyzer conflictAnalyzer;
-    private LinkCreator linkCreator;
 
     @BeforeEach
     void setUp() {
@@ -47,7 +48,7 @@ class RepresentativeUtilsControllerTest {
         timetableTemplateService = mock(TimetableTemplateService.class);
         visitEntityGenerator = mock(VisitEntityGenerator.class);
         conflictAnalyzer = mock(ConflictAnalyzer.class);
-        linkCreator = mock(LinkCreator.class);
+        LinkCreator linkCreator = mock(LinkCreator.class);
         initMocks(this);
         representativeUtilsController = new RepresentativeUtilsController(
                 visitService, userService, institutionService, placeService, timetableTemplateService, visitEntityGenerator, conflictAnalyzer,
@@ -92,9 +93,10 @@ class RepresentativeUtilsControllerTest {
         when(institutionService.getWorkPlaceEntityByRepresentativeEntityAndInstitutionName(representativeEntity, INSTITUTION_NAME))
                 .thenReturn(institutionEntity);
         Visit visit = new Visit();
+        visit.setVisitStart(LocalDateTime.now());
         when(visitService.getByRepresentativeAndInstitutionAndYear(representativeEntity, institutionEntity, YEAR)).thenReturn(Arrays.asList(visit));
         //      when
-        List<Visit> result = representativeUtilsController.showVisitsByYear(USERNAME, INSTITUTION_NAME, YEAR);
+        List<MonthTimetable> result = representativeUtilsController.showVisitsByYear(USERNAME, INSTITUTION_NAME, YEAR);
         //      then
         assertEquals(1, result.size());
         verify(userService, times(1)).getUserEntityByUsername(USERNAME);
@@ -115,10 +117,11 @@ class RepresentativeUtilsControllerTest {
         when(institutionService.getWorkPlaceEntityByRepresentativeEntityAndInstitutionName(representativeEntity, INSTITUTION_NAME))
                 .thenReturn(institutionEntity);
         Visit visit = new Visit();
+        visit.setVisitStart(LocalDateTime.now());
         when(visitService.getByRepresentativeAndInstitutionAndYearAndMonth(representativeEntity, institutionEntity, YEAR, MONTH))
                 .thenReturn(Arrays.asList(visit));
         //      when
-        List<Visit> result = representativeUtilsController.showVisitsByYearAndMonth(USERNAME, INSTITUTION_NAME, YEAR, MONTH);
+        List<MonthTimetable> result = representativeUtilsController.showVisitsByYearAndMonth(USERNAME, INSTITUTION_NAME, YEAR, MONTH);
         //      then
         assertEquals(1, result.size());
         verify(userService, times(1)).getUserEntityByUsername(USERNAME);
@@ -160,10 +163,11 @@ class RepresentativeUtilsControllerTest {
         when(institutionService.getWorkPlaceEntityByRepresentativeEntityAndInstitutionName(representativeEntity, INSTITUTION_NAME))
                 .thenReturn(institutionEntity);
         Visit visit = new Visit();
+        visit.setVisitStart(LocalDateTime.now());
         when(visitService.getByRepresentativeAndInstitutionAndYearAndMonthAndDay(representativeEntity, institutionEntity, YEAR, MONTH, DAY_OF_MONTH))
                 .thenReturn(Arrays.asList(visit));
         //      when
-        List<Visit> result = representativeUtilsController.showVisitsByYearAndMonthAndDay(USERNAME, INSTITUTION_NAME, YEAR, MONTH, DAY_OF_MONTH);
+        List<MonthTimetable> result = representativeUtilsController.showVisitsByYearAndMonthAndDay(USERNAME, INSTITUTION_NAME, YEAR, MONTH, DAY_OF_MONTH);
         //      then
         assertEquals(1, result.size());
         verify(userService, times(1)).getUserEntityByUsername(USERNAME);

@@ -9,7 +9,7 @@ public class TimetableTemplateExceptionAdvice {
 
     @ResponseBody
     @ExceptionHandler(TimetableTemplateException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String timetableTemplateHandler(TimetableTemplateException exception) {
         return exception.getMessage();
     }

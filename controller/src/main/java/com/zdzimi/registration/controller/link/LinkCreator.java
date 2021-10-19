@@ -111,7 +111,27 @@ public class LinkCreator {
     }
 
     public void addLinksToRepresentativesVisit(Visit visit, String username, String institutionName) {
-        visit.add(createLinkToRepresentativesVisit(username, institutionName, visit));
+        visit.add(createLinkToDeleteVisit(username, institutionName, visit));
+    }
+
+    private Link createLinkToDeleteVisit(String username, String institutionName, Visit visit) {
+        int year = visit.getVisitStart().getYear();
+        int month = visit.getVisitStart().getMonthValue();
+        int day = visit.getVisitStart().getDayOfMonth();
+        Long visitId = visit.getVisitId();
+        return linkTo(UserController.class)
+                .slash(username)
+                .slash("work-place")
+                .slash(institutionName)
+                .slash("year")
+                .slash(year)
+                .slash("month")
+                .slash(month)
+                .slash("day")
+                .slash(day)
+                .slash("visit")
+                .slash(visitId)
+                .withRel("visit");
     }
 
     private Link createLinkToRepresentativesVisit(String username, String institutionName, Visit visit) {
@@ -131,8 +151,7 @@ public class LinkCreator {
                 .slash(day)
                 .slash("visit")
                 .slash(visitId)
-//                .withSelfRel();
-                .withRel(day + "." + month + "." + year + "-" + visitId);
+                .withRel(visit.getVisitStart().toString());
     }
 
     private Link createLinkToPlace(String username, String institutionName, String placeName) {
