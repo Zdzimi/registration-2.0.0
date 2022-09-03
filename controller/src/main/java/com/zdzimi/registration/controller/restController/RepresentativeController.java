@@ -5,28 +5,24 @@ import com.zdzimi.registration.core.model.User;
 import com.zdzimi.registration.data.entity.InstitutionEntity;
 import com.zdzimi.registration.service.InstitutionService;
 import com.zdzimi.registration.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/registration/{username}/institution/{institutionName}/representatives")
+@RequiredArgsConstructor
 public class RepresentativeController {
 
-    private UserService userService;
-    private InstitutionService institutionService;
-    private LinkCreator linkCreator;
-
-    @Autowired
-    public RepresentativeController(UserService userService, InstitutionService institutionService, LinkCreator linkCreator) {
-        this.userService = userService;
-        this.institutionService = institutionService;
-        this.linkCreator = linkCreator;
-    }
+    private final UserService userService;
+    private final LoggedUserProvider loggedUserProvider;
+    private final InstitutionService institutionService;
+    private final LinkCreator linkCreator;
 
     @GetMapping
     public List<User> getRepresentatives (@PathVariable String username, @PathVariable String institutionName) {
+        loggedUserProvider.provideLoggedUser(username);
         InstitutionEntity institutionEntity = institutionService.getInstitutionEntityByInstitutionName(institutionName);
         List<User> representatives = userService.getByWorkPlaces(institutionEntity);
         linkCreator.addLinksToRepresentatives(representatives, username, institutionName);
@@ -37,6 +33,7 @@ public class RepresentativeController {
     public User getRepresentative(@PathVariable String username,
                                   @PathVariable String institutionName,
                                   @PathVariable String representativeName) {
+        loggedUserProvider.provideLoggedUser(username);
         InstitutionEntity institutionEntity = institutionService.getInstitutionEntityByInstitutionName(institutionName);
         User representative = userService.getByUsernameAndWorkPlaces(representativeName, institutionEntity);
         linkCreator.addLinksToRepresentative(representative, username, institutionName);

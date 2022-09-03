@@ -6,7 +6,7 @@ import com.zdzimi.registration.data.entity.InstitutionEntity;
 import com.zdzimi.registration.data.entity.PlaceEntity;
 import com.zdzimi.registration.service.InstitutionService;
 import com.zdzimi.registration.service.PlaceService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,21 +16,17 @@ import java.util.List;
 @RestController
 @RequestMapping("/registration/{username}/work-place/{institutionName}")
 @Validated
+@RequiredArgsConstructor
 public class PlaceController {
 
+    private final LoggedUserProvider loggedUserProvider;
     private final PlaceService placeService;
     private final InstitutionService institutionService;
     private final LinkCreator linkCreator;
 
-    @Autowired
-    public PlaceController(PlaceService placeService, InstitutionService institutionService, LinkCreator linkCreator) {
-        this.placeService = placeService;
-        this.institutionService = institutionService;
-        this.linkCreator = linkCreator;
-    }
-
     @GetMapping("/places")
     public List<Place> getPlaces(@PathVariable String username,@PathVariable String institutionName) {
+        loggedUserProvider.provideLoggedUser(username);
         InstitutionEntity institutionEntity = institutionService.getInstitutionEntityByInstitutionName(institutionName);
         List<Place> places = placeService.getPlaces(institutionEntity);
         linkCreator.addLinksToPlaces(places, username, institutionName);
@@ -39,12 +35,14 @@ public class PlaceController {
 
     @PostMapping("/new-place")
     public Place addNewPlace(@Valid @RequestBody Place place, @PathVariable String username, @PathVariable String institutionName) {
+        loggedUserProvider.provideLoggedUser(username);
         InstitutionEntity institutionEntity = institutionService.getInstitutionEntityByInstitutionName(institutionName);
         return placeService.addNewPlace(institutionEntity, place);
     }
 
     @GetMapping("/place/{placeName}")
     public Place getPlace(@PathVariable String username, @PathVariable String institutionName, @PathVariable String placeName) {
+        loggedUserProvider.provideLoggedUser(username);
         InstitutionEntity institutionEntity = institutionService.getInstitutionEntityByInstitutionName(institutionName);
         Place place = placeService.getPlace(institutionEntity, placeName);
         linkCreator.addLinksToPlace(place, username, institutionName);
@@ -53,6 +51,7 @@ public class PlaceController {
 
     @DeleteMapping("/place/{placeName}")
     public void deletePlace(@PathVariable String username, @PathVariable String institutionName, @PathVariable String placeName) {
+        loggedUserProvider.provideLoggedUser(username);
         InstitutionEntity institutionEntity = institutionService.getInstitutionEntityByInstitutionName(institutionName);
         PlaceEntity placeEntity = placeService.getPlaceEntity(institutionEntity, placeName);
         placeService.delete(institutionEntity, placeEntity);

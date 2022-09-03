@@ -7,11 +7,10 @@ import com.zdzimi.registration.data.entity.UserEntity;
 import com.zdzimi.registration.service.InstitutionService;
 import com.zdzimi.registration.service.UserService;
 import com.zdzimi.registration.service.mapper.InstitutionMapper;
+import java.util.Collections;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
-
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,19 +22,22 @@ class WorkPlacesControllerTest {
     private static final String USERNAME = "Dupek";
     private static final String INSTITUTION_NAME = "uuX";
 
-    private WorkPlacesController workPlacesController;
+
+    private LoggedUserProvider loggedUserProvider;
     private InstitutionService institutionService;
     private UserService userService;
-    private InstitutionMapper institutionMapper = new InstitutionMapper(new ModelMapper());
-    private LinkCreator linkCreator;
+    private final InstitutionMapper institutionMapper = new InstitutionMapper(new ModelMapper());;
+    private WorkPlacesController workPlacesController;
 
     @BeforeEach
     void setUp() {
+        loggedUserProvider = mock(LoggedUserProvider.class);
         institutionService = mock(InstitutionService.class);
         userService = mock(UserService.class);
-        linkCreator = mock(LinkCreator.class);
+        LinkCreator linkCreator = mock(LinkCreator.class);
         initMocks(this);
-        workPlacesController = new WorkPlacesController(institutionService, userService, institutionMapper, linkCreator);
+        workPlacesController = new WorkPlacesController(loggedUserProvider, institutionService, userService, institutionMapper,
+            linkCreator);
     }
 
     @Test
@@ -43,15 +45,16 @@ class WorkPlacesControllerTest {
         //      given
         UserEntity userEntity = new UserEntity();
         Institution institution = new Institution();
-        when(userService.getUserEntityByUsername(USERNAME)).thenReturn(userEntity);
-        when(institutionService.getWorkPlaces(userEntity)).thenReturn(Arrays.asList(institution));
+        when(loggedUserProvider.provideLoggedUser(USERNAME)).thenReturn(userEntity);
+        when(institutionService.getWorkPlaces(userEntity)).thenReturn(
+            Collections.singletonList(institution));
         //      when
         List<Institution> result = workPlacesController.getWorkPlaces(USERNAME);
         //      then
         assertEquals(1, result.size());
-        verify(userService, times(1)).getUserEntityByUsername(USERNAME);
+        verify(loggedUserProvider, times(1)).provideLoggedUser(USERNAME);
         verify(institutionService, times(1)).getWorkPlaces(userEntity);
-        verifyNoMoreInteractions(userService);
+        verifyNoMoreInteractions(loggedUserProvider);
         verifyNoMoreInteractions(institutionService);
     }
 
@@ -61,15 +64,15 @@ class WorkPlacesControllerTest {
         UserEntity userEntity = new UserEntity();
         Institution institution = new Institution();
         institution.setInstitutionName(INSTITUTION_NAME);
-        when(userService.getUserEntityByUsername(USERNAME)).thenReturn(userEntity);
+        when(loggedUserProvider.provideLoggedUser(USERNAME)).thenReturn(userEntity);
         when(institutionService.getWorkPlace(userEntity, INSTITUTION_NAME)).thenReturn(institution);
         //      when
         Institution result = workPlacesController.getWorkPlace(USERNAME, INSTITUTION_NAME);
         //      then
         assertEquals(INSTITUTION_NAME, result.getInstitutionName());
-        verify(userService, times(1)).getUserEntityByUsername(USERNAME);
+        verify(loggedUserProvider, times(1)).provideLoggedUser(USERNAME);
         verify(institutionService, times(1)).getWorkPlace(userEntity, INSTITUTION_NAME);
-        verifyNoMoreInteractions(userService);
+        verifyNoMoreInteractions(loggedUserProvider);
         verifyNoMoreInteractions(institutionService);
     }
 

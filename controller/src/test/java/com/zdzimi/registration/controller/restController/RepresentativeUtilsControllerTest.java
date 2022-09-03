@@ -9,17 +9,20 @@ import com.zdzimi.registration.data.entity.InstitutionEntity;
 import com.zdzimi.registration.data.entity.UserEntity;
 import com.zdzimi.registration.data.entity.VisitEntity;
 import com.zdzimi.registration.service.*;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
 
+@ExtendWith(MockitoExtension.class)
 class RepresentativeUtilsControllerTest {
 
     private static final String USERNAME = "BorisSpassky";
@@ -29,37 +32,30 @@ class RepresentativeUtilsControllerTest {
     private static final int DAY_OF_MONTH = 28;
     private static final long VISIT_ID = 234248;
 
-
-    private RepresentativeUtilsController representativeUtilsController;
+    @Mock
+    private LoggedUserProvider loggedUserProvider;
+    @Mock
     private VisitService visitService;
-    private UserService userService;
+    @Mock
     private InstitutionService institutionService;
+    @Mock
     private PlaceService placeService;
+    @Mock
     private TimetableTemplateService timetableTemplateService;
+    @Mock
     private VisitEntityGenerator visitEntityGenerator;
+    @Mock
     private ConflictAnalyzer conflictAnalyzer;
-
-    @BeforeEach
-    void setUp() {
-        visitService = mock(VisitService.class);
-        userService = mock(UserService.class);
-        institutionService = mock(InstitutionService.class);
-        placeService = mock(PlaceService.class);
-        timetableTemplateService = mock(TimetableTemplateService.class);
-        visitEntityGenerator = mock(VisitEntityGenerator.class);
-        conflictAnalyzer = mock(ConflictAnalyzer.class);
-        LinkCreator linkCreator = mock(LinkCreator.class);
-        initMocks(this);
-        representativeUtilsController = new RepresentativeUtilsController(
-                visitService, userService, institutionService, placeService, timetableTemplateService, visitEntityGenerator, conflictAnalyzer,
-                linkCreator);
-    }
+    @Mock
+    private LinkCreator linkCreator;
+    @InjectMocks
+    private RepresentativeUtilsController representativeUtilsController;
 
     @Test
     void shouldPrepareNextTemplate() {
         //      given
         UserEntity representativeEntity = new UserEntity();
-        when(userService.getUserEntityByUsername(USERNAME)).thenReturn(representativeEntity);
+        when(loggedUserProvider.provideLoggedUser(USERNAME)).thenReturn(representativeEntity);
         InstitutionEntity institutionEntity = new InstitutionEntity();
         when(institutionService.getWorkPlaceEntityByRepresentativeEntityAndInstitutionName(representativeEntity, INSTITUTION_NAME))
                 .thenReturn(institutionEntity);
@@ -73,8 +69,8 @@ class RepresentativeUtilsControllerTest {
         TimetableTemplate result = representativeUtilsController.prepareNextTemplate(USERNAME, INSTITUTION_NAME);
         //      then
         assertEquals(timetableTemplate, result);
-        verify(userService, times(1)).getUserEntityByUsername(USERNAME);
-        verifyNoMoreInteractions(userService);
+        verify(loggedUserProvider, times(1)).provideLoggedUser(USERNAME);
+        verifyNoMoreInteractions(loggedUserProvider);
         verify(institutionService, times(1))
                 .getWorkPlaceEntityByRepresentativeEntityAndInstitutionName(representativeEntity, INSTITUTION_NAME);
         verifyNoMoreInteractions(institutionService);
@@ -88,7 +84,7 @@ class RepresentativeUtilsControllerTest {
     void shouldShowVisitsByYear() {
         //      given
         UserEntity representativeEntity = new UserEntity();
-        when(userService.getUserEntityByUsername(USERNAME)).thenReturn(representativeEntity);
+        when(loggedUserProvider.provideLoggedUser(USERNAME)).thenReturn(representativeEntity);
         InstitutionEntity institutionEntity = new InstitutionEntity();
         when(institutionService.getWorkPlaceEntityByRepresentativeEntityAndInstitutionName(representativeEntity, INSTITUTION_NAME))
                 .thenReturn(institutionEntity);
@@ -99,8 +95,8 @@ class RepresentativeUtilsControllerTest {
         List<MonthTimetable> result = representativeUtilsController.showVisitsByYear(USERNAME, INSTITUTION_NAME, YEAR);
         //      then
         assertEquals(1, result.size());
-        verify(userService, times(1)).getUserEntityByUsername(USERNAME);
-        verifyNoMoreInteractions(userService);
+        verify(loggedUserProvider, times(1)).provideLoggedUser(USERNAME);
+        verifyNoMoreInteractions(loggedUserProvider);
         verify(institutionService, times(1))
                 .getWorkPlaceEntityByRepresentativeEntityAndInstitutionName(representativeEntity, INSTITUTION_NAME);
         verifyNoMoreInteractions(institutionService);
@@ -112,7 +108,7 @@ class RepresentativeUtilsControllerTest {
     void shouldShowVisitsByYearAndMonth() {
         //      given
         UserEntity representativeEntity = new UserEntity();
-        when(userService.getUserEntityByUsername(USERNAME)).thenReturn(representativeEntity);
+        when(loggedUserProvider.provideLoggedUser(USERNAME)).thenReturn(representativeEntity);
         InstitutionEntity institutionEntity = new InstitutionEntity();
         when(institutionService.getWorkPlaceEntityByRepresentativeEntityAndInstitutionName(representativeEntity, INSTITUTION_NAME))
                 .thenReturn(institutionEntity);
@@ -124,8 +120,8 @@ class RepresentativeUtilsControllerTest {
         List<MonthTimetable> result = representativeUtilsController.showVisitsByYearAndMonth(USERNAME, INSTITUTION_NAME, YEAR, MONTH);
         //      then
         assertEquals(1, result.size());
-        verify(userService, times(1)).getUserEntityByUsername(USERNAME);
-        verifyNoMoreInteractions(userService);
+        verify(loggedUserProvider, times(1)).provideLoggedUser(USERNAME);
+        verifyNoMoreInteractions(loggedUserProvider);
         verify(institutionService, times(1))
                 .getWorkPlaceEntityByRepresentativeEntityAndInstitutionName(representativeEntity, INSTITUTION_NAME);
         verifyNoMoreInteractions(institutionService);
@@ -138,7 +134,7 @@ class RepresentativeUtilsControllerTest {
     void shouldGetTemplateByYearAndMonth() {
         //      given
         UserEntity representativeEntity = new UserEntity();
-        when(userService.getUserEntityByUsername(USERNAME)).thenReturn(representativeEntity);
+        when(loggedUserProvider.provideLoggedUser(USERNAME)).thenReturn(representativeEntity);
         InstitutionEntity institutionEntity = new InstitutionEntity();
         when(institutionService.getWorkPlaceEntityByRepresentativeEntityAndInstitutionName(representativeEntity, INSTITUTION_NAME))
                 .thenReturn(institutionEntity);
@@ -158,7 +154,7 @@ class RepresentativeUtilsControllerTest {
     void shouldShowVisitsByYearAndMonthAndDay() {
         //      given
         UserEntity representativeEntity = new UserEntity();
-        when(userService.getUserEntityByUsername(USERNAME)).thenReturn(representativeEntity);
+        when(loggedUserProvider.provideLoggedUser(USERNAME)).thenReturn(representativeEntity);
         InstitutionEntity institutionEntity = new InstitutionEntity();
         when(institutionService.getWorkPlaceEntityByRepresentativeEntityAndInstitutionName(representativeEntity, INSTITUTION_NAME))
                 .thenReturn(institutionEntity);
@@ -170,8 +166,8 @@ class RepresentativeUtilsControllerTest {
         List<MonthTimetable> result = representativeUtilsController.showVisitsByYearAndMonthAndDay(USERNAME, INSTITUTION_NAME, YEAR, MONTH, DAY_OF_MONTH);
         //      then
         assertEquals(1, result.size());
-        verify(userService, times(1)).getUserEntityByUsername(USERNAME);
-        verifyNoMoreInteractions(userService);
+        verify(loggedUserProvider, times(1)).provideLoggedUser(USERNAME);
+        verifyNoMoreInteractions(loggedUserProvider);
         verify(institutionService, times(1))
                 .getWorkPlaceEntityByRepresentativeEntityAndInstitutionName(representativeEntity, INSTITUTION_NAME);
         verifyNoMoreInteractions(institutionService);
@@ -184,7 +180,7 @@ class RepresentativeUtilsControllerTest {
     void shouldShowVisit() {
         //      given
         UserEntity representativeEntity = new UserEntity();
-        when(userService.getUserEntityByUsername(USERNAME)).thenReturn(representativeEntity);
+        when(loggedUserProvider.provideLoggedUser(USERNAME)).thenReturn(representativeEntity);
         InstitutionEntity institutionEntity = new InstitutionEntity();
         when(institutionService.getWorkPlaceEntityByRepresentativeEntityAndInstitutionName(representativeEntity, INSTITUTION_NAME))
                 .thenReturn(institutionEntity);
@@ -195,8 +191,8 @@ class RepresentativeUtilsControllerTest {
         Visit result = representativeUtilsController.showVisit(USERNAME, INSTITUTION_NAME, VISIT_ID);
         //      then
         assertEquals(visit, result);
-        verify(userService, times(1)).getUserEntityByUsername(USERNAME);
-        verifyNoMoreInteractions(userService);
+        verify(loggedUserProvider, times(1)).provideLoggedUser(USERNAME);
+        verifyNoMoreInteractions(loggedUserProvider);
         verify(institutionService, times(1))
                 .getWorkPlaceEntityByRepresentativeEntityAndInstitutionName(representativeEntity, INSTITUTION_NAME);
         verifyNoMoreInteractions(institutionService);
@@ -208,15 +204,15 @@ class RepresentativeUtilsControllerTest {
     void shouldDeleteVisit() {
         //      given
         UserEntity representativeEntity = new UserEntity();
-        when(userService.getUserEntityByUsername(USERNAME)).thenReturn(representativeEntity);
+        when(loggedUserProvider.provideLoggedUser(USERNAME)).thenReturn(representativeEntity);
         InstitutionEntity institutionEntity = new InstitutionEntity();
         when(institutionService.getWorkPlaceEntityByRepresentativeEntityAndInstitutionName(representativeEntity, INSTITUTION_NAME))
                 .thenReturn(institutionEntity);
         //      when
         representativeUtilsController.deleteVisit(USERNAME, INSTITUTION_NAME, VISIT_ID);
         //      then
-        verify(userService, times(1)).getUserEntityByUsername(USERNAME);
-        verifyNoMoreInteractions(userService);
+        verify(loggedUserProvider, times(1)).provideLoggedUser(USERNAME);
+        verifyNoMoreInteractions(loggedUserProvider);
         verify(institutionService, times(1))
                 .getWorkPlaceEntityByRepresentativeEntityAndInstitutionName(representativeEntity, INSTITUTION_NAME);
         verifyNoMoreInteractions(institutionService);
@@ -228,7 +224,7 @@ class RepresentativeUtilsControllerTest {
     void shouldCreateTimetable() {
         //      given
         UserEntity representativeEntity = new UserEntity();
-        when(userService.getUserEntityByUsername(USERNAME)).thenReturn(representativeEntity);
+        when(loggedUserProvider.provideLoggedUser(USERNAME)).thenReturn(representativeEntity);
 
         InstitutionEntity institutionEntity = new InstitutionEntity();
         when(institutionService.getWorkPlaceEntityByRepresentativeEntityAndInstitutionName(representativeEntity, INSTITUTION_NAME))
@@ -247,8 +243,8 @@ class RepresentativeUtilsControllerTest {
         List<Visit> result = representativeUtilsController.createTimetable(timetableTemplate, USERNAME, INSTITUTION_NAME);
         //      then
 
-        verify(userService, times(1)).getUserEntityByUsername(USERNAME);
-        verifyNoMoreInteractions(userService);
+        verify(loggedUserProvider, times(1)).provideLoggedUser(USERNAME);
+        verifyNoMoreInteractions(loggedUserProvider);
         verify(institutionService, times(1))
                 .getWorkPlaceEntityByRepresentativeEntityAndInstitutionName(representativeEntity, INSTITUTION_NAME);
         verifyNoMoreInteractions(institutionService);

@@ -2,9 +2,12 @@ package com.zdzimi.registration.controller.restController;
 
 import com.zdzimi.registration.controller.link.LinkCreator;
 import com.zdzimi.registration.core.model.User;
+import com.zdzimi.registration.data.entity.UserEntity;
 import com.zdzimi.registration.service.UserService;
+import com.zdzimi.registration.service.mapper.UserMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -16,32 +19,34 @@ class UserControllerTest {
     private static final long USER_ID = 1;
     private static final String USERNAME = "KunegundaRojek";
 
-    private UserController userController;
+    private LoggedUserProvider loggedUserProvider;
+    private final UserMapper userMapper = new UserMapper(new ModelMapper());
     private UserService userService;
     private PasswordEncoder passwordEncoder;
-    private LinkCreator linkCreator;
+    private UserController userController;
 
     @BeforeEach
-    void setUp() {
+    void init() {
+        loggedUserProvider = mock(LoggedUserProvider.class);
         userService = mock(UserService.class);
         passwordEncoder = mock(PasswordEncoder.class);
-        linkCreator = mock(LinkCreator.class);
+        LinkCreator linkCreator = mock(LinkCreator.class);
         initMocks(this);
-        userController = new UserController(userService, passwordEncoder, linkCreator);
+        userController = new UserController(loggedUserProvider, userMapper, userService, passwordEncoder, linkCreator);
     }
 
     @Test
     void shouldGetUser() {
         //      given
-        User user = new User();
-        user.setUsername(USERNAME);
-        when(userService.getByUsername(USERNAME)).thenReturn(user);
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUsername(USERNAME);
+        when(loggedUserProvider.provideLoggedUser(USERNAME)).thenReturn(userEntity);
         //      when
         User result = userController.getUser(USERNAME);
         //      then
         assertEquals(USERNAME, result.getUsername());
-        verify(userService, times(1)).getByUsername(USERNAME);
-        verifyNoMoreInteractions(userService);
+        verify(loggedUserProvider, times(1)).provideLoggedUser(USERNAME);
+        verifyNoMoreInteractions(loggedUserProvider);
     }
 
     @Test

@@ -4,35 +4,32 @@ import com.zdzimi.registration.controller.link.LinkCreator;
 import com.zdzimi.registration.core.model.Institution;
 import com.zdzimi.registration.data.entity.UserEntity;
 import com.zdzimi.registration.service.InstitutionService;
-import com.zdzimi.registration.service.UserService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
 
+@ExtendWith(MockitoExtension.class)
 class InstitutionControllerTest {
 
     private static final String INSTITUTION_NAME = "KIFF.COM";
     private static final String USERNAME = "Janusz";
 
-    private InstitutionController institutionController;
+    @Mock
+    private LoggedUserProvider loggedUserProvider;
+    @Mock
     private InstitutionService institutionService;
-    private UserService userService;
+    @Mock
     private LinkCreator linkCreator;
-
-    @BeforeEach
-    void setUp() {
-        institutionService = mock(InstitutionService.class);
-        userService = mock(UserService.class);
-        linkCreator = mock(LinkCreator.class);
-        initMocks(this);
-        institutionController = new InstitutionController(institutionService, userService, linkCreator);
-    }
+    @InjectMocks
+    private InstitutionController institutionController;
 
     @Test
     void shouldGetInstitutions() {
@@ -52,15 +49,15 @@ class InstitutionControllerTest {
         //      given
         UserEntity userEntity = new UserEntity();
         Institution institution = new Institution();
-        when(userService.getUserEntityByUsername(USERNAME)).thenReturn(userEntity);
+        when(loggedUserProvider.provideLoggedUser(USERNAME)).thenReturn(userEntity);
         when(institutionService.getRecognized(userEntity)).thenReturn(Arrays.asList(institution));
         //      when
         List<Institution> result = institutionController.getRecognizedInstitutions(USERNAME);
         //      then
         assertEquals(1, result.size());
-        verify(userService, times(1)).getUserEntityByUsername(USERNAME);
+        verify(loggedUserProvider, times(1)).provideLoggedUser(USERNAME);
         verify(institutionService, times(1)).getRecognized(userEntity);
-        verifyNoMoreInteractions(userService);
+        verifyNoMoreInteractions(loggedUserProvider);
         verifyNoMoreInteractions(institutionService);
     }
 

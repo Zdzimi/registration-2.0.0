@@ -9,7 +9,7 @@ import com.zdzimi.registration.data.entity.InstitutionEntity;
 import com.zdzimi.registration.data.entity.UserEntity;
 import com.zdzimi.registration.data.entity.VisitEntity;
 import com.zdzimi.registration.service.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -17,10 +17,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/registration/{username}/work-place/{institutionName}")
+@RequiredArgsConstructor
 public class RepresentativeUtilsController {
 
+    private final LoggedUserProvider loggedUserProvider;
     private final VisitService visitService;
-    private final UserService userService;
     private final InstitutionService institutionService;
     private final PlaceService placeService;
     private final TimetableTemplateService timetableTemplateService;
@@ -28,28 +29,9 @@ public class RepresentativeUtilsController {
     private final ConflictAnalyzer conflictAnalyzer;
     private final LinkCreator linkCreator;
 
-    @Autowired
-    public RepresentativeUtilsController(VisitService visitService,
-                                         UserService userService,
-                                         InstitutionService institutionService,
-                                         PlaceService placeService,
-                                         TimetableTemplateService timetableTemplateService,
-                                         VisitEntityGenerator visitEntityGenerator,
-                                         ConflictAnalyzer conflictAnalyzer,
-                                         LinkCreator linkCreator) {
-        this.visitService = visitService;
-        this.userService = userService;
-        this.institutionService = institutionService;
-        this.placeService = placeService;
-        this.timetableTemplateService = timetableTemplateService;
-        this.visitEntityGenerator = visitEntityGenerator;
-        this.conflictAnalyzer = conflictAnalyzer;
-        this.linkCreator = linkCreator;
-    }
-
     @GetMapping("/get-next-template")
     public TimetableTemplate prepareNextTemplate(@PathVariable String username, @PathVariable String institutionName) {
-        UserEntity representativeEntity = userService.getUserEntityByUsername(username);
+        UserEntity representativeEntity = loggedUserProvider.provideLoggedUser(username);
         InstitutionEntity institutionEntity = institutionService
                 .getWorkPlaceEntityByRepresentativeEntityAndInstitutionName(representativeEntity, institutionName);
         List<Place> places = placeService.getPlaces(institutionEntity);
@@ -61,7 +43,7 @@ public class RepresentativeUtilsController {
     public List<MonthTimetable> showVisitsByYear(@PathVariable String username,
                                                  @PathVariable String institutionName,
                                                  @PathVariable int year) {
-        UserEntity representativeEntity = userService.getUserEntityByUsername(username);
+        UserEntity representativeEntity = loggedUserProvider.provideLoggedUser(username);
         InstitutionEntity institutionEntity = institutionService
                 .getWorkPlaceEntityByRepresentativeEntityAndInstitutionName(representativeEntity, institutionName);
         List<Visit> visits = visitService.getByRepresentativeAndInstitutionAndYear(representativeEntity, institutionEntity, year);
@@ -74,7 +56,7 @@ public class RepresentativeUtilsController {
                                                          @PathVariable String institutionName,
                                                          @PathVariable int year,
                                                          @PathVariable int month) {
-        UserEntity representativeEntity = userService.getUserEntityByUsername(username);
+        UserEntity representativeEntity = loggedUserProvider.provideLoggedUser(username);
         InstitutionEntity institutionEntity = institutionService
                 .getWorkPlaceEntityByRepresentativeEntityAndInstitutionName(representativeEntity, institutionName);
         List<Visit> visits = visitService.getByRepresentativeAndInstitutionAndYearAndMonth(representativeEntity, institutionEntity, year, month);
@@ -87,7 +69,7 @@ public class RepresentativeUtilsController {
                                                            @PathVariable String institutionName,
                                                            @PathVariable int year,
                                                            @PathVariable int month) {
-        UserEntity representativeEntity = userService.getUserEntityByUsername(username);
+        UserEntity representativeEntity = loggedUserProvider.provideLoggedUser(username);
         InstitutionEntity institutionEntity = institutionService
                 .getWorkPlaceEntityByRepresentativeEntityAndInstitutionName(representativeEntity, institutionName);
         List<Place> places = placeService.getPlaces(institutionEntity);
@@ -100,7 +82,7 @@ public class RepresentativeUtilsController {
                                                       @PathVariable int year,
                                                       @PathVariable int month,
                                                       @PathVariable int day) {
-        UserEntity representativeEntity = userService.getUserEntityByUsername(username);
+        UserEntity representativeEntity = loggedUserProvider.provideLoggedUser(username);
         InstitutionEntity institutionEntity = institutionService
                 .getWorkPlaceEntityByRepresentativeEntityAndInstitutionName(representativeEntity, institutionName);
         List<Visit> visits = visitService.getByRepresentativeAndInstitutionAndYearAndMonthAndDay(representativeEntity, institutionEntity, year, month, day);
@@ -112,7 +94,7 @@ public class RepresentativeUtilsController {
     public Visit showVisit(@PathVariable String username,
                            @PathVariable String institutionName,
                            @PathVariable long visitId) {
-        UserEntity representativeEntity = userService.getUserEntityByUsername(username);
+        UserEntity representativeEntity = loggedUserProvider.provideLoggedUser(username);
         InstitutionEntity institutionEntity = institutionService
                 .getWorkPlaceEntityByRepresentativeEntityAndInstitutionName(representativeEntity, institutionName);
         Visit visit = visitService.getByRepresentativeAndInstitutionAndVisitId(representativeEntity, institutionEntity, visitId);
@@ -124,7 +106,7 @@ public class RepresentativeUtilsController {
     public void deleteVisit(@PathVariable String username,
                             @PathVariable String institutionName,
                             @PathVariable long visitId) {
-        UserEntity representativeEntity = userService.getUserEntityByUsername(username);
+        UserEntity representativeEntity = loggedUserProvider.provideLoggedUser(username);
         InstitutionEntity institutionEntity = institutionService
                 .getWorkPlaceEntityByRepresentativeEntityAndInstitutionName(representativeEntity, institutionName);
         visitService.delete(representativeEntity, institutionEntity, visitId);
@@ -134,7 +116,7 @@ public class RepresentativeUtilsController {
     public List<Visit> createTimetable(@Valid @RequestBody TimetableTemplate timetableTemplate,
                                        @PathVariable String username,
                                        @PathVariable String institutionName) {
-        UserEntity representativeEntity = userService.getUserEntityByUsername(username);
+        UserEntity representativeEntity = loggedUserProvider.provideLoggedUser(username);
         InstitutionEntity institutionEntity = institutionService
                 .getWorkPlaceEntityByRepresentativeEntityAndInstitutionName(representativeEntity, institutionName);
         List<VisitEntity> visitEntities = visitEntityGenerator.createVisits(timetableTemplate, representativeEntity, institutionEntity);

@@ -4,8 +4,7 @@ import com.zdzimi.registration.controller.link.LinkCreator;
 import com.zdzimi.registration.data.entity.UserEntity;
 import com.zdzimi.registration.service.InstitutionService;
 import com.zdzimi.registration.core.model.Institution;
-import com.zdzimi.registration.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,21 +14,16 @@ import java.util.List;
 @RequestMapping("/registration/{username}")
 @Validated
 @CrossOrigin
+@RequiredArgsConstructor
 public class InstitutionController {
 
-    private InstitutionService institutionService;
-    private UserService userService;
-    private LinkCreator linkCreator;
-
-    @Autowired
-    public InstitutionController(InstitutionService institutionService, UserService userService, LinkCreator linkCreator) {
-        this.institutionService = institutionService;
-        this.userService = userService;
-        this.linkCreator = linkCreator;
-    }
+    private final LoggedUserProvider loggedUserProvider;
+    private final InstitutionService institutionService;
+    private final LinkCreator linkCreator;
 
     @GetMapping("/institutions/all")
     public List<Institution> getInstitutions(@PathVariable String username) {
+        loggedUserProvider.provideLoggedUser(username);
         List<Institution> institutions = institutionService.getAll();
         linkCreator.addLinksToInstitutions(institutions, username);
         return institutions;
@@ -37,7 +31,7 @@ public class InstitutionController {
 
     @GetMapping("/institutions/recognized")
     public List<Institution> getRecognizedInstitutions(@PathVariable String username) {
-        UserEntity userEntity = userService.getUserEntityByUsername(username);
+        UserEntity userEntity = loggedUserProvider.provideLoggedUser(username);
         List<Institution> recognizedInstitutions = institutionService.getRecognized(userEntity);
         linkCreator.addLinksToInstitutions(recognizedInstitutions, username);
         return recognizedInstitutions;
@@ -49,6 +43,7 @@ public class InstitutionController {
                                       @RequestParam String province,
                                       @RequestParam String city,
                                       @RequestParam String typeOfServices) {
+        UserEntity userEntity = loggedUserProvider.provideLoggedUser(username);
 
         // todo
 
@@ -61,6 +56,7 @@ public class InstitutionController {
 
     @GetMapping("/institution/{institutionName}")
     public Institution getInstitution(@PathVariable String username, @PathVariable String institutionName) {
+        loggedUserProvider.provideLoggedUser(username);
         Institution institution = institutionService.getByInstitutionName(institutionName);
         linkCreator.addLinksToInstitution(institution, username);
         return institution;

@@ -8,7 +8,7 @@ import com.zdzimi.registration.data.entity.UserEntity;
 import com.zdzimi.registration.service.InstitutionService;
 import com.zdzimi.registration.service.UserService;
 import com.zdzimi.registration.service.mapper.InstitutionMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,27 +19,19 @@ import java.util.List;
 @RequestMapping("/registration/{username}")
 @Validated
 @CrossOrigin
+@RequiredArgsConstructor
 public class WorkPlacesController {
 
-    private InstitutionService institutionService;
-    private UserService userService;
-    private InstitutionMapper institutionMapper;
-    private LinkCreator linkCreator;
-
-    @Autowired
-    public WorkPlacesController(InstitutionService institutionService,
-                                UserService userService,
-                                InstitutionMapper institutionMapper,
-                                LinkCreator linkCreator) {
-        this.institutionService = institutionService;
-        this.userService = userService;
-        this.institutionMapper = institutionMapper;
-        this.linkCreator = linkCreator;
-    }
+    private final LoggedUserProvider loggedUserProvider;
+    private final InstitutionService institutionService;
+    private final UserService userService;
+    private final InstitutionMapper institutionMapper;
+    private final LinkCreator linkCreator;
 
     @PostMapping("/new-work-place")
     public Institution createNewInstitution(@Valid @RequestBody Institution institution,
                                             @PathVariable String username) {
+        loggedUserProvider.provideLoggedUser(username);
         InstitutionEntity newInstitutionEntity = institutionService.createNewInstitution(institution);
         userService.addWorkPlace(username, newInstitutionEntity);
         Institution newInstitution = institutionMapper.convertToInstitution(newInstitutionEntity);
@@ -49,7 +41,7 @@ public class WorkPlacesController {
 
     @GetMapping("/work-places")
     public List<Institution> getWorkPlaces(@PathVariable String username) {
-        UserEntity userEntity = userService.getUserEntityByUsername(username);
+        UserEntity userEntity = loggedUserProvider.provideLoggedUser(username);
         List<Institution> workPlaces = institutionService.getWorkPlaces(userEntity);
         linkCreator.addLinksToWorkPlaces(workPlaces, username);
         return workPlaces;
@@ -57,7 +49,7 @@ public class WorkPlacesController {
 
     @GetMapping("/work-place/{institutionName}")
     public Institution getWorkPlace(@PathVariable String username, @PathVariable String institutionName) {
-        UserEntity userEntity = userService.getUserEntityByUsername(username);
+        UserEntity userEntity = loggedUserProvider.provideLoggedUser(username);
         Institution workPlace = institutionService.getWorkPlace(userEntity, institutionName);
         linkCreator.addLinksToWorkPlace(workPlace, username);
         return workPlace;
@@ -66,6 +58,7 @@ public class WorkPlacesController {
     @GetMapping("/work-place/{institutionName}/representatives")
     public List<User> getRepresentatives(@PathVariable String username,
                                          @PathVariable String institutionName) {
+        loggedUserProvider.provideLoggedUser(username);
         InstitutionEntity institutionEntity = institutionService.getInstitutionEntityByInstitutionName(institutionName);
         return userService.getByWorkPlaces(institutionEntity);
     }
@@ -74,6 +67,7 @@ public class WorkPlacesController {
     public User inviteToWorkPlace(@RequestBody String invitingUsername,
                                   @PathVariable String username,
                                   @PathVariable String institutionName) {
+        loggedUserProvider.provideLoggedUser(username);
         InstitutionEntity institutionEntity = institutionService.getInstitutionEntityByInstitutionName(institutionName);
         return userService.inviteUserToWorkPlace(invitingUsername, institutionEntity);
     }

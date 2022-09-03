@@ -5,35 +5,35 @@ import com.zdzimi.registration.core.model.Place;
 import com.zdzimi.registration.data.entity.InstitutionEntity;
 import com.zdzimi.registration.service.InstitutionService;
 import com.zdzimi.registration.service.PlaceService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
 
+@ExtendWith(MockitoExtension.class)
 class PlaceControllerTest {
 
     private static final String USERNAME = "Hans";
     private static final String INSTITUTION_NAME = "insName";
     private static final String PLACE_NAME = "place";
 
-    private PlaceController placeController;
+    @Mock
+    private LoggedUserProvider loggedUserProvider;
+    @Mock
     private PlaceService placeService;
+    @Mock
     private InstitutionService institutionService;
+    @Mock
     private LinkCreator linkCreator;
-
-    @BeforeEach
-    void setUp() {
-        placeService = mock(PlaceService.class);
-        institutionService = mock(InstitutionService.class);
-        linkCreator = mock((LinkCreator.class));
-        initMocks(this);
-        placeController = new PlaceController(placeService, institutionService, linkCreator);
-    }
+    @InjectMocks
+    private PlaceController placeController;
 
     @Test
     void shouldGetPlaces() {

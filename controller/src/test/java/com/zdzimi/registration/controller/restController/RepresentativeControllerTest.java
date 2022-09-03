@@ -5,35 +5,35 @@ import com.zdzimi.registration.core.model.User;
 import com.zdzimi.registration.data.entity.InstitutionEntity;
 import com.zdzimi.registration.service.InstitutionService;
 import com.zdzimi.registration.service.UserService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
 
+@ExtendWith(MockitoExtension.class)
 class RepresentativeControllerTest {
 
     private static final String INSTITUTION_NAME = "styk.pl";
     private static final String USERNAME = "Waldek";
     private static final String REPRESENTATIVE_NAME = "Janusz";
 
-    private RepresentativeController representativeController;
+    @Mock
     private UserService userService;
+    @Mock
+    private LoggedUserProvider loggedUserProvider;
+    @Mock
     private InstitutionService institutionService;
+    @Mock
     private LinkCreator linkCreator;
-
-    @BeforeEach
-    void setUp() {
-        userService = mock(UserService.class);
-        institutionService = mock(InstitutionService.class);
-        linkCreator = mock(LinkCreator.class);
-        initMocks(this);
-        representativeController = new RepresentativeController(userService, institutionService, linkCreator);
-    }
+    @InjectMocks
+    private RepresentativeController representativeController;
 
     @Test
     void getRepresentatives() {
