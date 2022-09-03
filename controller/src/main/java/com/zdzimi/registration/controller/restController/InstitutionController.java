@@ -43,15 +43,10 @@ public class InstitutionController {
                                       @RequestParam String province,
                                       @RequestParam String city,
                                       @RequestParam String typeOfServices) {
-        UserEntity userEntity = loggedUserProvider.provideLoggedUser(username);
-
-        // todo
-
-        System.out.println(institutionName);
-        System.out.println(province);
-        System.out.println(city);
-        System.out.println(typeOfServices);
-        return null;
+        loggedUserProvider.provideLoggedUser(username);
+        List<Institution> institutions = institutionService.searchBy(institutionName, province, city, typeOfServices);
+        linkCreator.addLinksToInstitutions(institutions, username);
+        return institutions;
     }
 
     @GetMapping("/institution/{institutionName}")
