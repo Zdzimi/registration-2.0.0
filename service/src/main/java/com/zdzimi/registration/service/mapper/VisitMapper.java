@@ -4,25 +4,19 @@ import com.zdzimi.registration.core.model.Institution;
 import com.zdzimi.registration.core.model.User;
 import com.zdzimi.registration.core.model.Visit;
 import com.zdzimi.registration.data.entity.VisitEntity;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
 
+@RequiredArgsConstructor
 @Component
 public class VisitMapper {
 
     private final ModelMapper modelMapper;
     private final UserMapper userMapper;
     private final InstitutionMapper institutionMapper;
-
-    @Autowired
-    public VisitMapper(ModelMapper modelMapper, UserMapper userMapper, InstitutionMapper institutionMapper) {
-        this.modelMapper = modelMapper;
-        this.userMapper = userMapper;
-        this.institutionMapper = institutionMapper;
-    }
 
     public Visit convertToVisit(VisitEntity visitEntity) {
         Visit visit = modelMapper.map(visitEntity, Visit.class);

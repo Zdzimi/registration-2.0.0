@@ -9,7 +9,7 @@ import com.zdzimi.registration.data.repository.PlaceRepository;
 import com.zdzimi.registration.service.exception.DeletePlaceException;
 import com.zdzimi.registration.service.exception.PlaceNameException;
 import com.zdzimi.registration.service.mapper.PlaceMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -19,18 +19,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class PlaceService {
 
     private final PlaceRepository placeRepository;
     private final PlaceMapper placeMapper;
     private final VisitService visitService;
-
-    @Autowired
-    public PlaceService(PlaceRepository placeRepository, PlaceMapper placeMapper, VisitService visitService) {
-        this.placeRepository = placeRepository;
-        this.placeMapper = placeMapper;
-        this.visitService = visitService;
-    }
 
     public List<Place> getPlaces(InstitutionEntity institutionEntity) {
         return placeRepository.findByInstitution(institutionEntity).stream()

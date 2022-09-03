@@ -1,21 +1,18 @@
 package com.zdzimi.registration.service.mapper;
+
 import com.zdzimi.registration.core.model.Institution;
 import com.zdzimi.registration.data.entity.InstitutionEntity;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 
+@RequiredArgsConstructor
 @Component
 public class InstitutionMapper {
 
-    private ModelMapper modelMapper;
-
-    @Autowired
-    public InstitutionMapper(ModelMapper modelMapper) {
-        this.modelMapper = modelMapper;
-    }
+    private final ModelMapper modelMapper;
 
     public Institution convertToInstitution(InstitutionEntity institutionEntity) {
         return modelMapper.map(institutionEntity, Institution.class);

@@ -11,7 +11,7 @@ import com.zdzimi.registration.data.validator.OnBook;
 import com.zdzimi.registration.data.validator.OnCancel;
 import com.zdzimi.registration.data.validator.OnDelete;
 import com.zdzimi.registration.service.mapper.VisitMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -24,16 +24,11 @@ import java.util.stream.Collectors;
 
 @Validated
 @Service
+@RequiredArgsConstructor
 public class VisitService {
 
     private final VisitRepository visitRepository;
     private final VisitMapper visitMapper;
-
-    @Autowired
-    public VisitService(VisitRepository visitRepository, VisitMapper visitMapper) {
-        this.visitRepository = visitRepository;
-        this.visitMapper = visitMapper;
-    }
 
     public List<Visit> getAllByUser(UserEntity userEntity) {
         return visitRepository.findByUser(userEntity).stream()
@@ -76,7 +71,7 @@ public class VisitService {
         //  todo test
         Optional<VisitEntity> max = getCurrentByRepresentativeAndInstitution(representativeEntity, institutionEntity).stream()
                 .max(new VisitComparator());
-        return max.map(visitEntity -> visitMapper.convertToVisit(visitEntity)).orElse(null);
+        return max.map(visitMapper::convertToVisit).orElse(null);
     }
 
     public VisitEntity getCurrentByVisitIdAndRepresentativeAndInstitution(UserEntity representativeEntity,

@@ -4,7 +4,7 @@ import com.zdzimi.registration.data.entity.InstitutionEntity;
 import com.zdzimi.registration.data.entity.UserEntity;
 import com.zdzimi.registration.data.entity.VisitEntity;
 import com.zdzimi.registration.service.exception.ConflictException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -12,17 +12,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class ConflictAnalyzer {
 
-    //      todo tests
-
     private final VisitService visitService;
-
-    @Autowired
-    public ConflictAnalyzer(VisitService visitService) {
-        this.visitService = visitService;
-    }
 
     public boolean checkConflicts(List<VisitEntity> visitEntities,
                                   UserEntity representativeEntity,

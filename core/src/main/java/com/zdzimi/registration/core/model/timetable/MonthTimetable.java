@@ -4,30 +4,16 @@ import com.zdzimi.registration.core.model.Visit;
 
 import java.time.LocalDate;
 import java.util.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
+@Getter
 public class MonthTimetable {
 
     private final int year;
     private final int month;
     private final DayTimetable[] dayTimetables;
-
-    private MonthTimetable(int year, int month, DayTimetable[] dayTimetables) {
-        this.year = year;
-        this.month = month;
-        this.dayTimetables = dayTimetables;
-    }
-
-    public int getYear() {
-        return year;
-    }
-
-    public int getMonth() {
-        return month;
-    }
-
-    public DayTimetable[] getDayTimetables() {
-        return dayTimetables;
-    }
 
     @Override
     public boolean equals(Object o) {

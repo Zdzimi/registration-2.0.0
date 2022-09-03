@@ -6,6 +6,7 @@ import com.zdzimi.registration.data.entity.InstitutionEntity;
 import com.zdzimi.registration.data.entity.PlaceEntity;
 import com.zdzimi.registration.data.entity.UserEntity;
 import com.zdzimi.registration.data.entity.VisitEntity;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,16 +18,12 @@ import java.util.Collection;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class VisitEntityGenerator {
 
     //      todo - test
 
     private final PlaceService placeService;
-
-    @Autowired
-    public VisitEntityGenerator(PlaceService placeService) {
-        this.placeService = placeService;
-    }
 
     public List<VisitEntity> createVisits(TimetableTemplate timetableTemplate, UserEntity representativeEntity, InstitutionEntity institutionEntity) {
         LocalDateTime now = LocalDateTime.now();

@@ -5,8 +5,8 @@ import lombok.Getter;
 @Getter
 public class DeletePlaceErrorResponse {
 
-    private String placeName;
-    private String message;
+    private final String placeName;
+    private final String message;
 
     public DeletePlaceErrorResponse(String placeName) {
         this.placeName = placeName;

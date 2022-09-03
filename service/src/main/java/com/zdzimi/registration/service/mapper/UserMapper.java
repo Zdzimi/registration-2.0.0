@@ -2,23 +2,19 @@ package com.zdzimi.registration.service.mapper;
 
 import com.zdzimi.registration.core.model.User;
 import com.zdzimi.registration.data.entity.UserEntity;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 
 import static com.zdzimi.registration.core.model.Role.ROLE_USER;
 
+@RequiredArgsConstructor
 @Component
 public class UserMapper {
 
-    private ModelMapper modelMapper;
-
-    @Autowired
-    public UserMapper(ModelMapper modelMapper) {
-        this.modelMapper = modelMapper;
-    }
+    private final ModelMapper modelMapper;
 
     public User convertToUser(UserEntity userEntity) {
         if (userEntity == null) {

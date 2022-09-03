@@ -4,22 +4,13 @@ import com.zdzimi.registration.core.model.Visit;
 
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
+@Getter
 class DayTimetable {
 
     private final int dayOfMonth;
-    private final List<Visit> visits;
-
-    DayTimetable(int dayOfMonth) {
-        this.dayOfMonth = dayOfMonth;
-        this.visits = new ArrayList<>();
-    }
-
-    public int getDayOfMonth() {
-        return dayOfMonth;
-    }
-
-    public List<Visit> getVisits() {
-        return visits;
-    }
+    private final List<Visit> visits = new ArrayList<>();
 }

@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public class DeletePlaceException extends RuntimeException {
 
-    private DeletePlaceErrorResponse deletePlaceErrorResponse;
+    private final DeletePlaceErrorResponse deletePlaceErrorResponse;
 
     public DeletePlaceException(String placeName) {
         this.deletePlaceErrorResponse = new DeletePlaceErrorResponse(placeName);

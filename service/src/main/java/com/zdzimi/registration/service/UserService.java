@@ -8,7 +8,7 @@ import com.zdzimi.registration.data.exception.UserNotFoundException;
 import com.zdzimi.registration.data.repository.UserRepository;
 import com.zdzimi.registration.service.exception.RepresentativeAlreadyInvitedException;
 import com.zdzimi.registration.service.mapper.UserMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -17,16 +17,11 @@ import java.util.stream.Collectors;
 
 @Service
 @Validated
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-
-    @Autowired
-    public UserService(UserRepository userRepository, UserMapper userMapper) {
-        this.userRepository = userRepository;
-        this.userMapper = userMapper;
-    }
 
     public User getByUsername(String username) {
         UserEntity userEntity = getUserEntityByUsername(username);
