@@ -1,19 +1,23 @@
 package com.zdzimi.registration.controller;
 
+import com.zdzimi.registration.controller.restController.RepresentativeUtilsController;
+import com.zdzimi.registration.core.model.template.Day;
+import com.zdzimi.registration.core.model.template.TimetableTemplate;
 import com.zdzimi.registration.data.entity.InstitutionEntity;
 import com.zdzimi.registration.data.entity.PlaceEntity;
 import com.zdzimi.registration.data.entity.UserEntity;
 import com.zdzimi.registration.data.repository.InstitutionRepository;
 import com.zdzimi.registration.data.repository.PlaceRepository;
 import com.zdzimi.registration.data.repository.UserRepository;
-import com.zdzimi.registration.data.repository.VisitRepository;
+import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 
-import java.util.Arrays;
 import java.util.Collections;
 
 @Controller
@@ -21,23 +25,25 @@ public class DatabaseInitializr {
 
     private static final String ROLE = "ROLE_USER";
 
-    private InstitutionRepository institutionRepository;
-    private PlaceRepository placeRepository;
-    private UserRepository userRepository;
-    private VisitRepository visitRepository;
-    private PasswordEncoder passwordEncoder;
+    private final InstitutionRepository institutionRepository;
+    private final PlaceRepository placeRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final RepresentativeUtilsController representativeUtilsController;
 
     @Autowired
-    public DatabaseInitializr(InstitutionRepository institutionRepository,
-                              PlaceRepository placeRepository,
-                              UserRepository userRepository,
-                              VisitRepository visitRepository,
-                              PasswordEncoder passwordEncoder) {
+    public DatabaseInitializr(
+        InstitutionRepository institutionRepository,
+        PlaceRepository placeRepository,
+        UserRepository userRepository,
+        PasswordEncoder passwordEncoder,
+        RepresentativeUtilsController representativeUtilsController
+    ) {
         this.institutionRepository = institutionRepository;
         this.placeRepository = placeRepository;
         this.userRepository = userRepository;
-        this.visitRepository = visitRepository;
         this.passwordEncoder = passwordEncoder;
+        this.representativeUtilsController = representativeUtilsController;
     }
 
     @EventListener(ApplicationReadyEvent.class)
@@ -95,6 +101,34 @@ public class DatabaseInitializr {
         adam.setWorkPlaces(Arrays.asList(tattoo, barber));
         userRepository.save(adam);
 
+        for (int i = 0; i < 3; i++) {
+            TimetableTemplate timetableTemplate = representativeUtilsController
+                .prepareNextTemplate(adam.getUsername(), tattoo.getInstitutionName());
+            Collection<Day> days = timetableTemplate.getDays();
+            timetableTemplate.setVisitLength(60);
+            for (Day day : days) {
+                day.setPlaceName(tattooPlaceOne.getPlaceName());
+                day.setWorkStart(LocalTime.of(8,0));
+                day.setWorkEnd(LocalTime.of(14,0));
+            }
+            representativeUtilsController.createTimetable(timetableTemplate, adam.getUsername(),
+                tattoo.getInstitutionName());
+        }
+
+        for (int i = 0; i < 3; i++) {
+            TimetableTemplate timetableTemplate = representativeUtilsController
+                .prepareNextTemplate(adam.getUsername(), barber.getInstitutionName());
+            Collection<Day> days = timetableTemplate.getDays();
+            timetableTemplate.setVisitLength(60);
+            for (Day day : days) {
+                day.setPlaceName(barberPlaceOne.getPlaceName());
+                day.setWorkStart(LocalTime.of(16,0));
+                day.setWorkEnd(LocalTime.of(20,0));
+            }
+            representativeUtilsController.createTimetable(timetableTemplate, adam.getUsername(),
+                barber.getInstitutionName());
+        }
+
         UserEntity ela = new UserEntity();
         ela.setUsername("elaKulak");
         ela.setName("Ela");
@@ -104,6 +138,20 @@ public class DatabaseInitializr {
         ela.setRole(ROLE);
         ela.setWorkPlaces(Collections.singletonList(barber));
         userRepository.save(ela);
+
+        for (int i = 0; i < 3; i++) {
+            TimetableTemplate timetableTemplate = representativeUtilsController
+                .prepareNextTemplate(ela.getUsername(), barber.getInstitutionName());
+            Collection<Day> days = timetableTemplate.getDays();
+            timetableTemplate.setVisitLength(60);
+            for (Day day : days) {
+                day.setPlaceName(barberPlaceOne.getPlaceName());
+                day.setWorkStart(LocalTime.of(8,0));
+                day.setWorkEnd(LocalTime.of(16,0));
+            }
+            representativeUtilsController.createTimetable(timetableTemplate, ela.getUsername(),
+                barber.getInstitutionName());
+        }
 
         UserEntity janusz = new UserEntity();
         janusz.setUsername("januszNowaczek");
