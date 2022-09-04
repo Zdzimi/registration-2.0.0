@@ -16,10 +16,13 @@ import com.zdzimi.registration.service.PlaceService;
 import com.zdzimi.registration.service.TimetableTemplateService;
 import com.zdzimi.registration.service.VisitEntityGenerator;
 import com.zdzimi.registration.service.VisitService;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Scanner;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -33,8 +36,6 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class DatabaseInitializr {
 
-    private static final String ROLE = "ROLE_USER";
-
     private final InstitutionRepository institutionRepository;
     private final PlaceRepository placeRepository;
     private final UserRepository userRepository;
@@ -46,124 +47,87 @@ public class DatabaseInitializr {
     private final ConflictAnalyzer conflictAnalyzer;
 
     @EventListener(ApplicationReadyEvent.class)
-    public void insertEntitiesToDatabase() {
-        InstitutionEntity barber = new InstitutionEntity();
-        barber.setInstitutionName("Barber");
-        barber.setProvince("dolnośląskie");
-        barber.setCity("Wrocław");
-        barber.setStreet("Karmelkowa");
-        barber.setGateNumber("123");
-        barber.setPremisesNumber("2");
-        barber.setTypeOfService("Barber");
-        barber.setDescription("some description...");
-        institutionRepository.save(barber);
+    public void insertEntitiesIntoDatabase() {
+        File file = new File("controller/src/main/resources/static/data.csv");
+        try {
+            Scanner scanner = new Scanner(file);
+            scanner.nextLine();
+            while (scanner.hasNextLine()) {
+                String[] data = scanner.nextLine().split(",");
+                fillData(data);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 
-        PlaceEntity barberPlaceOne = new PlaceEntity();
-        barberPlaceOne.setPlaceName("krzesło nr 1");
-        barberPlaceOne.setInstitution(barber);
-        placeRepository.save(barberPlaceOne);
+    private void fillData(String[] data) {
+        InstitutionEntity institutionEntity = createInstitutionEntity(Arrays.copyOfRange(data, 0, 8));
+        institutionRepository.save(institutionEntity);
 
-        PlaceEntity barberPlaceTwo = new PlaceEntity();
-        barberPlaceTwo.setPlaceName("krzesło nr 2");
-        barberPlaceTwo.setInstitution(barber);
-        placeRepository.save(barberPlaceTwo);
+        PlaceEntity placeEntityFirst = createPlaceEntity(institutionEntity, data[8]);
+        placeRepository.save(placeEntityFirst);
 
-        InstitutionEntity tattoo = new InstitutionEntity();
-        tattoo.setInstitutionName("Tattoo");
-        tattoo.setProvince("dolnośląskie");
-        tattoo.setCity("Wrocław");
-        tattoo.setStreet("Piłsudskiego");
-        tattoo.setGateNumber("35");
-        tattoo.setPremisesNumber("1.a");
-        tattoo.setTypeOfService("Tattoo");
-        tattoo.setDescription("some description...");
-        institutionRepository.save(tattoo);
+        PlaceEntity placeEntitySecond = createPlaceEntity(institutionEntity, data[9]);
+        placeRepository.save(placeEntitySecond);
 
-        PlaceEntity tattooPlaceOne = new PlaceEntity();
-        tattooPlaceOne.setPlaceName("stanowisko 1");
-        tattooPlaceOne.setInstitution(tattoo);
-        placeRepository.save(tattooPlaceOne);
+        UserEntity userEntityFirst = createUserEntity(Arrays.copyOfRange(data, 10, 15), institutionEntity);
+        userRepository.save(userEntityFirst);
 
-        PlaceEntity tattooPlaceTwo = new PlaceEntity();
-        tattooPlaceTwo.setPlaceName("stanowisko 2");
-        tattooPlaceTwo.setInstitution(tattoo);
-        placeRepository.save(tattooPlaceTwo);
+        createTimetable(institutionEntity, placeEntityFirst, userEntityFirst, 8, 14);
 
-        UserEntity adam = new UserEntity();
-        adam.setUsername("adamKaban");
-        adam.setName("Adam");
-        adam.setSurname("Kaban");
-        adam.setEmail("kaban@mail.com");
-        adam.setPassword(passwordEncoder.encode("Pass123"));
-        adam.setRole(ROLE);
-        adam.setRecognizedInstitutions(Collections.singletonList(barber));
-        adam.setWorkPlaces(Arrays.asList(tattoo, barber));
-        userRepository.save(adam);
+        UserEntity userEntitySecond = createUserEntity(Arrays.copyOfRange(data, 15, 20), institutionEntity);
+        userRepository.save(userEntitySecond);
 
+        createTimetable(institutionEntity, placeEntitySecond, userEntitySecond, 9, 16);
+    }
+
+    private UserEntity createUserEntity(String[] data, InstitutionEntity institutionEntity) {
+        UserEntity userEntityFirst = new UserEntity();
+        userEntityFirst.setUsername(data[0]);
+        userEntityFirst.setName(data[1]);
+        userEntityFirst.setSurname(data[2]);
+        userEntityFirst.setEmail(data[3]);
+        userEntityFirst.setPassword(passwordEncoder.encode(data[4]));
+        userEntityFirst.setRole("ROLE_USER");
+        userEntityFirst.setWorkPlaces(Collections.singletonList(institutionEntity));
+        return userEntityFirst;
+    }
+
+    private PlaceEntity createPlaceEntity(InstitutionEntity institutionEntity, String placeName) {
+        PlaceEntity placeEntityFirst = new PlaceEntity();
+        placeEntityFirst.setPlaceName(placeName);
+        placeEntityFirst.setInstitution(institutionEntity);
+        return placeEntityFirst;
+    }
+
+    private InstitutionEntity createInstitutionEntity(String[] data) {
+        InstitutionEntity institutionEntity = new InstitutionEntity();
+        institutionEntity.setInstitutionName(data[0]);
+        institutionEntity.setProvince(data[1]);
+        institutionEntity.setCity(data[2]);
+        institutionEntity.setStreet(data[3]);
+        institutionEntity.setGateNumber(data[4]);
+        institutionEntity.setPremisesNumber(data[5]);
+        institutionEntity.setTypeOfService(data[6]);
+        institutionEntity.setDescription(data[7]);
+        return institutionEntity;
+    }
+
+    private void createTimetable(InstitutionEntity institutionEntity, PlaceEntity tattooPlaceOne,
+        UserEntity userEntity, int timeFrom, int timeTo) {
         for (int i = 0; i < 3; i++) {
-            TimetableTemplate timetableTemplate = prepareNextTemplate(adam, tattoo);
+            TimetableTemplate timetableTemplate = prepareNextTemplate(userEntity,
+                institutionEntity);
             Collection<Day> days = timetableTemplate.getDays();
             timetableTemplate.setVisitLength(60);
             for (Day day : days) {
                 day.setPlaceName(tattooPlaceOne.getPlaceName());
-                day.setWorkStart(LocalTime.of(8,0));
-                day.setWorkEnd(LocalTime.of(14,0));
+                day.setWorkStart(LocalTime.of(timeFrom, 0));
+                day.setWorkEnd(LocalTime.of(timeTo, 0));
             }
-            createTimetable(timetableTemplate, adam, tattoo);
+            createTimetable(timetableTemplate, userEntity, institutionEntity);
         }
-
-        for (int i = 0; i < 3; i++) {
-            TimetableTemplate timetableTemplate = prepareNextTemplate(adam, barber);
-            Collection<Day> days = timetableTemplate.getDays();
-            timetableTemplate.setVisitLength(60);
-            for (Day day : days) {
-                day.setPlaceName(barberPlaceOne.getPlaceName());
-                day.setWorkStart(LocalTime.of(16,0));
-                day.setWorkEnd(LocalTime.of(20,0));
-            }
-            createTimetable(timetableTemplate, adam, barber);
-        }
-
-        UserEntity ela = new UserEntity();
-        ela.setUsername("elaKulak");
-        ela.setName("Ela");
-        ela.setSurname("Kulak");
-        ela.setEmail("kulak@mail.com");
-        ela.setPassword(passwordEncoder.encode("Pass123"));
-        ela.setRole(ROLE);
-        ela.setWorkPlaces(Collections.singletonList(barber));
-        userRepository.save(ela);
-
-        for (int i = 0; i < 3; i++) {
-            TimetableTemplate timetableTemplate = prepareNextTemplate(ela, barber);
-            Collection<Day> days = timetableTemplate.getDays();
-            timetableTemplate.setVisitLength(60);
-            for (Day day : days) {
-                day.setPlaceName(barberPlaceOne.getPlaceName());
-                day.setWorkStart(LocalTime.of(8,0));
-                day.setWorkEnd(LocalTime.of(16,0));
-            }
-            createTimetable(timetableTemplate, ela, barber);
-        }
-
-        UserEntity janusz = new UserEntity();
-        janusz.setUsername("januszNowaczek");
-        janusz.setName("Janusz");
-        janusz.setSurname("Nowaczek");
-        janusz.setEmail("nowaczekjanusz@mail.com");
-        janusz.setPassword(passwordEncoder.encode("Pass123"));
-        janusz.setRole(ROLE);
-        userRepository.save(janusz);
-
-        UserEntity ola = new UserEntity();
-        ola.setUsername("olaRak");
-        ola.setName("Ola");
-        ola.setSurname("Rak");
-        ola.setEmail("rakola@mail.com");
-        ola.setPassword(passwordEncoder.encode("Pass123"));
-        ola.setRole(ROLE);
-        ola.setRecognizedInstitutions(Collections.singletonList(tattoo));
-        userRepository.save(ola);
     }
 
     private TimetableTemplate prepareNextTemplate(UserEntity userEntity, InstitutionEntity institutionEntity) {
