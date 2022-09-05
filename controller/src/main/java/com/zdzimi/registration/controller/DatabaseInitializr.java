@@ -16,13 +16,14 @@ import com.zdzimi.registration.service.PlaceService;
 import com.zdzimi.registration.service.TimetableTemplateService;
 import com.zdzimi.registration.service.VisitEntityGenerator;
 import com.zdzimi.registration.service.VisitService;
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Scanner;
+import java.util.Optional;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -36,6 +37,8 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class DatabaseInitializr {
 
+    private static final String PATH = "static/data.csv";
+
     private final InstitutionRepository institutionRepository;
     private final PlaceRepository placeRepository;
     private final UserRepository userRepository;
@@ -47,18 +50,28 @@ public class DatabaseInitializr {
     private final ConflictAnalyzer conflictAnalyzer;
 
     @EventListener(ApplicationReadyEvent.class)
-    public void insertEntitiesIntoDatabase() {
-        File file = new File("controller/src/main/resources/static/data.csv");
-        try {
-            Scanner scanner = new Scanner(file);
-            scanner.nextLine();
-            while (scanner.hasNextLine()) {
-                String[] data = scanner.nextLine().split(",");
+    public void bootstrapDatabase() {
+        Optional<String> allFile = readFile();
+        if (allFile.isPresent()) {
+            String[] lines = allFile.get().split("\n");
+            for (String line : lines) {
+                String[] data = line.split(",");
                 fillData(data);
             }
-        } catch (FileNotFoundException e) {
+        }
+    }
+
+    private Optional<String> readFile() {
+        InputStream resourceAsStream = getClass().getClassLoader()
+            .getResourceAsStream(PATH);
+        try {
+            if (resourceAsStream != null) {
+                return Optional.of(new String(resourceAsStream.readAllBytes(), StandardCharsets.UTF_8));
+            }
+        } catch (IOException e) {
             e.printStackTrace();
         }
+        return Optional.empty();
     }
 
     private void fillData(String[] data) {
