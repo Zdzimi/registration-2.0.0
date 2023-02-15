@@ -14,7 +14,12 @@ git clone https://github.com/Zdzimi/registration-2.0.0.git
 cd registration-2.0.0/
 mvn install
 cd controller/target/
+java -jar controller-0.0.1-SNAPSHOT.jar
 
+To get started with the Angular front-end application you'll need to have node.js 12 or later installed on your machine.
 Run the following command to start the Angular front-end application in your second cmd:
 
-
+git clone https://github.com/Zdzimi/registration-cui-2.0.0.git
+cd registration-cui-2.0.0
+npm install @angular-devkit/build-angular
+ng serve -o
