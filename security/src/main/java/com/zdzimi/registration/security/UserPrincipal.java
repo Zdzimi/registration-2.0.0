@@ -1,6 +1,7 @@
 package com.zdzimi.registration.security;
 
 import com.zdzimi.registration.data.entity.UserEntity;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,13 +9,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
+@RequiredArgsConstructor
 public class UserPrincipal implements UserDetails {
 
-    private UserEntity userEntity;
-
-    public UserPrincipal(UserEntity userEntity) {
-        this.userEntity = userEntity;
-    }
+    private final UserEntity userEntity;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
