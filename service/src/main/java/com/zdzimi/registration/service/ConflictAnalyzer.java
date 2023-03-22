@@ -24,6 +24,11 @@ public class ConflictAnalyzer {
 
         List<String> conflicts = new ArrayList<>();
 
+        if (visitEntities.isEmpty()) {
+            conflicts.add("Visits not created.");
+            throw new ConflictException(conflicts);
+        }
+
         Timestamp firstVisitStart = visitEntities.get(0).getVisitStart();
         Timestamp lastVisitEnd = visitEntities.get(visitEntities.size() - 1).getVisitEnd();
 
