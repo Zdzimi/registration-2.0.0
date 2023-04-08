@@ -7,6 +7,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
+import org.springframework.web.util.HtmlUtils;
 
 import static com.zdzimi.registration.core.model.Role.ROLE_USER;
 
@@ -20,8 +21,11 @@ public class UserMapper {
         if (userEntity == null) {
             return null;
         }
-        User user = modelMapper.map(userEntity, User.class);
-        user.setPassword(null);
+        User user = new User();
+        user.setUsername(userEntity.getUsername());
+        user.setName(HtmlUtils.htmlEscape(userEntity.getName()));
+        user.setSurname(HtmlUtils.htmlEscape(userEntity.getSurname()));
+        user.setEmail(userEntity.getEmail());
         return user;
     }
 
