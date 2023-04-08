@@ -15,4 +15,5 @@ public class ConflictExceptionAdvice {
     public List<String> conflictExceptionHandler(ConflictException exception) {
         return exception.getConflicts();
     }
+
 }

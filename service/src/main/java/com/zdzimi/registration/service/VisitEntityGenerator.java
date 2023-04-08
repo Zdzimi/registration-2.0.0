@@ -6,8 +6,8 @@ import com.zdzimi.registration.data.entity.InstitutionEntity;
 import com.zdzimi.registration.data.entity.PlaceEntity;
 import com.zdzimi.registration.data.entity.UserEntity;
 import com.zdzimi.registration.data.entity.VisitEntity;
+import com.zdzimi.registration.service.exception.NoVisitsCreatedException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -21,17 +21,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class VisitEntityGenerator {
 
-    //      todo - test
-
     private final PlaceService placeService;
 
-    public List<VisitEntity> createVisits(TimetableTemplate timetableTemplate, UserEntity representativeEntity, InstitutionEntity institutionEntity) {
+    public List<VisitEntity> createVisits(TimetableTemplate template, UserEntity representativeEntity, InstitutionEntity institutionEntity) {
         LocalDateTime now = LocalDateTime.now();
 
-        int year = timetableTemplate.getYear();
-        int month = timetableTemplate.getMonth();
-        long visitLength = timetableTemplate.getVisitLength();
-        Collection<Day> days = timetableTemplate.getDays();
+        int year = template.getYear();
+        int month = template.getMonth();
+        long visitLength = template.getVisitLength();
+        Collection<Day> days = template.getDays();
         List<VisitEntity> visits = new ArrayList<>();
 
         for (Day day : days) {
@@ -44,7 +42,7 @@ public class VisitEntityGenerator {
 
                 while (workStart.isBefore(workEnd)) {
                     LocalDateTime visitStart = LocalDateTime.of(year, month, dayOfMonth, workStart.getHour(), workStart.getMinute());
-                    if (now.isBefore(visitStart)){
+                    if (now.isBefore(visitStart)) {
                         LocalDateTime visitEnd = visitStart.plusMinutes(visitLength);
                         VisitEntity visitEntity = new VisitEntity();
                         visitEntity.setVisitStart(Timestamp.valueOf(visitStart));
@@ -58,6 +56,11 @@ public class VisitEntityGenerator {
                 }
             }
         }
+
+        if (visits.isEmpty()) {
+            throw new NoVisitsCreatedException("Could not create visits.");
+        }
+
         return visits;
     }
 }
